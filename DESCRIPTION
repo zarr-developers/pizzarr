@@ -52,5 +52,6 @@ Suggests:
     future.apply,
     bench,
     qs
+Remotes: qsbase/qs
 Config/testthat/parallel: true
 Config/testthat/edition: 3
