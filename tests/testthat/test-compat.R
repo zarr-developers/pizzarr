@@ -4,32 +4,35 @@ sample_dir <- tools::R_user_dir("pizzarr")
 clean <- !dir.exists(sample_dir)
 
 test_that("Can open Zarr group using convenience function", {
+    skip_if_not_installed("qs")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
-    
+
     g <- zarr_open_group(root)
-    a <- g$get_item("1d.contiguous.lz4.i2")
+    a <- suppressWarnings(g$get_item("1d.contiguous.lz4.i2"))
 
     expect_equal(a$get_shape(), c(4))
 })
 
 test_that("Can open Zarr group or array using convenience function", {
+    skip_if_not_installed("qs")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     g <- zarr_open(root)
-    a <- zarr_open(root, path="1d.contiguous.lz4.i2")
+    a <- suppressWarnings(zarr_open(root, path="1d.contiguous.lz4.i2"))
 
     expect_equal(class(g)[1], "ZarrGroup")
     expect_equal(class(a)[1], "ZarrArray")
 })
 
 test_that("Can open Zarr group and read a 1D 2-byte integer array with LZ4 compression", {
+    skip_if_not_installed("qs")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
-    
+
     store <- DirectoryStore$new(root)
     g <- ZarrGroup$new(store)
-    a <- g$get_item("1d.contiguous.lz4.i2")
+    a <- suppressWarnings(g$get_item("1d.contiguous.lz4.i2"))
 
     expect_equal(a$get_shape(), c(4))
     expect_equal(a$get_chunks(), c(4))

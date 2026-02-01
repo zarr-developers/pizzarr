@@ -28,15 +28,15 @@ Imports:
     jsonlite,
     stats,
     R6,
-    qs,
+    qs2,
     stringr,
     memoise,
     utils
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
-Suggests: 
+RoxygenNote: 7.3.3
+Suggests:
     testthat,
     knitr,
     covr,
@@ -50,6 +50,7 @@ Suggests:
     parallel,
     future,
     future.apply,
-    bench
+    bench,
+    qs
 Config/testthat/parallel: true
 Config/testthat/edition: 3

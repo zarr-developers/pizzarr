@@ -1,6 +1,7 @@
 library(pizzarr)
 
 test_that("can convert a NestedArray to a raw vector with lz4 compression", {
+    skip_if_not_installed("qs")
     a <- array(data=1:10, dim=c(2, 5))
     na <- NestedArray$new(data = a, shape = dim(a), dtype = "<u4")
 
@@ -23,7 +24,7 @@ test_that("can convert a NestedArray to a raw vector with lz4 compression", {
     expect_equal(na_raw, expected_out)
 
     # Compress the raw vector.
-    compressor <- Lz4Codec$new(acceleration = 1)
+    compressor <- suppressWarnings(Lz4Codec$new(acceleration = 1))
 
     compressed_raw <- compressor$encode(na_raw)
 
@@ -67,8 +68,9 @@ test_that("can convert a NestedArray to a raw vector with zstd compression", {
 })
 
 test_that("zarr_create with non-default compressor", {
+    skip_if_not_installed("qs")
 
-    compressor <- Lz4Codec$new(acceleration = 1)
+    compressor <- suppressWarnings(Lz4Codec$new(acceleration = 1))
 
     a <- array(data=1:20, dim=c(2, 10))
     #      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]

@@ -42,7 +42,7 @@ Blosc compressor for Zarr
 \subsection{Method \code{new()}}{
 Create a new Blosc compressor.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BloscCodec$new(cname = "lz4", clevel = 5, shuffle = TRUE, blocksize = NA)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BloscCodec$new(cname = "lz4", clevel = 5, shuffle = TRUE, blocksize = NA, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

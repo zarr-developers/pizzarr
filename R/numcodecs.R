@@ -47,7 +47,7 @@ warn_if_unk_args <- function(unk_args, compressor_name) {
 #' Class representing a ZSTD compressor
 
 #' @rdname ZstdCodec
-#' @importFrom qs zstd_compress_raw zstd_decompress_raw
+#' @importFrom qs2 zstd_compress_raw zstd_decompress_raw
 #' @export
 ZstdCodec <- R6::R6Class("ZstdCodec",
   inherit = Codec,
@@ -100,8 +100,12 @@ ZstdCodec <- R6::R6Class("ZstdCodec",
 #' @description
 #' Class representing a LZ4 compressor
 #'
+#' @section Deprecation Notice:
+#' This codec is deprecated because the underlying `qs` package was archived on CRAN.
+#' For LZ4 compression, use `BloscCodec$new(cname = "lz4")` instead.
+#' This class will be removed in a future version.
+#'
 #' @rdname Lz4Codec
-#' @importFrom qs lz4_compress_raw lz4_decompress_raw
 #' @export
 Lz4Codec <- R6::R6Class("Lz4Codec",
    inherit = Codec,
@@ -114,6 +118,15 @@ Lz4Codec <- R6::R6Class("Lz4Codec",
      #' @param acceleration The compression level.
      #' @return A new `Lz4Codec` object.
      initialize = function(acceleration = 1, ...) {
+       .Deprecated(
+         new = "BloscCodec$new(cname = 'lz4')",
+         old = "Lz4Codec$new()",
+         msg = paste(
+           "Lz4Codec is deprecated because the 'qs' package was archived on CRAN.",
+           "Use BloscCodec$new(cname = 'lz4') for LZ4 compression instead.",
+           "Lz4Codec will be removed in a future version of pizzarr."
+         )
+       )
        self$acceleration <- acceleration
        warn_if_unk_args(list(...), "Lz4Codec")
      },
@@ -124,7 +137,13 @@ Lz4Codec <- R6::R6Class("Lz4Codec",
      #' @return Compressed data.
      encode = function(buf, zarr_arr) {
        # Reference: https://github.com/traversc/qs/blob/84e30f4/R/RcppExports.R#L24
-       body <- lz4_compress_raw(buf, self$acceleration)
+       if (!requireNamespace("qs", quietly = TRUE)) {
+         stop(
+           "Lz4Codec requires the archived 'qs' package. ",
+           "Use BloscCodec$new(cname = 'lz4') instead for LZ4 compression."
+         )
+       }
+       body <- qs::lz4_compress_raw(buf, self$acceleration)
 
        # The compressed output includes a 4-byte header storing the original size
        # of the decompressed data as a little-endian 32-bit integer.
@@ -142,10 +161,16 @@ Lz4Codec <- R6::R6Class("Lz4Codec",
      #' @param zarr_arr The ZarrArray instance.
      #' @return Un-compressed data.
      decode = function(buf, zarr_arr) {
-      body <- buf[5:length(buf)]
+       if (!requireNamespace("qs", quietly = TRUE)) {
+         stop(
+           "Lz4Codec requires the archived 'qs' package. ",
+           "Use BloscCodec$new(cname = 'lz4') instead for LZ4 compression."
+         )
+       }
+       body <- buf[5:length(buf)]
 
-      result <- lz4_decompress_raw(body)
-      return(result)
+       result <- qs::lz4_decompress_raw(body)
+       return(result)
      },
      #' @description
      #' Get Configuration

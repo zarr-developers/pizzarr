@@ -36,7 +36,7 @@ Bz2 compressor for Zarr
 \subsection{Method \code{new()}}{
 Create a new Bz2 compressor.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bz2Codec$new(level = 6)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Bz2Codec$new(level = 6, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

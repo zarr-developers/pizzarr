@@ -10,6 +10,13 @@ Class representing a LZ4 compressor
 \details{
 LZ4 compressor for Zarr
 }
+\section{Deprecation Notice}{
+
+This codec is deprecated because the underlying \code{qs} package was archived on CRAN.
+For LZ4 compression, use \code{BloscCodec$new(cname = "lz4")} instead.
+This class will be removed in a future version.
+}
+
 \keyword{internal}
 \section{Super class}{
 \code{\link[pizzarr:Codec]{pizzarr::Codec}} -> \code{Lz4Codec}
@@ -37,7 +44,7 @@ LZ4 compressor for Zarr
 \subsection{Method \code{new()}}{
 Create a new LZ4 compressor.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Lz4Codec$new(acceleration = 1)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Lz4Codec$new(acceleration = 1, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

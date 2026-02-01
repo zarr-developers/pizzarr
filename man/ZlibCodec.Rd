@@ -36,7 +36,7 @@ Zlib compressor for Zarr
 \subsection{Method \code{new()}}{
 Create a new Zlib compressor.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZlibCodec$new(level = 6)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ZlibCodec$new(level = 6, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

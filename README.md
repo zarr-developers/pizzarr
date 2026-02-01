@@ -127,7 +127,7 @@ pkgdown::build_site()
 - Zarr implementation
   - [zarr_implementations](https://github.com/zarr-developers/zarr_implementations)
   - [zarr-python](https://github.com/zarr-developers/zarr-python)
-  - [LZ4 and ZSTD compression in R](https://github.com/qsbase/qs)
+  - [ZSTD compression in R](https://github.com/qsbase/qs2) (for LZ4, use BloscCodec)
   - [zarr.js](https://github.com/gzuidhof/zarr.js)
   - [zarrita.js](https://github.com/manzt/zarrita.js)
   - [v2 spec](https://zarr.readthedocs.io/en/stable/spec/v2.html)
