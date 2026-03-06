@@ -60,7 +60,7 @@ pizzarr_sample <- function(dataset = NULL,
       
       new_z <- file.path(tdir, basename(zarr_zips[z]))
 
-      utils::download.file(paste0("https://github.com/keller-mark/pizzarr/raw/refs/heads/main/docs/data/", 
+      utils::download.file(paste0("https://github.com/zarr-developers/pizzarr/raw/refs/heads/main/docs/data/", 
                                            basename(zarr_zips[z])), mode = "wb",
                                     new_z)
       

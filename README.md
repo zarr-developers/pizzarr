@@ -1,4 +1,4 @@
-# pizzarr <a href="https://keller-mark.github.io/pizzarr/"><img src="man/figures/logo.png" align="right" height="139" alt="pizzarr website" /></a>
+# pizzarr <a href="https://zarr-developers.github.io/pizzarr/"><img src="man/figures/logo.png" align="right" height="139" alt="pizzarr website" /></a>
 
 A Zarr implementation for R.
 
@@ -8,7 +8,7 @@ Installation requires R 4.0.0 or greater.
 
 ```r
 install.packages("devtools")
-devtools::install_github("keller-mark/pizzarr")
+devtools::install_github("zarr-developers/pizzarr")
 ```
 
 ## Usage

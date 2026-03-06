@@ -103,7 +103,7 @@ vcr::use_cassette("http_github_pattern", {
   
   test_that("http_listdir", {
     
-    url <- "https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr"
+    url <- "https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr"
     
     z <- zarr_open(url)
     

@@ -21,8 +21,8 @@ Description: An implementation of chunked, compressed,
   <doi:10.5281/zenodo.11320255>.
 Language: en-US
 License: MIT + file LICENSE
-BugReports: https://github.com/keller-mark/pizzarr/issues
-URL: https://github.com/keller-mark/pizzarr
+BugReports: https://github.com/zarr-developers/pizzarr/issues
+URL: https://github.com/zarr-developers/pizzarr
 Depends: R (>= 4.0.0)
 Imports:
     jsonlite,

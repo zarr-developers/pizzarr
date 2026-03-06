@@ -1,7 +1,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zmetadata
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zmetadata
     body:
       encoding: ''
       string: ''
@@ -46,7 +46,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zarray
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zarray
     body:
       encoding: ''
       string: ''
@@ -91,7 +91,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zgroup
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zgroup
     body:
       encoding: ''
       string: ''
@@ -142,7 +142,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zarray
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zarray
     body:
       encoding: ''
       string: ''
@@ -187,7 +187,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zmetadata
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zmetadata
     body:
       encoding: ''
       string: ''
@@ -232,7 +232,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zgroup
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zgroup
     body:
       encoding: ''
       string: ''
@@ -283,7 +283,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zarray
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zarray
     body:
       encoding: ''
       string: ''
@@ -328,7 +328,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zgroup
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zgroup
     body:
       encoding: ''
       string: ''
@@ -379,7 +379,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zattrs
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zattrs
     body:
       encoding: ''
       string: ''
@@ -493,7 +493,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/.zattrs
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/.zattrs
     body:
       encoding: ''
       string: ''
@@ -607,7 +607,7 @@ http_interactions:
   recorded_with: vcr/1.2.2, webmockr/0.9.0
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/keller-mark/pizzarr/main/inst/extdata/dog.ome.zarr/0/.zarray
+    uri: https://raw.githubusercontent.com/zarr-developers/pizzarr/main/inst/extdata/dog.ome.zarr/0/.zarray
     body:
       encoding: ''
       string: ''

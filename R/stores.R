@@ -408,7 +408,7 @@ HttpStore <- R6::R6Class("HttpStore",
       # Despite getOption above, when running in parallel, options may not be passed to workers as expected.
       # For this reason, if the `private$client$get` fails, which is known to not work in parallel,
       # then we first guess that the failure is due to running in a worker (despite is_parallel being false).
-      # Reference: https://github.com/keller-mark/pizzarr/issues/128
+      # Reference: https://github.com/zarr-developers/pizzarr/issues/128
       
       if(is_parallel) {
         
