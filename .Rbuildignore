@@ -11,5 +11,6 @@ r6-roxygen-convention.md
 .venv
 .claude
 ^CLAUDE\.md$
+^README\.Rmd$
 ^TODO\.md$
 cran-comments.md

@@ -1,0 +1,138 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-"
+)
+```
+
+# pizzarr <a href="https://zarr-developers.github.io/pizzarr/"><img src="man/figures/logo.png" align="right" height="139" alt="pizzarr website" /></a>
+
+[![codecov](https://codecov.io/gh/zarr-developers/pizzarr/graph/badge.svg?token=vhidertN9l)](https://codecov.io/gh/zarr-developers/pizzarr)
+[![R-CMD-check](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml/badge.svg)](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml)
+[![logs](https://cranlogs.r-pkg.org/badges/pizzarr)](https://cran.r-project.org/package=pizzarr)
+[![CRAN status](https://www.r-pkg.org/badges/version/pizzarr)](https://CRAN.R-project.org/package=pizzarr)
+
+A Zarr implementation for R.
+
+## Installation
+
+Installation requires R 4.1.0 or greater.
+
+```r
+install.packages("devtools")
+devtools::install_github("zarr-developers/pizzarr")
+```
+
+## Usage
+
+```{r usage}
+library(pizzarr)
+
+# Open a sample BCSD climate dataset (Zarr V3)
+v3_root <- pizzarr_sample("bcsd_v3")
+v3 <- zarr_open(v3_root)
+
+# Print the group summary
+v3
+
+# View the hierarchy
+v3$tree()
+
+# Inspect an array
+v3$get_item("pr")
+
+# Read a slice: first 3 time steps, first 3 latitudes, first longitude
+v3$get_item("pr")$get_item(list(slice(1, 3), slice(1, 3), 1))$data
+
+```
+
+Create an array from scratch:
+
+```{r create, results='hide'}
+a <- array(data = 1:20, dim = c(2, 10))
+z <- zarr_create(shape = dim(a), dtype = "<f4", fill_value = NA)
+z$set_item("...", a)
+```
+
+```{r create-read}
+z
+z$get_item(list(slice(1, 2), slice(1, 5)))$data
+```
+
+## Features
+
+- **Zarr V2 and V3** read and write (format auto-detected on open)
+- **Stores:** MemoryStore, DirectoryStore (read/write); HttpStore (read-only)
+- **Data types:** boolean, int8--int64, uint8--uint64, float16/32/64, string, Unicode, VLenUTF8
+- **Compression:** zlib/gzip, bzip2, blosc, LZMA, LZ4, Zstd
+- **Blosc** requires the optional [`blosc`](https://cran.r-project.org/package=blosc) package (`install.packages("blosc")`)
+
+## How It Works
+
+pizzarr uses [R6](https://r6.r-lib.org/) classes mirroring the
+[zarr-python](https://github.com/zarr-developers/zarr-python) object model:
+
+- **Store** --- backend storage (`DirectoryStore` for local files,
+  `MemoryStore` for in-memory, `HttpStore` for remote read-only)
+- **ZarrGroup** --- hierarchical container holding arrays and sub-groups
+  (like a directory)
+- **ZarrArray** --- chunked, compressed N-dimensional array (like a file)
+- **Codec** --- compression/decompression (zlib, zstd, blosc, lz4, etc.)
+- **Dtype** --- data-type mapping between R and Zarr
+
+Data flows through the stack: a **Store** holds raw chunk bytes, a **Codec**
+pipeline compresses and decompresses them, and **ZarrArray** presents typed
+N-dimensional data to R. Groups and arrays are addressed by path within a
+store, just like files in a directory tree.
+
+See `vignette("pizzarr")` for a full walkthrough.
+
+## Ecosystem
+
+pizzarr implements the [Zarr specification](https://zarr-specs.readthedocs.io/)
+(V2 and V3) for R. Related projects:
+
+- [zarr-python](https://github.com/zarr-developers/zarr-python) --- the
+  reference Python implementation
+- [zarr.js](https://github.com/gzuidhof/zarr.js) --- JavaScript implementation
+- [zarr](https://cran.r-project.org/package=zarr) --- native R V3
+  implementation (CRAN)
+- [Rarr](https://bioconductor.org/packages/Rarr/) --- Bioconductor package for
+  reading and writing individual Zarr arrays (V2, limited write support)
+- [zarr-conformance-tests](https://github.com/Bisaloo/zarr-conformance-tests)
+  --- cross-implementation validation
+
+## Validation with zarr-python
+
+A standalone integration test cross-validates that pizzarr and zarr-python
+produce equivalent Zarr stores. Both implementations write the same arrays
+(V2 and V3 formats, multiple dtypes, codecs, chunk layouts, and groups with
+attributes), then each reads the other's output and verifies the data matches.
+
+**Prerequisites:** Python 3.10+ with `zarr>=3` and `numpy` installed.
+
+```bash
+Rscript inst/extdata/cross-validate.R
+```
+
+The script skips gracefully (exit 0) if Python is not available. On success
+all checks pass and exit code is 0; any mismatch is reported and exits 1.
+
+## Zarr Conformance Tests
+
+pizzarr participates in the [zarr-conformance-tests](https://github.com/Bisaloo/zarr-conformance-tests)
+framework, which validates that Zarr implementations can correctly read
+standard test arrays (V2 and V3 formats, multiple dtypes). These tests run
+automatically in CI on every push and pull request to `main`.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, and
+documentation build instructions.

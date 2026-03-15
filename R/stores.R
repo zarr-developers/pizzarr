@@ -140,6 +140,14 @@ Store <- R6::R6Class("Store",
     #' @return A list or `NULL`.
     get_consolidated_metadata = function() {
       return(private$zmetadata)
+    },
+    #' @description
+    #' Print a human-readable summary of the store.
+    #' @param ... Ignored.
+    #' @return `self` (invisibly).
+    print = function(...) {
+      cat(paste0("<", class(self)[1], ">\n"))
+      invisible(self)
     }
    )
 )
@@ -248,6 +256,14 @@ DirectoryStore <- R6::R6Class("DirectoryStore",
       dir_list <- sort(list.files(dir_path, full.names = FALSE, all.files = TRUE, include.dirs = TRUE))
       dir_list <- dir_list[!dir_list %in% c(".", "..")]
       return(dir_list)
+    },
+    #' @description
+    #' Print a human-readable summary of the store.
+    #' @param ... Ignored.
+    #' @return `self` (invisibly).
+    print = function(...) {
+      cat(paste0("<DirectoryStore> file://", self$root, "\n"))
+      invisible(self)
     }
   )
 )
@@ -387,6 +403,14 @@ MemoryStore <- R6::R6Class("MemoryStore",
       } else {
         self$set_item(item, NULL)
       }
+     },
+     #' @description
+     #' Print a human-readable summary of the store.
+     #' @param ... Ignored.
+     #' @return `self` (invisibly).
+     print = function(...) {
+       cat("<MemoryStore>\n")
+       invisible(self)
      }
    )
 )
@@ -628,6 +652,14 @@ HttpStore <- R6::R6Class("HttpStore",
       private$cache_time_seconds <- seconds
       # We need to re-memoize.
       private$memoize_make_request()
+    },
+    #' @description
+    #' Print a human-readable summary of the store.
+    #' @param ... Ignored.
+    #' @return `self` (invisibly).
+    print = function(...) {
+      cat(paste0("<HttpStore> ", private$url, "\n"))
+      invisible(self)
     }
   )
 )

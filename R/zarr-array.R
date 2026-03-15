@@ -1,5 +1,13 @@
 # Reference: https://github.com/zarr-developers/zarr-python/blob/5dd4a0/zarr/core.py#L51
 
+#' @keywords internal
+format_codec <- function(codec) {
+  if (is.null(codec) || is_na(codec)) return("None")
+  if (is.character(codec)) return(codec)
+  if (inherits(codec, "R6")) return(class(codec)[1])
+  as.character(codec)
+}
+
 #' The Zarr Array class.
 #' @title ZarrArray Class
 #' @docType class
@@ -1269,6 +1277,27 @@ ZarrArray <- R6::R6Class("ZarrArray",
         identical(private$path, other$get_path()),
         !private$is_view
       )))
+    },
+    #' @description
+    #' Print a human-readable summary of the array.
+    #' @param ... Ignored.
+    #' @return `self` (invisibly).
+    print = function(...) {
+      nm <- self$get_name()
+      if (is.na(nm)) nm <- "/"
+      store_type <- class(private$store)[1]
+      zf <- if (!is.null(private$zarr_format)) private$zarr_format else 2L
+      cat(paste0("<ZarrArray> ", nm, "\n"))
+      cat(paste0("  Shape       : (", paste(private$shape, collapse = ", "), ")\n"))
+      cat(paste0("  Chunks      : (", paste(private$chunks, collapse = ", "), ")\n"))
+      cat(paste0("  Data type   : ", private$dtype$dtype, "\n"))
+      cat(paste0("  Fill value  : ", private$fill_value, "\n"))
+      cat(paste0("  Order       : ", private$order, "\n"))
+      cat(paste0("  Read-only   : ", private$read_only, "\n"))
+      cat(paste0("  Compressor  : ", format_codec(private$compressor), "\n"))
+      cat(paste0("  Store type  : ", store_type, "\n"))
+      cat(paste0("  Zarr format : ", zf, "\n"))
+      invisible(self)
     },
     #' @description
     #' Iterate over the array or a range of it, yielding successive slices along the first dimension. Uses chunk caching for efficient sequential access.

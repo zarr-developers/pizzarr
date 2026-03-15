@@ -1,0 +1,4 @@
+/* Soften code block backgrounds — just a few shades lighter than bg (#1a1a2e) */
+pre, pre code, .sourceCode {
+  background-color: #22223a !important;
+}

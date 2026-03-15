@@ -1,9 +1,13 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # pizzarr <a href="https://zarr-developers.github.io/pizzarr/"><img src="man/figures/logo.png" align="right" height="139" alt="pizzarr website" /></a>
 
 [![codecov](https://codecov.io/gh/zarr-developers/pizzarr/graph/badge.svg?token=vhidertN9l)](https://codecov.io/gh/zarr-developers/pizzarr)
-[![R-CMD-check](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml/badge.svg)](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml) 
+[![R-CMD-check](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml/badge.svg)](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml)
 [![logs](https://cranlogs.r-pkg.org/badges/pizzarr)](https://cran.r-project.org/package=pizzarr)
-[![CRAN status](https://www.r-pkg.org/badges/version/pizzarr)](https://CRAN.R-project.org/package=pizzarr)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/pizzarr)](https://CRAN.R-project.org/package=pizzarr)
 
 A Zarr implementation for R.
 
@@ -11,44 +15,103 @@ A Zarr implementation for R.
 
 Installation requires R 4.1.0 or greater.
 
-```r
+``` r
 install.packages("devtools")
 devtools::install_github("zarr-developers/pizzarr")
 ```
 
 ## Usage
 
-```r
+``` r
 library(pizzarr)
 
-a <- array(data=1:20, dim=c(2, 10))
-#      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-# [1,]    1    3    5    7    9   11   13   15   17    19
-# [2,]    2    4    6    8   10   12   14   16   18    20
-z <- zarr_create(shape=dim(a), dtype="<f4", fill_value=NA)
+# Open a sample BCSD climate dataset (Zarr V3)
+v3_root <- pizzarr_sample("bcsd_v3")
+v3 <- zarr_open(v3_root)
 
+# Print the group summary
+v3
+#> <ZarrGroup> /
+#>   Store type  : DirectoryStore
+#>   Zarr format : 3
+#>   Read-only   : FALSE
+#>   No. members : 5
+
+# View the hierarchy
+v3$tree()
+#> / 
+#> ├── latitude (33) <f4
+#> ├── longitude (81) <f4
+#> ├── pr (12, 33, 81) <f4
+#> ├── tas (12, 33, 81) <f4
+#> └── time (12) <f8
+
+# Inspect an array
+v3$get_item("pr")
+#> <ZarrArray> /pr
+#>   Shape       : (12, 33, 81)
+#>   Chunks      : (12, 33, 81)
+#>   Data type   : <f4
+#>   Fill value  : 1.00000002004088e+20
+#>   Order       : C
+#>   Read-only   : FALSE
+#>   Compressor  : ZstdCodec
+#>   Store type  : DirectoryStore
+#>   Zarr format : 3
+
+# Read a slice: first 3 time steps, first 3 latitudes, first longitude
+v3$get_item("pr")$get_item(list(slice(1, 3), slice(1, 3), 1))$data
+#> , , 1
+#> 
+#>        [,1]   [,2]   [,3]
+#> [1,] 133.97 144.51 149.92
+#> [2,]  75.40  72.38  68.62
+#> [3,]  93.14  91.24  89.37
+```
+
+Create an array from scratch:
+
+``` r
+a <- array(data = 1:20, dim = c(2, 10))
+z <- zarr_create(shape = dim(a), dtype = "<f4", fill_value = NA)
 z$set_item("...", a)
+```
 
-selection <- z$get_item(list(slice(1, 2), slice(1, 5)))
-
-print(selection$data)
-#      [,1] [,2] [,3] [,4] [,5]
-# [1,]    1    3    5    7    9
-# [2,]    2    4    6    8   10
+``` r
+z
+#> <ZarrArray> /
+#>   Shape       : (2, 10)
+#>   Chunks      : (2, 10)
+#>   Data type   : <f4
+#>   Fill value  : 0
+#>   Order       : F
+#>   Read-only   : FALSE
+#>   Compressor  : ZstdCodec
+#>   Store type  : MemoryStore
+#>   Zarr format : 2
+z$get_item(list(slice(1, 2), slice(1, 5)))$data
+#>      [,1] [,2] [,3] [,4] [,5]
+#> [1,]    1    3    5    7    9
+#> [2,]    2    4    6    8   10
 ```
 
 ## Features
 
 - **Zarr V2 and V3** read and write (format auto-detected on open)
-- **Stores:** MemoryStore, DirectoryStore (read/write); HttpStore (read-only)
-- **Data types:** boolean, int8--int64, uint8--uint64, float16/32/64, string, Unicode, VLenUTF8
+- **Stores:** MemoryStore, DirectoryStore (read/write); HttpStore
+  (read-only)
+- **Data types:** boolean, int8–int64, uint8–uint64, float16/32/64,
+  string, Unicode, VLenUTF8
 - **Compression:** zlib/gzip, bzip2, blosc, LZMA, LZ4, Zstd
-- **Blosc** requires the optional [`blosc`](https://cran.r-project.org/package=blosc) package (`install.packages("blosc")`)
+- **Blosc** requires the optional
+  [`blosc`](https://cran.r-project.org/package=blosc) package
+  (`install.packages("blosc")`)
 
 ## How It Works
 
 pizzarr uses [R6](https://r6.r-lib.org/) classes mirroring the
-[zarr-python](https://github.com/zarr-developers/zarr-python) object model:
+[zarr-python](https://github.com/zarr-developers/zarr-python) object
+model:
 
 - **Store** — backend storage (`DirectoryStore` for local files,
   `MemoryStore` for in-memory, `HttpStore` for remote read-only)
@@ -58,52 +121,58 @@ pizzarr uses [R6](https://r6.r-lib.org/) classes mirroring the
 - **Codec** — compression/decompression (zlib, zstd, blosc, lz4, etc.)
 - **Dtype** — data-type mapping between R and Zarr
 
-Data flows through the stack: a **Store** holds raw chunk bytes, a **Codec**
-pipeline compresses and decompresses them, and **ZarrArray** presents typed
-N-dimensional data to R. Groups and arrays are addressed by path within a
-store, just like files in a directory tree.
+Data flows through the stack: a **Store** holds raw chunk bytes, a
+**Codec** pipeline compresses and decompresses them, and **ZarrArray**
+presents typed N-dimensional data to R. Groups and arrays are addressed
+by path within a store, just like files in a directory tree.
 
 See `vignette("pizzarr")` for a full walkthrough.
 
 ## Ecosystem
 
-pizzarr implements the [Zarr specification](https://zarr-specs.readthedocs.io/)
-(V2 and V3) for R. Related projects:
+pizzarr implements the [Zarr
+specification](https://zarr-specs.readthedocs.io/) (V2 and V3) for R.
+Related projects:
 
 - [zarr-python](https://github.com/zarr-developers/zarr-python) — the
   reference Python implementation
-- [zarr.js](https://github.com/gzuidhof/zarr.js) — JavaScript implementation
+- [zarr.js](https://github.com/gzuidhof/zarr.js) — JavaScript
+  implementation
 - [zarr](https://cran.r-project.org/package=zarr) — native R V3
   implementation (CRAN)
-- [Rarr](https://bioconductor.org/packages/Rarr/) — Bioconductor package for
-  reading and writing individual Zarr arrays (V2, limited write support)
+- [Rarr](https://bioconductor.org/packages/Rarr/) — Bioconductor package
+  for reading and writing individual Zarr arrays (V2, limited write
+  support)
 - [zarr-conformance-tests](https://github.com/Bisaloo/zarr-conformance-tests)
   — cross-implementation validation
 
 ## Validation with zarr-python
 
-A standalone integration test cross-validates that pizzarr and zarr-python
-produce equivalent Zarr stores. Both implementations write the same arrays
-(V2 and V3 formats, multiple dtypes, codecs, chunk layouts, and groups with
-attributes), then each reads the other's output and verifies the data matches.
+A standalone integration test cross-validates that pizzarr and
+zarr-python produce equivalent Zarr stores. Both implementations write
+the same arrays (V2 and V3 formats, multiple dtypes, codecs, chunk
+layouts, and groups with attributes), then each reads the other’s output
+and verifies the data matches.
 
 **Prerequisites:** Python 3.10+ with `zarr>=3` and `numpy` installed.
 
-```bash
+``` bash
 Rscript inst/extdata/cross-validate.R
 ```
 
-The script skips gracefully (exit 0) if Python is not available. On success
-all checks pass and exit code is 0; any mismatch is reported and exits 1.
+The script skips gracefully (exit 0) if Python is not available. On
+success all checks pass and exit code is 0; any mismatch is reported and
+exits 1.
 
 ## Zarr Conformance Tests
 
-pizzarr participates in the [zarr-conformance-tests](https://github.com/Bisaloo/zarr-conformance-tests)
+pizzarr participates in the
+[zarr-conformance-tests](https://github.com/Bisaloo/zarr-conformance-tests)
 framework, which validates that Zarr implementations can correctly read
-standard test arrays (V2 and V3 formats, multiple dtypes). These tests run
-automatically in CI on every push and pull request to `main`.
+standard test arrays (V2 and V3 formats, multiple dtypes). These tests
+run automatically in CI on every push and pull request to `main`.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, and
-documentation build instructions.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing,
+and documentation build instructions.
