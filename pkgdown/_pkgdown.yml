@@ -4,6 +4,11 @@ template:
   bootstrap: 5
   bslib:
     base_font: {google: "Inter"}
+    bg: "#1a1a2e"
+    fg: "#e0e0e0"
+    primary: "#7c83ff"
+    border-radius: 0.4rem
+    btn-border-radius: 0.4rem
 
 authors:
   David Blodgett:

@@ -1,4 +1,14 @@
-/* Soften code block backgrounds — just a few shades lighter than bg (#1a1a2e) */
+/* Soften code block backgrounds — slightly lighter than bg (#1a1a2e) */
 pre, pre code, .sourceCode {
   background-color: #22223a !important;
+}
+
+/* Navbar styling */
+.navbar {
+  background-color: #16162b !important;
+}
+
+/* Footer styling */
+footer {
+  background-color: #16162b !important;
 }
