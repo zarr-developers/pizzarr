@@ -1,8 +1,8 @@
 ---
-title: "Remote OME-NGFF Demo"
+title: "Working with Remote Zarr Stores"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Remote OME-NGFF Demo}
+  %\VignetteIndexEntry{Working with Remote Zarr Stores}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

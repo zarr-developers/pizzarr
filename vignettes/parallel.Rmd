@@ -1,8 +1,8 @@
 ---
-title: "Read and write in parallel"
+title: "Parallel Read and Write"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Read and write in parallel}
+  %\VignetteIndexEntry{Parallel Read and Write}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

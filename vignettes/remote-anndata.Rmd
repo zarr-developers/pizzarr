@@ -1,8 +1,8 @@
 ---
-title: "Remote AnnData Demo"
+title: "Accessing Remote Stores"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Remote AnnData Demo}
+  %\VignetteIndexEntry{Accessing Remote Stores}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

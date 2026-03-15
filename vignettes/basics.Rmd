@@ -1,8 +1,8 @@
 ---
-title: "Basics"
+title: "Creating and Slicing Arrays"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Basics}
+  %\VignetteIndexEntry{Creating and Slicing Arrays}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

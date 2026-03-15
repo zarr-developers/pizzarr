@@ -4,6 +4,14 @@ template:
   bootstrap: 5
   bslib:
     base_font: {google: "Inter"}
+    heading_font: {google: "Inter"}
+    code_font: {google: "JetBrains Mono"}
+    primary: "#F9A620"
+    danger: "#E84855"
+    warning: "#F9A620"
+    bg: "#1a1a2e"
+    fg: "#e0e0e0"
+    navbar-bg: "#2B3A67"
 
 authors:
   David Blodgett:
@@ -92,17 +100,23 @@ reference:
 
 
 articles:
-  - title: Tutorials
-    navbar: Tutorials
+  - title: Getting Started
+    navbar: Getting Started
     contents:
       - basics
+  - title: User Guide
+    navbar: User Guide
+    contents:
       - zarr-operations
-      - ome-ngff
-      - remote-ome-ngff
-      - remote-anndata
       - parallel
       - v3-read
       - v3-interop
+  - title: Domain Examples
+    navbar: Examples
+    contents:
+      - ome-ngff
+      - remote-ome-ngff
+      - remote-anndata
   - title: Troubleshooting
     navbar: Troubleshooting
     contents:

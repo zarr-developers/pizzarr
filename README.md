@@ -45,25 +45,40 @@ print(selection$data)
 - **Compression:** zlib/gzip, bzip2, blosc, LZMA, LZ4, Zstd
 - **Blosc** requires the optional [`blosc`](https://cran.r-project.org/package=blosc) package (`install.packages("blosc")`)
 
+## How It Works
 
-## Development
+pizzarr uses [R6](https://r6.r-lib.org/) classes mirroring the
+[zarr-python](https://github.com/zarr-developers/zarr-python) object model:
 
+- **Store** — backend storage (`DirectoryStore` for local files,
+  `MemoryStore` for in-memory, `HttpStore` for remote read-only)
+- **ZarrGroup** — hierarchical container holding arrays and sub-groups
+  (like a directory)
+- **ZarrArray** — chunked, compressed N-dimensional array (like a file)
+- **Codec** — compression/decompression (zlib, zstd, blosc, lz4, etc.)
+- **Dtype** — data-type mapping between R and Zarr
 
-```r
-setwd("path/to/pizzarr")
-install.packages("devtools")
-devtools::install()
-devtools::load_all()
-```
+Data flows through the stack: a **Store** holds raw chunk bytes, a **Codec**
+pipeline compresses and decompresses them, and **ZarrArray** presents typed
+N-dimensional data to R. Groups and arrays are addressed by path within a
+store, just like files in a directory tree.
 
-## Testing
+See `vignette("pizzarr")` for a full walkthrough.
 
-Set `TESTTHAT_CPUS=#` in .Renviron to run tests in parallel
+## Ecosystem
 
-```r
-devtools::check()
-devtools::test()
-```
+pizzarr implements the [Zarr specification](https://zarr-specs.readthedocs.io/)
+(V2 and V3) for R. Related projects:
+
+- [zarr-python](https://github.com/zarr-developers/zarr-python) — the
+  reference Python implementation
+- [zarr.js](https://github.com/gzuidhof/zarr.js) — JavaScript implementation
+- [zarr](https://cran.r-project.org/package=zarr) — native R V3
+  implementation (CRAN)
+- [Rarr](https://bioconductor.org/packages/Rarr/) — Bioconductor package for
+  reading and writing individual Zarr arrays (V2, limited write support)
+- [zarr-conformance-tests](https://github.com/Bisaloo/zarr-conformance-tests)
+  — cross-implementation validation
 
 ## Validation with zarr-python
 
@@ -88,31 +103,7 @@ framework, which validates that Zarr implementations can correctly read
 standard test arrays (V2 and V3 formats, multiple dtypes). These tests run
 automatically in CI on every push and pull request to `main`.
 
-## Documentation
+## Contributing
 
-```r
-install.packages("devtools")
-install.packages("pkgdown")
-devtools::document()
-pkgdown::build_site()
-```
-
-## Resources
-
-- [Discussion of Zarr in R](https://github.com/zarr-developers/community/issues/18)
-- [blosc](https://cran.r-project.org/web/packages/blosc/index.html)
-  - Note: `pizzarr` has an optional dependency on `blosc` for Blosc (de)compression.
-- R package development
-  - [R packages](https://r-pkgs.org/)
-  - [roxygen2 syntax](https://roxygen2.r-lib.org/articles/rd-formatting.html)
-  - [R6](https://r6.r-lib.org/index.html)
-  - [R6 roxygen2 syntax](https://www.tidyverse.org/blog/2019/11/roxygen2-7-0-0/#r6-documentation)
-  - [pkgdown](https://pkgdown.r-lib.org/)
-- Zarr implementation
-  - [zarr_implementations](https://github.com/zarr-developers/zarr_implementations)
-  - [zarr-python](https://github.com/zarr-developers/zarr-python)
-  - [ZSTD compression in R](https://github.com/qsbase/qs2)
-  - [LZ4 and ZSTD compression in R - archived](https://github.com/qsbase/qs)
-  - [zarr.js](https://github.com/gzuidhof/zarr.js)
-  - [zarrita.js](https://github.com/manzt/zarrita.js)
-  - [v2 spec](https://zarr.readthedocs.io/en/stable/spec/v2.html)
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, and
+documentation build instructions.
