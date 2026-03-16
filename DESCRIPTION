@@ -1,6 +1,6 @@
 Package: pizzarr
 Type: Package
-Title: Slice into Zarr Arrays in R
+Title: Slice into 'Zarr' Arrays in R
 Version: 0.1.0
 Authors@R: c(
     person(given = "David",
@@ -16,8 +16,8 @@ Authors@R: c(
       comment = c(ORCID = "0000-0003-3003-874X")
     )
   )
-Description: An implementation of chunked, compressed, 
-  N-dimensional arrays for R. Zarr spec V2 (2024) 
+Description: An implementation of chunked, compressed,
+  N-dimensional arrays for R. 'Zarr' spec V2 (2024)
   <doi:10.5281/zenodo.11320255>.
 Language: en-US
 License: MIT + file LICENSE

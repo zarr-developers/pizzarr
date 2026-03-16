@@ -70,8 +70,6 @@ The Zarr Array class.
 \item \href{#method-ZarrArray-view}{\code{ZarrArray$view()}}
 \item \href{#method-ZarrArray-astype}{\code{ZarrArray$astype()}}
 \item \href{#method-ZarrArray-get_dimension_separator}{\code{ZarrArray$get_dimension_separator()}}
-\item \href{#method-ZarrArray-[}{\code{ZarrArray$[()}}
-\item \href{#method-ZarrArray-[<-}{\code{ZarrArray$[<-()}}
 \item \href{#method-ZarrArray-as.array}{\code{ZarrArray$as.array()}}
 \item \href{#method-ZarrArray-clone}{\code{ZarrArray$clone()}}
 }
@@ -1016,48 +1014,6 @@ Get the dimension separator used in chunk keys.
 
 \subsection{Returns}{
 \code{character(1)}.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ZarrArray-["></a>}}
-\if{latex}{\out{\hypertarget{method-ZarrArray-[}{}}}
-\subsection{Method \code{[()}}{
-Set values for a selection using bracket notation (for S3 method).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$[(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Contains the slicing parameters, one for each dimension.
-Use empty space to get whole dimension e.g. \code{[1:5,,]}}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Sliced Zarr object
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ZarrArray-[<-"></a>}}
-\if{latex}{\out{\hypertarget{method-ZarrArray-[<-}{}}}
-\subsection{Method \code{[<-()}}{
-Assign values for a selection using bracket notation (for S3 method).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$[<-(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Contains the slicing parameters, one for each dimension.
-Use empty space to get whole dimension e.g. \code{[1:5,,]}}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Always raises an error.
 }
 }
 \if{html}{\out{<hr>}}

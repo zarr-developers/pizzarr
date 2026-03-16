@@ -1,9 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# pizzarr <a href="https://zarr-developers.github.io/pizzarr/"><img src="man/figures/logo.png" align="right" height="139" alt="pizzarr website" /></a>
+# pizzarr <a href="https://zarr.dev/pizzarr/"><img src="man/figures/logo.png" align="right" height="139" alt="pizzarr website" /></a>
 
-[![codecov](https://codecov.io/gh/zarr-developers/pizzarr/graph/badge.svg?token=vhidertN9l)](https://codecov.io/gh/zarr-developers/pizzarr)
+[![codecov](https://codecov.io/gh/zarr-developers/pizzarr/graph/badge.svg?token=vhidertN9l)](https://app.codecov.io/gh/zarr-developers/pizzarr)
 [![R-CMD-check](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml/badge.svg)](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml)
 [![logs](https://cranlogs.r-pkg.org/badges/pizzarr)](https://cran.r-project.org/package=pizzarr)
 [![CRAN
@@ -174,5 +174,5 @@ run automatically in CI on every push and pull request to `main`.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing,
+See [CONTRIBUTING.md](https://github.com/zarr-developers/pizzarr/blob/main/CONTRIBUTING.md) for development setup, testing,
 and documentation build instructions.
