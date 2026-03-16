@@ -41,6 +41,7 @@ Other Store classes:
 \item \href{#method-DirectoryStore-delete_item}{\code{DirectoryStore$delete_item()}}
 \item \href{#method-DirectoryStore-rmdir}{\code{DirectoryStore$rmdir()}}
 \item \href{#method-DirectoryStore-listdir}{\code{DirectoryStore$listdir()}}
+\item \href{#method-DirectoryStore-print}{\code{DirectoryStore$print()}}
 \item \href{#method-DirectoryStore-clone}{\code{DirectoryStore$clone()}}
 }
 }
@@ -197,6 +198,26 @@ List the store directory.
 }
 \subsection{Returns}{
 \code{character()} vector of entries.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DirectoryStore-print"></a>}}
+\if{latex}{\out{\hypertarget{method-DirectoryStore-print}{}}}
+\subsection{Method \code{print()}}{
+Print a human-readable summary of the store.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$print(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{self} (invisibly).
 }
 }
 \if{html}{\out{<hr>}}

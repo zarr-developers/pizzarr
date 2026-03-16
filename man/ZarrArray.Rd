@@ -50,6 +50,7 @@ The Zarr Array class.
 \item \href{#method-ZarrArray-get_vindex}{\code{ZarrArray$get_vindex()}}
 \item \href{#method-ZarrArray-get_write_empty_chunks}{\code{ZarrArray$get_write_empty_chunks()}}
 \item \href{#method-ZarrArray-equals}{\code{ZarrArray$equals()}}
+\item \href{#method-ZarrArray-print}{\code{ZarrArray$print()}}
 \item \href{#method-ZarrArray-islice}{\code{ZarrArray$islice()}}
 \item \href{#method-ZarrArray-length}{\code{ZarrArray$length()}}
 \item \href{#method-ZarrArray-get_item}{\code{ZarrArray$get_item()}}
@@ -578,6 +579,26 @@ check if another object refers to the same array. does not check array data
 }
 \subsection{Returns}{
 \code{logical(1)}.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrArray-print"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrArray-print}{}}}
+\subsection{Method \code{print()}}{
+Print a human-readable summary of the array.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$print(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{self} (invisibly).
 }
 }
 \if{html}{\out{<hr>}}

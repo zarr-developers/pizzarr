@@ -43,6 +43,7 @@ Other Store classes:
 \item \href{#method-HttpStore-listdir}{\code{HttpStore$listdir()}}
 \item \href{#method-HttpStore-get_cache_time_seconds}{\code{HttpStore$get_cache_time_seconds()}}
 \item \href{#method-HttpStore-set_cache_time_seconds}{\code{HttpStore$set_cache_time_seconds()}}
+\item \href{#method-HttpStore-print}{\code{HttpStore$print()}}
 \item \href{#method-HttpStore-clone}{\code{HttpStore$clone()}}
 }
 }
@@ -173,6 +174,26 @@ Set cache time of http requests.
 }
 \subsection{Returns}{
 \code{NULL} (called for side effects).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HttpStore-print"></a>}}
+\if{latex}{\out{\hypertarget{method-HttpStore-print}{}}}
+\subsection{Method \code{print()}}{
+Print a human-readable summary of the store.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HttpStore$print(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{self} (invisibly).
 }
 }
 \if{html}{\out{<hr>}}
