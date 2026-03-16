@@ -69,7 +69,11 @@ pizzarr_sample <- function(dataset = NULL,
     need <- !file.exists(file.path(tdir, avail[z]))
     
     if(file.size(zarr_zips[z]) == 0 & need) {
-      
+
+      if(!requireNamespace("crul", quietly = TRUE)) {
+        stop("Downloading sample data requires the 'crul' package.")
+      }
+
       new_z <- file.path(tdir, basename(zarr_zips[z]))
 
       url <- paste0("https://github.com/zarr-developers/pizzarr/raw/refs/heads/main/docs/data/",
@@ -77,7 +81,7 @@ pizzarr_sample <- function(dataset = NULL,
       client <- crul::HttpClient$new(url = url)
       res <- client$get(disk = new_z)
       res$raise_for_status()
-      
+
       zarr_zips[z] <- new_z
     }
      
