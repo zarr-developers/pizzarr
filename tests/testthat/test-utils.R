@@ -4,7 +4,8 @@ sample_dir <- tools::R_user_dir("pizzarr")
 clean <- !dir.exists(sample_dir)
 
 test_that("demo data", {
-  
+  skip_if_not_installed("crul")
+
   demo_data <- pizzarr_sample()
   
   expect_true(all(dir.exists(demo_data)))

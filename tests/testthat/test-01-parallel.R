@@ -3,7 +3,8 @@ library(pizzarr)
 sample_dir <- tools::R_user_dir("pizzarr")
 clean <- !dir.exists(sample_dir)
 
-cache <- pizzarr_sample("dog.ome.zarr")
+cache <- tryCatch(pizzarr_sample("dog.ome.zarr"), error = function(e) NULL)
+has_dog_sample <- !is.null(cache)
 
 SlowGettingDirectoryStore <- R6::R6Class("SlowGettingDirectoryStore",
   inherit = DirectoryStore,
@@ -87,6 +88,7 @@ run_parallel_set <- function(num_workers) {
 }
 
 test_that("can run get_item() and set_item in parallel", {
+  skip_if(!has_dog_sample, "dog.ome.zarr sample not available")
   skip_if_not_installed("bench")
 
   bench_df <- bench::mark(
@@ -108,6 +110,7 @@ test_that("can run get_item() and set_item in parallel", {
 })
 
 test_that("can run set_item() in parallel", {
+  skip_if(!has_dog_sample, "dog.ome.zarr sample not available")
   skip_if_not_installed("bench")
 
   bench_df <- bench::mark(

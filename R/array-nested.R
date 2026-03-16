@@ -190,6 +190,9 @@ NestedArray <- R6::R6Class("NestedArray",
           )
         } else if(is_int64_dtype(self$dtype_obj) && has_bit64()) {
           vec_from_raw <- raw_to_integer64(buf, num_shape_elements, endian)
+        } else if(is_int64_dtype(self$dtype_obj)) {
+          vec_from_raw <- raw_to_double_from_int64(buf, num_shape_elements,
+                                                    endian, dtype_signed)
         } else {
           vec_from_raw <- readBin(
             con = buf,
