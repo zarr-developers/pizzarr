@@ -131,6 +131,7 @@ test_that("Can open Zarr group and read a 1D 2-byte integer array with no compre
 })
 
 test_that("Can open Zarr group and read a 1D 4-byte integer array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -148,6 +149,7 @@ test_that("Can open Zarr group and read a 1D 4-byte integer array", {
 })
 
 test_that("Can open Zarr group and read a 1D 1-byte unsigned integer array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -165,6 +167,7 @@ test_that("Can open Zarr group and read a 1D 1-byte unsigned integer array", {
 })
 
 test_that("Can open Zarr group and read a 1D 4-byte float array, little endian", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -182,6 +185,7 @@ test_that("Can open Zarr group and read a 1D 4-byte float array, little endian",
 })
 
 test_that("Can open Zarr group and read a 1D 4-byte float array, big endian", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -199,6 +203,7 @@ test_that("Can open Zarr group and read a 1D 4-byte float array, big endian", {
 })
 
 test_that("Can open Zarr group and read a 1D 8-byte float array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -216,6 +221,7 @@ test_that("Can open Zarr group and read a 1D 8-byte float array", {
 })
 
 test_that("Can open Zarr group and read a 1D 2-byte float array, 2 chunks", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -233,6 +239,7 @@ test_that("Can open Zarr group and read a 1D 2-byte float array, 2 chunks", {
 })
 
 test_that("Can open Zarr group and read a 1D 2-byte float array, 2 chunks, ragged", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -250,6 +257,7 @@ test_that("Can open Zarr group and read a 1D 2-byte float array, 2 chunks, ragge
 })
 
 test_that("Can open Zarr group and read a 2D 2-byte integer array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -268,6 +276,7 @@ test_that("Can open Zarr group and read a 2D 2-byte integer array", {
 })
 
 test_that("Can open Zarr group and read a 2D 2-byte integer array, 2 chunks", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -286,6 +295,7 @@ test_that("Can open Zarr group and read a 2D 2-byte integer array, 2 chunks", {
 })
 
 test_that("Can open Zarr group and read a 2D 2-byte integer array, 2 chunks, ragged", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -306,6 +316,7 @@ test_that("Can open Zarr group and read a 2D 2-byte integer array, 2 chunks, rag
 
 
 test_that("Can open Zarr group and read a 1D 1-byte boolean array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -323,6 +334,7 @@ test_that("Can open Zarr group and read a 1D 1-byte boolean array", {
 })
 
 test_that("Can open Zarr group and read a 1D S7 string array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -340,6 +352,7 @@ test_that("Can open Zarr group and read a 1D S7 string array", {
 })
 
 test_that("Can open Zarr group and read a 1D U7 string array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -357,6 +370,7 @@ test_that("Can open Zarr group and read a 1D U7 string array", {
 })
 
 test_that("Can open Zarr group and read a 1D U13 little endian string array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -374,6 +388,7 @@ test_that("Can open Zarr group and read a 1D U13 little endian string array", {
 })
 
 test_that("Can open Zarr group and read a 1D U13 big endian string array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -391,6 +406,7 @@ test_that("Can open Zarr group and read a 1D U13 big endian string array", {
 })
 
 test_that("Can open Zarr group and read a 2D U7 string array", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -425,6 +441,7 @@ test_that("Can open Zarr group and read a 1D VLen-UTF8 string array with no comp
 })
 
 test_that("Can open Zarr group and read a 1D VLen-UTF8 string array with Blosc compression", {
+    skip_if_not_installed("blosc")
 
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
@@ -458,6 +475,7 @@ test_that("Can open Zarr group and read a 2D VLen-UTF8 string array with no comp
 })
 
 test_that("Can open Zarr group and read a 2D VLen-UTF8 string array with Blosc compression", {
+    skip_if_not_installed("blosc")
     root <- pizzarr_sample(file.path("fixtures", "v2", "data.zarr"))
     
     store <- DirectoryStore$new(root)

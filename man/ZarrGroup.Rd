@@ -30,6 +30,8 @@ The Zarr Group class.
 \item \href{#method-ZarrGroup-get_item}{\code{ZarrGroup$get_item()}}
 \item \href{#method-ZarrGroup-create_group}{\code{ZarrGroup$create_group()}}
 \item \href{#method-ZarrGroup-create_dataset}{\code{ZarrGroup$create_dataset()}}
+\item \href{#method-ZarrGroup-print}{\code{ZarrGroup$print()}}
+\item \href{#method-ZarrGroup-tree}{\code{ZarrGroup$tree()}}
 \item \href{#method-ZarrGroup-clone}{\code{ZarrGroup$clone()}}
 }
 }
@@ -264,6 +266,46 @@ Create a dataset (array) within this group.
 }
 \subsection{Returns}{
 \link{ZarrArray}.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrGroup-print"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrGroup-print}{}}}
+\subsection{Method \code{print()}}{
+Print a human-readable summary of the group.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$print(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{self} (invisibly).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrGroup-tree"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrGroup-tree}{}}}
+\subsection{Method \code{tree()}}{
+Print an ASCII tree showing the group hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$tree(level = NA)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{level}}{Maximum depth to display. \code{NA} (default) shows all levels.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{self} (invisibly).
 }
 }
 \if{html}{\out{<hr>}}

@@ -259,6 +259,7 @@ test_that("get_basic_selection_3d(one-based) - can get_item for three-dimensiona
 })
 
 test_that("Can read 2D string array", {
+    skip_if_not_installed("blosc")
     root <- pizzarr_sample(file.path("fixtures", "v2", "example.zarr"))
     store <- DirectoryStore$new(root)
     z <- zarr_open_array(store, path = "uns/String2D")

@@ -43,6 +43,7 @@ Other Store classes:
 \item \href{#method-MemoryStore-listdir}{\code{MemoryStore$listdir()}}
 \item \href{#method-MemoryStore-delete_item}{\code{MemoryStore$delete_item()}}
 \item \href{#method-MemoryStore-rmdir}{\code{MemoryStore$rmdir()}}
+\item \href{#method-MemoryStore-print}{\code{MemoryStore$print()}}
 \item \href{#method-MemoryStore-clone}{\code{MemoryStore$clone()}}
 }
 }
@@ -212,6 +213,26 @@ Remove a path within a Store.
 }
 \subsection{Returns}{
 \code{NULL} (called for side effects).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MemoryStore-print"></a>}}
+\if{latex}{\out{\hypertarget{method-MemoryStore-print}{}}}
+\subsection{Method \code{print()}}{
+Print a human-readable summary of the store.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$print(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{self} (invisibly).
 }
 }
 \if{html}{\out{<hr>}}

@@ -45,6 +45,7 @@ Other Store classes:
 \item \href{#method-Store-contains_item}{\code{Store$contains_item()}}
 \item \href{#method-Store-delete_item}{\code{Store$delete_item()}}
 \item \href{#method-Store-get_consolidated_metadata}{\code{Store$get_consolidated_metadata()}}
+\item \href{#method-Store-print}{\code{Store$print()}}
 \item \href{#method-Store-clone}{\code{Store$clone()}}
 }
 }
@@ -278,6 +279,26 @@ Get consolidated metadata if it exists.
 
 \subsection{Returns}{
 A list or \code{NULL}.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Store-print"></a>}}
+\if{latex}{\out{\hypertarget{method-Store-print}{}}}
+\subsection{Method \code{print()}}{
+Print a human-readable summary of the store.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Store$print(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{self} (invisibly).
 }
 }
 \if{html}{\out{<hr>}}

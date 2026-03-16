@@ -87,7 +87,8 @@ run_parallel_set <- function(num_workers) {
 }
 
 test_that("can run get_item() and set_item in parallel", {
-  
+  skip_if_not_installed("bench")
+
   bench_df <- bench::mark(
     run_parallel_get(1),
     run_parallel_get(2),
@@ -107,6 +108,7 @@ test_that("can run get_item() and set_item in parallel", {
 })
 
 test_that("can run set_item() in parallel", {
+  skip_if_not_installed("bench")
 
   bench_df <- bench::mark(
     run_parallel_set(1),
