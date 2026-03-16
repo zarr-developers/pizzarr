@@ -26,6 +26,7 @@ For directory stores, unzips the store to a temporary directory
 and returns the resulting path.
 }
 \examples{
+\dontshow{if (requireNamespace("crul", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 
 sample_dir <- tools::R_user_dir("pizzarr")
 
@@ -38,5 +39,5 @@ gsub(sample_dir, "...", zarr_samples, fixed = TRUE)
 
 # clean up if you don't want to keep them for next time
 if(clean) unlink(sample_dir, recursive = TRUE)
-
+\dontshow{\}) # examplesIf}
 }

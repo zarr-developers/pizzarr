@@ -11,20 +11,20 @@ utils::globalVariables("volcano")
 #' 
 #' @return path to ready to use zarr store
 #' @export
-#' @examples
-#' 
+#' @examplesIf requireNamespace("crul", quietly = TRUE)
+#'
 #' sample_dir <- tools::R_user_dir("pizzarr")
-#' 
+#'
 #' clean <- !dir.exists(sample_dir)
-#' 
+#'
 #' zarr_samples <- pizzarr_sample(outdir = sample_dir)
-#' 
+#'
 #' #printing without system path for example
 #' gsub(sample_dir, "...", zarr_samples, fixed = TRUE)
-#' 
+#'
 #' # clean up if you don't want to keep them for next time
 #' if(clean) unlink(sample_dir, recursive = TRUE)
-#' 
+#'
 pizzarr_sample <- function(dataset = NULL, 
                            outdir = file.path(tools::R_user_dir("pizzarr"), 
                                               "pizzarr_sample")) {
