@@ -27,6 +27,7 @@ jsonlite
 KeyError
 LZ
 Lz
+lz
 Lzma
 LzmaCodec
 Oindex
@@ -98,6 +99,7 @@ roxygen
 synchronizer
 un
 vectorized
+walkthrough
 writeable
 zarr
 zarray
