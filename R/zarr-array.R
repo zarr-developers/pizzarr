@@ -1491,35 +1491,6 @@ ZarrArray <- R6::R6Class("ZarrArray",
       return(private$dimension_separator)
     },
     #' @description
-    #' Set values for a selection using bracket notation (for S3 method).
-    #'
-    #' @param ... Contains the slicing parameters, one for each dimension.
-    #' Use empty space to get whole dimension e.g. \code{[1:5,,]}
-    #'
-    #' @return Sliced Zarr object
-    #' @keywords internal
-    `[` = function(...) {
-      filters <- substitute(...())
-      if(length(filters) != length(private$shape)) {
-        stop("This Zarr object has ", length(private$shape), " dimensions, ", length(filters), " were supplied")
-      }
-
-      # update filters for orthogonal_selection
-      filters <- manage_filters(filters)
-
-      # return orthogonal selection upon `[.ZarrArray`
-      return(self$get_orthogonal_selection(filters))
-    },
-    #' @description
-    #' Assign values for a selection using bracket notation (for S3 method).
-    #' @param ... Contains the slicing parameters, one for each dimension.
-    #' Use empty space to get whole dimension e.g. \code{[1:5,,]}
-    #' @return Always raises an error.
-    #' @keywords internal
-    `[<-` = function(...) {
-      stop("Assignment using bracket notation is not yet supported - use set_item() directly")
-    },
-    #' @description
     #' Convert Zarr object to R array (for S3 method). Note that this loads all data into memory.
     #' @return An R `array`.
     as.array = function() {
@@ -1532,10 +1503,15 @@ ZarrArray <- R6::R6Class("ZarrArray",
 #'
 #' @param obj Object.
 #' @param ... Dots.
-#' @keywords internal 
+#' @keywords internal
 #' @export
 `[.ZarrArray` <- function(obj, ...) {
-  obj$`[`(...)
+  filters <- substitute(...())
+  if(length(filters) != length(obj$get_shape())) {
+    stop("This Zarr object has ", length(obj$get_shape()), " dimensions, ", length(filters), " were supplied")
+  }
+  filters <- manage_filters(filters)
+  return(obj$get_orthogonal_selection(filters))
 }
 
 #' S3 method for custom bracket assignment
@@ -1546,7 +1522,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
 #' @keywords internal
 #' @export
 `[<-.ZarrArray` <- function(obj, ..., value) {
-  obj$`[<-`(value)
+  stop("Assignment using bracket notation is not yet supported - use set_item() directly")
 }
 
 #' S3 method for as.array

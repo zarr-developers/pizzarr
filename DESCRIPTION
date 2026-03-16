@@ -1,6 +1,6 @@
 Package: pizzarr
 Type: Package
-Title: Slice into Zarr Arrays in R
+Title: Slice into 'Zarr' Arrays in R
 Version: 0.1.0
 Authors@R: c(
     person(given = "David",

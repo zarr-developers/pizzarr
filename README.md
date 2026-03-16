@@ -174,5 +174,5 @@ run automatically in CI on every push and pull request to `main`.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing,
+See [CONTRIBUTING.md](https://github.com/zarr-developers/pizzarr/blob/main/CONTRIBUTING.md) for development setup, testing,
 and documentation build instructions.
