@@ -163,6 +163,8 @@ test_that("get_parallel_settings", {
   # bodies, making body() comparison unreliable. Skip under covr; the parallel
   # get/set tests above already exercise the actual dispatch paths.
   testthat::skip_on_covr()
+  skip_if_not_installed("pbapply")
+  skip_if_not_installed("future.apply")
 
   expect_func_equal <- function(f1, f2) {
     expect_equal(format(f1), format(f2))
