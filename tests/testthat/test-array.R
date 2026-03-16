@@ -340,11 +340,6 @@ test_that("length returns first dimension size", {
   expect_equal(a$length(), 7)
 })
 
-test_that("[<- raises error", {
-  a <- make_array(shape = c(4, 4), chunks = c(2, 2))
-  expect_error(a$`[<-`(), "not yet supported")
-})
-
 test_that("[<-.ZarrArray raises error", {
   a <- make_array(shape = c(4, 4), chunks = c(2, 2))
   expect_error(`[<-.ZarrArray`(a, value = 1), "not yet supported")
