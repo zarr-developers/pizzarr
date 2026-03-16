@@ -70,8 +70,8 @@ The Zarr Array class.
 \item \href{#method-ZarrArray-view}{\code{ZarrArray$view()}}
 \item \href{#method-ZarrArray-astype}{\code{ZarrArray$astype()}}
 \item \href{#method-ZarrArray-get_dimension_separator}{\code{ZarrArray$get_dimension_separator()}}
-\item \href{#method-ZarrArray-[}{\code{ZarrArray$[()}}
-\item \href{#method-ZarrArray-[<-}{\code{ZarrArray$[<-()}}
+\item \href{#method-ZarrArray-%5B}{\code{ZarrArray$[()}}
+\item \href{#method-ZarrArray-%5B%3C-}{\code{ZarrArray$[<-()}}
 \item \href{#method-ZarrArray-as.array}{\code{ZarrArray$as.array()}}
 \item \href{#method-ZarrArray-clone}{\code{ZarrArray$clone()}}
 }

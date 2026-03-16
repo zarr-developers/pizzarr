@@ -14,4 +14,5 @@ r6-roxygen-convention.md
 ^README\.Rmd$
 ^TODO\.md$
 cran-comments.md
-CONTRIBUTING.mc
+CONTRIBUTING.md
+^CRAN-SUBMISSION$
