@@ -357,6 +357,37 @@ raw_to_integer64 <- function(buf, n, endian = "little") {
   vec
 }
 
+#' Convert raw bytes to double from int64 (fallback when bit64 unavailable)
+#' @param buf Raw vector of 8-byte integers.
+#' @param n Number of elements to read.
+#' @param endian "little" or "big".
+#' @param signed Logical; if TRUE, treat as signed int64.
+#' @return A double vector (precision loss possible for values > 2^53).
+#' @keywords internal
+raw_to_double_from_int64 <- function(buf, n, endian = "little", signed = TRUE) {
+  # Read as signed 4-byte ints (unsigned flag only valid for sizes 1-2)
+  vals <- readBin(con = buf, what = integer(), size = 4, n = n * 2,
+                  signed = TRUE, endian = endian)
+  # vals are interleaved: lo[1], hi[1], lo[2], hi[2], ...
+  idx_lo <- seq(1, n * 2, by = 2)
+  idx_hi <- seq(2, n * 2, by = 2)
+  # Convert to unsigned double: negative int32 means high bit set
+  lo_vals <- ifelse(vals[idx_lo] < 0,
+                    as.double(vals[idx_lo]) + 2^32,
+                    as.double(vals[idx_lo]))
+  hi_vals <- ifelse(vals[idx_hi] < 0,
+                    as.double(vals[idx_hi]) + 2^32,
+                    as.double(vals[idx_hi]))
+  result <- lo_vals + hi_vals * 2^32
+  if (signed) {
+    neg <- hi_vals >= 2^31
+    if (any(neg)) {
+      result[neg] <- result[neg] - 2^64
+    }
+  }
+  result
+}
+
 #' Convert integer64 vector to raw bytes
 #' @param x A bit64::integer64 vector.
 #' @param endian "little" or "big".
