@@ -1,3 +1,7 @@
+# pizzarr 0.1.1
+
+Fixes a flakey test failing on CRAN -- no functional changes.
+
 # pizzarr 0.1.0
 
 This is the first release of pizzarr to CRAN. The package has significant testing and 
