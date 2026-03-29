@@ -6,6 +6,7 @@ if (!requireNamespace("vcr", quietly = TRUE) ||
 vcr::use_cassette("http_base", {
 
   test_that("http store", {
+    skip_if_not_installed("blosc")
 
     url <- "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0062A/6001240.zarr"
 
@@ -74,13 +75,19 @@ vcr::use_cassette("http_listdir", {
     expect_equal(names(g$get_store()$get_consolidated_metadata()$metadata),
                  names(z$get_consolidated_metadata()$metadata))
 
-    options(pizzarr.parallel_write_enabled = "future")
-    old_plan <- future::plan(future::multisession, workers = 2)
-
     expect_equal(dim(g$get_item("pr")$as.array()), c(12, 33, 81))
 
-    options(pizzarr.parallel_write_enabled = FALSE)
-    future::plan(old_plan)
+    if (requireNamespace("future", quietly = TRUE) &&
+        requireNamespace("future.apply", quietly = TRUE)) {
+      options(pizzarr.parallel_write_enabled = "future")
+      future::plan(future::multisession, workers = 2)
+      on.exit({
+        options(pizzarr.parallel_write_enabled = FALSE)
+        future::plan(future::sequential)
+      }, add = TRUE)
+
+      expect_equal(dim(g$get_item("pr")$as.array()), c(12, 33, 81))
+    }
   })
 
 })

@@ -134,6 +134,7 @@ test_that("can run set_item() in parallel", {
 })
 
 cl1 <- parallel::makeCluster(1)
+withr::defer(parallel::stopCluster(cl1), teardown_env())
 
 test_that("parse_parallel_option works as expected", {
   expect_equal(parse_parallel_option(cl1), cl1)
@@ -301,7 +302,5 @@ test_that("get_parallel_settings", {
   expect_equal(ps$cl, 2)
 
 })
-
-parallel::stopCluster(cl1)
 
 if(clean) unlink(sample_dir, recursive = TRUE)
