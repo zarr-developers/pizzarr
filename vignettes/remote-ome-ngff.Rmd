@@ -9,11 +9,9 @@ vignette: >
 
 ### Setup
 
-`pizzarr` does not depend on the `raster` package, but we use it for this demo to render an RGB array to an image using R.
-We also install the `blosc` package to be able to use Blosc as the decompression codec, since the image we want to load is Blosc-compressed.
+We install the `blosc` package to be able to use Blosc as the decompression codec, since the image we want to load is Blosc-compressed.
 
 ```r
-install.packages("raster")
 install.packages("blosc")
 ```
 
@@ -58,10 +56,8 @@ rgb_arr[,,1] <- rg_arr[,,1]
 rgb_arr[,,2] <- rg_arr[,,2]
 rgb_arr[,,3] <- 0
 
-# Convert the base R array to a raster object.
-# Re-scale the channel values for visualization.
-arr_as_raster <- raster::as.raster(rgb_arr / max(rgb_arr))
-
-# Plot the raster object.
-raster::plot(arr_as_raster)
+# Plot the pseudo-RGB image using base R rasterImage().
+plot.new()
+plot.window(c(0, 271), c(0, 275), asp = 1)
+rasterImage(rgb_arr / max(rgb_arr), 0, 0, 271, 275)
 ```
