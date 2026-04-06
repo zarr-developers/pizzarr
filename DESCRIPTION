@@ -1,7 +1,7 @@
 Package: pizzarr
 Type: Package
 Title: Slice into 'Zarr' Arrays
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person(given = "David",
            family = "Blodgett",
@@ -14,7 +14,14 @@ Authors@R: c(
       email = "mark_keller@g.harvard.edu",
       role = c("aut"),
       comment = c(ORCID = "0000-0003-3003-874X")
-    )
+    ),
+    person(
+      given = "Artür", 
+      family = "Manukyan", 
+      email = "artur-man@hotmail.com",
+      role = c("aut"), 
+      comment = c(ORCID = "0000-0002-0441-9517")),
+    person(given = "zarr-developers", role = "cph")
   )
 Description: An implementation of chunked, compressed,
   N-dimensional arrays for R. 'Zarr' spec V2 (2024)
