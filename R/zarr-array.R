@@ -89,6 +89,9 @@ ZarrArray <- R6::R6Class("ZarrArray",
     # V3 default: name="default", separator="/", producing keys like "c/0/1/2".
     #' @keywords internal
     chunk_key_encoding = NULL,
+    # dimension_names: character vector or NULL. Named dimensions (V3 only).
+    #' @keywords internal
+    dimension_names = NULL,
     # vindex Shortcut for vectorized (inner) indexing, supporting coordinate-style selection using integer arrays.
     #' @keywords internal
     vindex = NULL,
@@ -242,6 +245,8 @@ ZarrArray <- R6::R6Class("ZarrArray",
       # V3 fill_value is required (not optional like V2).
       # V3 encodes NaN/Infinity/-Infinity as JSON strings; decode back to numeric.
       private$fill_value <- decode_fill_value_v3(meta$fill_value)
+
+      private$dimension_names <- meta$dimension_names  # NULL if absent
     },
     # method_description
     # Load or reload metadata from store.
@@ -281,7 +286,8 @@ ZarrArray <- R6::R6Class("ZarrArray",
           order = private$order,
           filters = private$filters,
           chunk_key_encoding = private$chunk_key_encoding,
-          attributes = if (!is.null(private$attrs)) private$attrs$to_list() else obj_list()
+          attributes = if (!is.null(private$attrs)) private$attrs$to_list() else obj_list(),
+          dimension_names = private$dimension_names
         )
         mkey <- paste0(private$key_prefix, ZARR_JSON)
         meta3 <- Metadata3$new()
@@ -1194,6 +1200,12 @@ ZarrArray <- R6::R6Class("ZarrArray",
     #' @return `integer(1)`.
     get_ndim = function() {
       return(length(private$shape))
+    },
+    #' @description
+    #' Get dimension names of the array (V3 only).
+    #' @return Character vector or `NULL`.
+    get_dimension_names = function() {
+      return(private$dimension_names)
     },
     #' @description
     #' Get the total number of elements in the array.
