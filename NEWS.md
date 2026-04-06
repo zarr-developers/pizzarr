@@ -5,7 +5,7 @@
 
 # pizzarr 0.1.1
 
-Fixes a flakey test failing on CRAN -- no functional changes.
+Fixes a flaky test failing on CRAN -- no functional changes.
 
 # pizzarr 0.1.0
 

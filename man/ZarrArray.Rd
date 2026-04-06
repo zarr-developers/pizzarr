@@ -38,6 +38,7 @@ The Zarr Array class.
 \item \href{#method-ZarrArray-get_synchronizer}{\code{ZarrArray$get_synchronizer()}}
 \item \href{#method-ZarrArray-get_attrs}{\code{ZarrArray$get_attrs()}}
 \item \href{#method-ZarrArray-get_ndim}{\code{ZarrArray$get_ndim()}}
+\item \href{#method-ZarrArray-get_dimension_names}{\code{ZarrArray$get_dimension_names()}}
 \item \href{#method-ZarrArray-get_size}{\code{ZarrArray$get_size()}}
 \item \href{#method-ZarrArray-get_itemsize}{\code{ZarrArray$get_itemsize()}}
 \item \href{#method-ZarrArray-get_nbytes}{\code{ZarrArray$get_nbytes()}}
@@ -414,6 +415,19 @@ get number of dimensions of array
 
 \subsection{Returns}{
 \code{integer(1)}.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrArray-get_dimension_names"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrArray-get_dimension_names}{}}}
+\subsection{Method \code{get_dimension_names()}}{
+Get dimension names of the array (V3 only).
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_dimension_names()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Character vector or \code{NULL}.
 }
 }
 \if{html}{\out{<hr>}}
