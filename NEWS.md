@@ -1,3 +1,8 @@
+# pizzarr 0.1.2
+
+* Added `get_dimension_names()` method to `ZarrArray` for V3 dimension names support.
+* OME-NGFF vignettes now use base R `rasterImage()` instead of the `raster` package (#161).
+
 # pizzarr 0.1.1
 
 Fixes a flakey test failing on CRAN -- no functional changes.

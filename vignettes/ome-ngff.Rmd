@@ -7,14 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-### Setup
-
-`pizzarr` does not depend on the `raster` package, but we use it for this demo to render an RGB array to an image using R.
-
-```r
-install.packages("raster")
-```
-
 ### Demo
 
 ```r
@@ -44,9 +36,9 @@ nested_arr <- zarr_arr$get_item("...")
 # Extract the NestedArray contents as a base R array.
 arr <- nested_arr$data
 
-# Convert the base R array to a raster object.
-arr_as_raster <- raster::as.raster(aperm(arr, c(2, 3, 1)) / 255.0)
-
-# Plot the raster object.
-raster::plot(arr_as_raster)
+# Plot the RGB image using base R rasterImage().
+dm <- dim(arr)
+plot.new()
+plot.window(c(0, dm[3]), c(0, dm[2]), asp = 1)
+rasterImage(aperm(arr, c(2, 3, 1)) / 255, 0, 0, dm[3], dm[2])
 ```
