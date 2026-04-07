@@ -841,3 +841,66 @@ test_that("V3 vlen-utf8 string array loads correctly via load_metadata_v3_nosync
     skip("fixture not found")
   }
 })
+
+# --- dimension_names threading (PR 0B) ---
+
+test_that("V3 zarr_create with dimension_names round-trips on reopen", {
+  store <- MemoryStore$new()
+  z <- zarr_create(shape = c(2L, 3L), dtype = "<f8", zarr_format = 3L,
+                   compressor = NA, store = store,
+                   dimension_names = c("x", "y"))
+  expect_equal(z$get_dimension_names(), c("x", "y"))
+
+  # Re-open from store and confirm dimension_names persisted in zarr.json.
+  z2 <- ZarrArray$new(store)
+  expect_equal(z2$get_dimension_names(), c("x", "y"))
+})
+
+test_that("V3 set_dimension_names attaches names post-creation and round-trips", {
+  store <- MemoryStore$new()
+  z <- zarr_create(shape = c(2L, 3L), dtype = "<f8", zarr_format = 3L,
+                   compressor = NA, store = store)
+  expect_null(z$get_dimension_names())
+
+  z$set_dimension_names(c("a", "b"))
+  expect_equal(z$get_dimension_names(), c("a", "b"))
+
+  z2 <- ZarrArray$new(store)
+  expect_equal(z2$get_dimension_names(), c("a", "b"))
+})
+
+test_that("set_dimension_names errors on V2 arrays", {
+  store <- MemoryStore$new()
+  z <- zarr_create(shape = c(2L, 3L), dtype = "<f8", zarr_format = 2L,
+                   compressor = NA, store = store)
+  expect_error(z$set_dimension_names(c("x", "y")), "DimensionNamesV2Error")
+})
+
+test_that("zarr_create errors when dimension_names length != length(shape)", {
+  store <- MemoryStore$new()
+  expect_error(
+    zarr_create(shape = c(4L, 5L), dtype = "<f8", zarr_format = 3L,
+                compressor = NA, store = store,
+                dimension_names = c("x")),
+    "DimensionNamesLengthError"
+  )
+})
+
+test_that("zarr_create errors when dimension_names is passed with zarr_format = 2L", {
+  store <- MemoryStore$new()
+  expect_error(
+    zarr_create(shape = c(4L, 5L), dtype = "<f8", zarr_format = 2L,
+                compressor = NA, store = store,
+                dimension_names = c("x", "y")),
+    "DimensionNamesV2Error"
+  )
+})
+
+test_that("V3 group create_dataset threads dimension_names through ...", {
+  store <- MemoryStore$new()
+  g <- zarr_create_group(store = store, zarr_format = 3L)
+  a <- g$create_dataset("data", shape = c(2L, 3L, 4L), dtype = "<f8",
+                        compressor = NA,
+                        dimension_names = c("x", "y", "t"))
+  expect_equal(a$get_dimension_names(), c("x", "y", "t"))
+})

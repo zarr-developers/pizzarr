@@ -27,7 +27,8 @@ init_array_metadata <- function(
     filters=NA,
     object_codec=NA,
     dimension_separator=NA,
-    zarr_format=2L
+    zarr_format=2L,
+    dimension_names=NULL
 ) {
     # Reference: https://github.com/zarr-developers/zarr-python/blob/5dd4a0e6cdc04c6413e14f57f61d389972ea937c/zarr/storage.py#L358
     if(is_na(compressor)) {
@@ -59,7 +60,11 @@ init_array_metadata <- function(
     # dtype = dtype.base
 
     shape <- normalize_shape(shape)
-    
+
+    if (!is.null(dimension_names) && length(dimension_names) != length(shape)) {
+        stop("DimensionNamesLengthError(length must match length(shape))")
+    }
+
     dtype_itemsize <- dtype$num_bytes
     chunks <- normalize_chunks(chunks, shape, dtype_itemsize)
     order <- normalize_order(order)
@@ -117,13 +122,17 @@ init_array_metadata <- function(
             compressor = compressor,
             fill_value = fill_value,
             order = order,
-            filters = filters
+            filters = filters,
+            dimension_names = dimension_names
         )
         key <- paste0(path_to_prefix(path), ZARR_JSON)
         meta3 <- Metadata3$new()
         encoded_meta <- meta3$encode_array_metadata(v3_meta)
         store$set_item(key, encoded_meta)
     } else {
+        if (!is.null(dimension_names)) {
+            stop("DimensionNamesV2Error(dimension_names is only supported for zarr_format = 3L)")
+        }
         zarray_meta <- create_zarray_meta(
             shape=shape,
             chunks=chunks,
@@ -250,7 +259,8 @@ init_array <- function(
     filters=NA,
     object_codec=NA,
     dimension_separator=NA,
-    zarr_format=2L
+    zarr_format=2L,
+    dimension_names=NULL
 ) {
     if(is_na(compressor)) {
         compressor <- "default"
@@ -279,7 +289,8 @@ init_array <- function(
         filters=filters,
         object_codec=object_codec,
         dimension_separator=dimension_separator,
-        zarr_format=zarr_format
+        zarr_format=zarr_format,
+        dimension_names=dimension_names
     )
 
 }
@@ -342,6 +353,10 @@ init_group <- function(
 #' @param zarr_format : int, optional
 #'     Zarr format version. Use \code{2L} (default) for Zarr V2 or \code{3L}
 #'     for Zarr V3.
+#' @param dimension_names : character vector, optional
+#'     Named dimensions for V3 arrays. Length must equal \code{length(shape)}.
+#'     V3 only -- passing a non-NULL value with \code{zarr_format = 2L} is an
+#'     error. Default \code{NULL}.
 #' @returns ZarrArray
 #' @export
 zarr_create <- function(
@@ -363,7 +378,8 @@ zarr_create <- function(
     object_codec=NA,
     dimension_separator=NA,
     write_empty_chunks=TRUE,
-    zarr_format=2L
+    zarr_format=2L,
+    dimension_names=NULL
 ) {
     # Reference: https://github.com/zarr-developers/zarr-python/blob/5dd4a0e6cdc04c6413e14f57f61d389972ea937c/zarr/creation.py#L18
     if(is_na(compressor)) {
@@ -383,7 +399,8 @@ zarr_create <- function(
     init_array(store, shape=shape, chunks=chunks, dtype=dtype, compressor=compressor,
                fill_value=fill_value, order=order, overwrite=overwrite, path=path,
                chunk_store=chunk_store, filters=filters, object_codec=object_codec,
-               dimension_separator=dimension_separator, zarr_format=zarr_format)
+               dimension_separator=dimension_separator, zarr_format=zarr_format,
+               dimension_names=dimension_names)
 
     
     # instantiate array

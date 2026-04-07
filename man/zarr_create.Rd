@@ -23,7 +23,8 @@ zarr_create(
   object_codec = NA,
   dimension_separator = NA,
   write_empty_chunks = TRUE,
-  zarr_format = 2L
+  zarr_format = 2L,
+  dimension_names = NULL
 )
 }
 \arguments{
@@ -99,6 +100,11 @@ with checking the data of each chunk.}
 \item{zarr_format}{: int, optional
 Zarr format version. Use \code{2L} (default) for Zarr V2 or \code{3L}
 for Zarr V3.}
+
+\item{dimension_names}{: character vector, optional
+Named dimensions for V3 arrays. Length must equal \code{length(shape)}.
+V3 only -- passing a non-NULL value with \code{zarr_format = 2L} is an
+error. Default \code{NULL}.}
 }
 \value{
 ZarrArray
