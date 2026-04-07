@@ -33,6 +33,7 @@ The Zarr Array class.
 \item \href{#method-ZarrArray-get_compressor}{\code{ZarrArray$get_compressor()}}
 \item \href{#method-ZarrArray-get_fill_value}{\code{ZarrArray$get_fill_value()}}
 \item \href{#method-ZarrArray-set_fill_value}{\code{ZarrArray$set_fill_value()}}
+\item \href{#method-ZarrArray-set_dimension_names}{\code{ZarrArray$set_dimension_names()}}
 \item \href{#method-ZarrArray-get_order}{\code{ZarrArray$get_order()}}
 \item \href{#method-ZarrArray-get_filters}{\code{ZarrArray$get_filters()}}
 \item \href{#method-ZarrArray-get_synchronizer}{\code{ZarrArray$get_synchronizer()}}
@@ -345,6 +346,27 @@ set the fill value of an array
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{val}}{Fill value to use.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{NULL} (called for side effects).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrArray-set_dimension_names"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrArray-set_dimension_names}{}}}
+\subsection{Method \code{set_dimension_names()}}{
+Set dimension names of the array (V3 only).
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_dimension_names(names)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{names}}{Character vector of length equal to the number of array
+dimensions, or \code{NULL} to clear.}
 }
 \if{html}{\out{</div>}}
 }

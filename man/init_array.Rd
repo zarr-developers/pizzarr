@@ -19,7 +19,8 @@ init_array(
   filters = NA,
   object_codec = NA,
   dimension_separator = NA,
-  zarr_format = 2L
+  zarr_format = 2L,
+  dimension_names = NULL
 )
 }
 \arguments{

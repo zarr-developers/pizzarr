@@ -246,7 +246,14 @@ ZarrArray <- R6::R6Class("ZarrArray",
       # V3 encodes NaN/Infinity/-Infinity as JSON strings; decode back to numeric.
       private$fill_value <- decode_fill_value_v3(meta$fill_value)
 
-      private$dimension_names <- meta$dimension_names  # NULL if absent
+      # JSON arrays of strings come back as lists under simplifyVector=FALSE;
+      # coerce to a character vector so the public getter returns the type
+      # users expect. NULL stays NULL when the field is absent from zarr.json.
+      if (is.null(meta$dimension_names)) {
+        private$dimension_names <- NULL
+      } else {
+        private$dimension_names <- as.character(unlist(meta$dimension_names))
+      }
     },
     # method_description
     # Load or reload metadata from store.
@@ -1169,6 +1176,21 @@ ZarrArray <- R6::R6Class("ZarrArray",
     #' @return `NULL` (called for side effects).
     set_fill_value = function(val) {
       private$fill_value <- val
+      private$flush_metadata_nosync()
+    },
+    #' @description
+    #' Set dimension names of the array (V3 only).
+    #' @param names Character vector of length equal to the number of array
+    #'   dimensions, or `NULL` to clear.
+    #' @return `NULL` (called for side effects).
+    set_dimension_names = function(names) {
+      if (is.null(private$zarr_format) || private$zarr_format != 3L) {
+        stop("DimensionNamesV2Error(set_dimension_names is only supported for V3 arrays)")
+      }
+      if (!is.null(names) && length(names) != length(private$shape)) {
+        stop("DimensionNamesLengthError(length must match length(shape))")
+      }
+      private$dimension_names <- names
       private$flush_metadata_nosync()
     },
     #' @description
