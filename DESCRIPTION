@@ -1,7 +1,7 @@
 Package: pizzarr
 Type: Package
 Title: Slice into 'Zarr' Arrays
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: c(
     person(given = "David",
            family = "Blodgett",
