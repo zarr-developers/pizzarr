@@ -1,0 +1,29 @@
+[package]
+name = "pizzarr"
+publish = false
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.91"
+
+[lib]
+crate-type = ["staticlib"]
+name = "pizzarr"
+
+[features]
+default = ["filesystem", "gzip"]
+filesystem = ["zarrs/filesystem"]
+gzip = ["zarrs/gzip"]
+blosc = ["zarrs/blosc"]
+zstd = ["zarrs/zstd"]
+sharding = ["zarrs/sharding"]
+
+[dependencies]
+extendr-api = "0.8.1"
+zarrs = { version = "0.23", default-features = false }
+serde_json = "1"
+parking_lot = "0.12"
+thiserror = "2"
+
+[profile.release]
+lto = true
+codegen-units = 1
