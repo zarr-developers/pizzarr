@@ -138,7 +138,7 @@ src/rust/src/
   lib.rs              # extendr_module!, top-level re-exports
   error.rs            # PizzarrError enum + From impls
   store_cache.rs      # process-global store handle map
-  store_factory.rs    # URL → store handle
+  store_open.rs       # URL → store handle
   runtime.rs          # tokio OnceLock (full-tier only)
   dtype_dispatch.rs   # R type ↔ zarrs Element dispatch
   retrieve.rs         # zarrs_retrieve_subset (hot path)

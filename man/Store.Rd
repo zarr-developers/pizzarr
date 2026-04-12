@@ -45,6 +45,7 @@ Other Store classes:
 \item \href{#method-Store-contains_item}{\code{Store$contains_item()}}
 \item \href{#method-Store-delete_item}{\code{Store$delete_item()}}
 \item \href{#method-Store-get_consolidated_metadata}{\code{Store$get_consolidated_metadata()}}
+\item \href{#method-Store-get_store_identifier}{\code{Store$get_store_identifier()}}
 \item \href{#method-Store-print}{\code{Store$print()}}
 \item \href{#method-Store-clone}{\code{Store$clone()}}
 }
@@ -279,6 +280,22 @@ Get consolidated metadata if it exists.
 
 \subsection{Returns}{
 A list or \code{NULL}.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Store-get_store_identifier"></a>}}
+\if{latex}{\out{\hypertarget{method-Store-get_store_identifier}{}}}
+\subsection{Method \code{get_store_identifier()}}{
+Return a store identifier for zarrs dispatch.
+
+Subclasses override this to return a filesystem path or URL.
+Returns \code{NULL} by default (signals: use R-native path).
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Store$get_store_identifier()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A character string or \code{NULL}.
 }
 }
 \if{html}{\out{<hr>}}

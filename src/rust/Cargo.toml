@@ -11,7 +11,7 @@ name = "pizzarr"
 
 [features]
 default = ["filesystem", "gzip"]
-filesystem = ["zarrs/filesystem"]
+filesystem = ["zarrs/filesystem", "dep:zarrs_filesystem"]
 gzip = ["zarrs/gzip"]
 blosc = ["zarrs/blosc"]
 zstd = ["zarrs/zstd"]
@@ -20,9 +20,24 @@ sharding = ["zarrs/sharding"]
 [dependencies]
 extendr-api = "0.8.1"
 zarrs = { version = "0.23", default-features = false }
+zarrs_storage = "0.4"
+zarrs_filesystem = { version = "0.3", optional = true }
 serde_json = "1"
 parking_lot = "0.12"
 thiserror = "2"
+
+[lints.rust]
+unused_variables = "warn"
+dead_code = "warn"
+missing_docs = "warn"
+unreachable_pub = "warn"
+unsafe_op_in_unsafe_fn = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+missing_panics_doc = "warn"
+missing_errors_doc = "warn"
 
 [profile.release]
 lto = true
