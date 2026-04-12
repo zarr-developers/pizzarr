@@ -10,7 +10,11 @@
 
 use extendr_api::prelude::*;
 
+mod array_open;
+mod dtype_dispatch;
 mod error;
+mod info;
+mod metadata;
 mod store_cache;
 mod store_open;
 
@@ -21,6 +25,13 @@ mod store_open;
 /// @export
 #[extendr]
 fn zarrs_compiled_features() -> Vec<String> {
+    compiled_features()
+}
+
+/// Shared implementation for [`zarrs_compiled_features`].
+///
+/// Also called by [`info::runtime_info`].
+pub(crate) fn compiled_features() -> Vec<String> {
     let mut features = Vec::new();
 
     // The zarrs crate is always present when this code compiles.
@@ -131,6 +142,41 @@ fn zarrs_close_store(store_url: &str) -> bool {
     store_cache::remove(store_url)
 }
 
+/// Open a zarrs array and return its metadata as an R list.
+///
+/// Returns a named list with `shape`, `chunks`, `dtype`, `r_type`,
+/// `fill_value_json`, `zarr_format`, and `order`.
+///
+/// @param store_url Filesystem path or URL to the store root.
+/// @param array_path Path to the array within the store.
+/// @export
+#[extendr]
+fn zarrs_open_array_metadata(store_url: &str, array_path: &str) -> extendr_api::Result<List> {
+    metadata::open_array_metadata(store_url, array_path)
+}
+
+/// Return runtime information about the zarrs backend.
+///
+/// Returns a named list with `codec_concurrent_target`,
+/// `store_cache_entries`, and `compiled_features`.
+/// @export
+#[extendr]
+fn zarrs_runtime_info() -> List {
+    info::runtime_info()
+}
+
+/// Set the zarrs codec concurrent target.
+///
+/// Controls the number of concurrent codec operations zarrs uses
+/// within a single array operation.
+///
+/// @param n Positive integer.
+/// @export
+#[extendr]
+fn zarrs_set_codec_concurrent_target(n: i32) -> extendr_api::Result<()> {
+    info::set_codec_concurrent_target(n)
+}
+
 /// Convenience wrapper around `ReadableStorageTraits::get`.
 ///
 /// Maps the zarrs `StorageError` into a [`error::PizzarrError::ArrayOpen`]
@@ -157,4 +203,7 @@ extendr_module! {
     fn zarrs_compiled_features;
     fn zarrs_node_exists;
     fn zarrs_close_store;
+    fn zarrs_open_array_metadata;
+    fn zarrs_runtime_info;
+    fn zarrs_set_codec_concurrent_target;
 }

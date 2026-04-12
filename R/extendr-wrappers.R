@@ -41,5 +41,31 @@ zarrs_node_exists <- function(store_url, path) .Call(wrap__zarrs_node_exists, st
 #' @export
 zarrs_close_store <- function(store_url) .Call(wrap__zarrs_close_store, store_url)
 
+#' Open a zarrs array and return its metadata as an R list.
+#'
+#' Returns a named list with `shape`, `chunks`, `dtype`, `r_type`,
+#' `fill_value_json`, `zarr_format`, and `order`.
+#'
+#' @param store_url Filesystem path or URL to the store root.
+#' @param array_path Path to the array within the store.
+#' @export
+zarrs_open_array_metadata <- function(store_url, array_path) .Call(wrap__zarrs_open_array_metadata, store_url, array_path)
+
+#' Return runtime information about the zarrs backend.
+#'
+#' Returns a named list with `codec_concurrent_target`,
+#' `store_cache_entries`, and `compiled_features`.
+#' @export
+zarrs_runtime_info <- function() .Call(wrap__zarrs_runtime_info)
+
+#' Set the zarrs codec concurrent target.
+#'
+#' Controls the number of concurrent codec operations zarrs uses
+#' within a single array operation.
+#'
+#' @param n Positive integer.
+#' @export
+zarrs_set_codec_concurrent_target <- function(n) .Call(wrap__zarrs_set_codec_concurrent_target, n)
+
 
 # nolint end

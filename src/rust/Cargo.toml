@@ -10,15 +10,16 @@ crate-type = ["staticlib"]
 name = "pizzarr"
 
 [features]
-default = ["filesystem", "gzip"]
+default = ["filesystem", "gzip", "zstd", "transpose"]
 filesystem = ["zarrs/filesystem", "dep:zarrs_filesystem"]
+transpose = ["zarrs/transpose"]
 gzip = ["zarrs/gzip"]
 blosc = ["zarrs/blosc"]
 zstd = ["zarrs/zstd"]
 sharding = ["zarrs/sharding"]
 
 [dependencies]
-extendr-api = "0.8.1"
+extendr-api = { git = "https://github.com/extendr/extendr", branch = "master" }
 zarrs = { version = "0.23", default-features = false }
 zarrs_storage = "0.4"
 zarrs_filesystem = { version = "0.3", optional = true }

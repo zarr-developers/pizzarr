@@ -123,6 +123,66 @@ zarrs_close_store(v2_root)
 zarrs_close_store(v3_root)
 ```
 
+## Array metadata
+
+`zarrs_open_array_metadata()` opens a zarrs array and returns its metadata as a
+named list. The store handle is cached, so repeated calls to the same store are
+fast. The returned list contains `shape`, `chunks`, `dtype`, `r_type`,
+`fill_value_json`, `zarr_format`, and `order`.
+
+### V2 array
+
+```{r, eval=has_zarrs}
+v2_root <- pizzarr_sample("fixtures/v2/data.zarr")
+zarrs_open_array_metadata(v2_root, "1d.contiguous.raw.i2")
+```
+
+### V3 array
+
+V3 arrays work the same way. The `zarr_format` field distinguishes V2 from V3:
+
+```{r, eval=has_zarrs}
+v3_root <- pizzarr_sample("fixtures/v3/data.zarr")
+zarrs_open_array_metadata(v3_root, "1d.contiguous.gzip.i2")
+```
+
+### Data type classification
+
+The `r_type` field maps zarrs data types to R-compatible type families. zarrs
+numeric types are classified as `"double"`, `"integer"`, or `"logical"` based on
+what R can represent natively:
+
+- **double**: float64 (zero-cost), float32 (widened), uint32/int64/uint64 (widened, precision risk > 2^53)
+- **integer**: int32 (zero-cost), int8/int16/uint8/uint16 (widened)
+- **logical**: bool
+
+Unsupported types (strings, complex) report `"unsupported"` and fall back to the
+R-native code path.
+
+```{r, eval=has_zarrs}
+zarrs_close_store(v2_root)
+zarrs_close_store(v3_root)
+```
+
+## Runtime info and tuning
+
+`zarrs_runtime_info()` reports the current zarrs configuration --- the codec
+concurrency target, how many store handles are cached, and which features were
+compiled in:
+
+```{r, eval=has_zarrs}
+zarrs_runtime_info()
+```
+
+`zarrs_set_codec_concurrent_target()` controls how many concurrent codec
+operations zarrs uses within a single array operation. The default matches the
+number of available CPUs. Setting it to 1 disables parallel decompression:
+
+```{r, eval=has_zarrs}
+zarrs_set_codec_concurrent_target(2L)
+zarrs_runtime_info()$codec_concurrent_target
+```
+
 ## Reading data via zarrs
 
 <!-- TODO: Phase 2 — zarrs_retrieve_subset(), parallel chunk reads -->
