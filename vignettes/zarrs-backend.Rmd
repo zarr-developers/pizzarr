@@ -1,0 +1,140 @@
+---
+title: "zarrs Backend"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{zarrs Backend}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+sample_dir <- tools::R_user_dir("pizzarr")
+clean <- !dir.exists(sample_dir)
+```
+
+pizzarr ships in two tiers. The CRAN build is pure R --- no Rust compilation,
+no system dependencies. It handles local and HTTP Zarr stores with sequential
+chunk I/O via `lapply`. The r-universe build compiles in the
+[zarrs](https://github.com/zarrs/zarrs) Rust crate via
+[extendr](https://extendr.github.io/rextendr/), adding parallel decompression,
+cloud-native store backends (S3, GCS), and codecs beyond what R packages provide.
+
+The split exists because CRAN's macOS build machines ship a Rust toolchain
+(rustc 1.84) that is too old for zarrs, which requires rustc >= 1.91.
+r-universe builds against the latest stable toolchain, so it can compile zarrs
+and distribute pre-built binaries. End users on either tier install with
+`install.packages()` --- no Rust toolchain needed.
+
+## Checking availability
+
+```{r}
+library(pizzarr)
+
+has_zarrs <- pizzarr:::.pizzarr_env$zarrs_available
+```
+
+`pizzarr_compiled_features()` lists the feature flags compiled into the zarrs
+backend. On the CRAN tier it returns `character(0)` with a message; on the
+r-universe tier it returns the compiled capabilities:
+
+```{r}
+pizzarr_compiled_features()
+```
+
+The internal flag `.pizzarr_env$zarrs_available` is a logical scalar set once
+at package load. Dispatch logic throughout pizzarr checks this flag to decide
+whether to call into Rust or fall through to the R-native path:
+
+```{r}
+pizzarr:::.pizzarr_env$zarrs_available
+```
+
+## Upgrading to the zarrs tier
+
+`pizzarr_upgrade()` prints the r-universe install command when zarrs is not
+compiled in, or confirms that the backend is already present:
+
+```{r}
+pizzarr_upgrade()
+```
+
+The startup message that CRAN users see on `library(pizzarr)` can be silenced
+with `options(pizzarr.suggest_runiverse = FALSE)`.
+
+## Probing store metadata
+
+The examples below require the zarrs backend. When this vignette is built
+without it, the code chunks are not evaluated.
+
+`zarrs_node_exists()` opens a filesystem store via the Rust backend, probes
+for V2 and V3 metadata keys at a given path, and returns a list with three
+fields: `exists` (logical), `node_type` (character), and `zarr_format`
+(integer or NULL). The store handle is cached on the Rust side --- subsequent
+calls to the same store path reuse it without re-opening.
+
+### V2 store
+
+```{r, eval=has_zarrs}
+v2_root <- pizzarr_sample("fixtures/v2/data.zarr")
+
+# Root group
+zarrs_node_exists(v2_root, "")
+```
+
+```{r, eval=has_zarrs}
+# An array within the store
+zarrs_node_exists(v2_root, "1d.contiguous.lz4.i2")
+```
+
+```{r, eval=has_zarrs}
+# A path that does not exist
+zarrs_node_exists(v2_root, "does_not_exist")
+```
+
+### V3 store
+
+V2 and V3 detection is automatic. zarrs probes for `zarr.json` first (V3),
+then falls back to `.zarray` / `.zgroup` (V2):
+
+```{r, eval=has_zarrs}
+v3_root <- pizzarr_sample("fixtures/v3/data.zarr")
+
+zarrs_node_exists(v3_root, "")
+```
+
+## Store cache management
+
+The Rust backend holds open store handles in a process-global cache keyed by
+normalized path. `zarrs_close_store()` removes a handle from the cache and
+returns `TRUE`. A second call to the same path returns `FALSE` --- it was
+already removed:
+
+```{r, eval=has_zarrs}
+zarrs_close_store(v2_root)
+zarrs_close_store(v2_root)
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(v3_root)
+```
+
+## Reading data via zarrs
+
+<!-- TODO: Phase 2 — zarrs_retrieve_subset(), parallel chunk reads -->
+
+## Writing data via zarrs
+
+<!-- TODO: Phase 3 — zarrs_store_subset(), zarrs_create_array() -->
+
+## Remote stores
+
+<!-- TODO: Phase 4 — HTTP, S3, GCS backends via object_store -->
+
+```{r, include=FALSE}
+if (clean) unlink(sample_dir, recursive = TRUE)
+```
