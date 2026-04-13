@@ -21,6 +21,7 @@ sharding = ["zarrs/sharding"]
 [dependencies]
 extendr-api = { git = "https://github.com/extendr/extendr", branch = "master" }
 zarrs = { version = "0.23", default-features = false }
+zarrs_codec = "0.2"
 zarrs_storage = "0.4"
 zarrs_filesystem = { version = "0.3", optional = true }
 serde_json = "1"

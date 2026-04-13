@@ -35,7 +35,10 @@ if (!is_not_cran) {
 
 # when DEBUG env var is present we use `--debug` build
 .profile <- ifelse(is_debug, "", "--release")
-.clean_targets <- ifelse(is_debug, "", "$(TARGET_DIR)")
+# Only clean the build cache for CRAN builds (vendored, offline).
+# Development builds (NOT_CRAN or DEBUG) keep the target dir for
+# incremental compilation — avoids 5-minute full rebuilds.
+.clean_targets <- ifelse(!is_not_cran && vendor_exists, "$(TARGET_DIR)", "")
 
 # We specify this target when building for webR
 webr_target <- "wasm32-unknown-emscripten"

@@ -185,7 +185,51 @@ zarrs_runtime_info()$codec_concurrent_target
 
 ## Reading data via zarrs
 
-<!-- TODO: Phase 2 — zarrs_retrieve_subset(), parallel chunk reads -->
+When the zarrs backend is available and the selection is a contiguous slice,
+`ZarrArray$get_item()` dispatches reads to zarrs automatically. zarrs handles
+chunk identification, parallel decompression, and codec execution internally,
+bypassing pizzarr's R-native chunk loop. Unsupported selections (scalar indexing,
+fancy indexing, MemoryStore) fall through to the R-native path transparently.
+
+### Basic read
+
+```{r, eval=has_zarrs}
+d <- tempfile("zarrs_vignette_")
+z <- zarr_create(store = d, shape = c(100L, 50L), chunks = c(10L, 10L),
+                 dtype = "<f8")
+z$set_item("...", array(as.double(seq_len(5000)), dim = c(100, 50)))
+
+# Re-open and read a subset --- zarrs handles the chunk I/O
+z2 <- zarr_open(store = d)
+result <- z2$get_item(list(slice(1L, 10L), slice(1L, 5L)))
+dim(result$data)
+```
+
+### Direct zarrs_retrieve_subset call
+
+For lower-level access, `zarrs_retrieve_subset()` reads a contiguous subset
+directly via the Rust backend. Ranges are 0-based with exclusive stop, matching
+zarrs conventions:
+```{r, eval=has_zarrs}
+result <- zarrs_retrieve_subset(d, "", list(c(0L, 10L), c(0L, 5L)), NULL)
+str(result)
+```
+
+### Concurrency control
+
+The optional `concurrent_target` parameter (or the `pizzarr.concurrent_target`
+R option) controls how many parallel codec operations zarrs uses within a single
+retrieve call. Setting it to `1L` disables parallel decompression:
+
+```{r, eval=has_zarrs}
+result <- zarrs_retrieve_subset(d, "", list(c(0L, 10L), c(0L, 5L)), 1L)
+length(result$data)
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(d)
+unlink(d, recursive = TRUE)
+```
 
 ## Writing data via zarrs
 

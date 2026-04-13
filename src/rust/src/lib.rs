@@ -15,6 +15,7 @@ mod dtype_dispatch;
 mod error;
 mod info;
 mod metadata;
+mod retrieve;
 mod store_cache;
 mod store_open;
 
@@ -177,6 +178,26 @@ fn zarrs_set_codec_concurrent_target(n: i32) -> extendr_api::Result<()> {
     info::set_codec_concurrent_target(n)
 }
 
+/// Retrieve a contiguous subset of an array.
+///
+/// Returns a named list with `data` (numeric, integer, or logical vector)
+/// and `shape` (integer vector). Ranges are 0-based, exclusive stop.
+///
+/// @param store_url Filesystem path or URL to the store root.
+/// @param array_path Path to the array within the store.
+/// @param ranges R list of length-2 integer vectors `c(start, stop)`.
+/// @param concurrent_target Optional codec concurrency override.
+/// @export
+#[extendr]
+fn zarrs_retrieve_subset(
+    store_url: &str,
+    array_path: &str,
+    ranges: List,
+    concurrent_target: Nullable<i32>,
+) -> extendr_api::Result<List> {
+    retrieve::retrieve_subset(store_url, array_path, ranges, concurrent_target)
+}
+
 /// Convenience wrapper around `ReadableStorageTraits::get`.
 ///
 /// Maps the zarrs `StorageError` into a [`error::PizzarrError::ArrayOpen`]
@@ -206,4 +227,5 @@ extendr_module! {
     fn zarrs_open_array_metadata;
     fn zarrs_runtime_info;
     fn zarrs_set_codec_concurrent_target;
+    fn zarrs_retrieve_subset;
 }

@@ -103,6 +103,10 @@ R CMD INSTALL
 - `publish = false` — not a standalone crate
 - Feature flags forward to zarrs: `filesystem = ["zarrs/filesystem"]`, etc.
 - `[profile.release]` uses `lto = true`, `codegen-units = 1` for smaller binaries
+- `extendr-api` uses git master (not crates.io 0.8.1) — the crates.io release
+  references `OBJSXP` unconditionally, which fails on R 4.5.x where `S4SXP` was
+  renamed to `OBJSXP`. Git master has a `use_objsxp` cfg flag set by build.rs
+  based on R version.
 
 ### Regenerating wrappers
 
@@ -126,26 +130,27 @@ rustup target add x86_64-pc-windows-gnu
 
 ## Module organization
 
-Current (Phase 1):
+Current (Phase 1 + Phase 2 Iterations 1–2):
 ```
 src/rust/src/
-  lib.rs              # extendr_module!, zarrs_compiled_features
-```
-
-Planned (Phases 2–4):
-```
-src/rust/src/
-  lib.rs              # extendr_module!, top-level re-exports
+  lib.rs              # extendr_module!, #[extendr] wrappers, compiled_features()
   error.rs            # PizzarrError enum + From impls
   store_cache.rs      # process-global store handle map
-  store_open.rs       # URL → store handle
+  store_open.rs       # URL → store handle (filesystem only)
+  array_open.rs       # open_array_at_path() shared helper
+  dtype_dispatch.rs   # RTypeFamily enum + dtype_family() classifier
+  metadata.rs         # zarrs_open_array_metadata implementation
+  info.rs             # zarrs_runtime_info, zarrs_set_codec_concurrent_target
+  retrieve.rs         # zarrs_retrieve_subset (hot read path)
+```
+
+Planned (Phases 3–4):
+```
+src/rust/src/
+  ...                 # all of the above, plus:
   runtime.rs          # tokio OnceLock (full-tier only)
-  dtype_dispatch.rs   # R type ↔ zarrs Element dispatch
-  retrieve.rs         # zarrs_retrieve_subset (hot path)
   store.rs            # zarrs_store_subset
   create.rs           # zarrs_create_array
-  metadata.rs         # zarrs_open_array_metadata
-  info.rs             # zarrs_runtime_info, zarrs_set_codec_concurrent_target
 ```
 
 Each file gets a `//!` module-level doc comment.
@@ -224,3 +229,34 @@ edition 2021 while depending on zarrs 0.23.x (mdsumner/zr does this).
 CRAN's macOS builders are at rustc 1.84.1 (April 2026), too old for zarrs
 0.23.x. The Rust code compiles only on r-universe (pre-built binaries);
 CRAN ships pure R. See TODO.md §2.2.
+
+## Lessons learned (Phase 2 Iteration 2)
+
+### zarrs 0.23 API changes
+- **`retrieve_array_subset_elements` is deprecated.** Use
+  `retrieve_array_subset::<Vec<T>>(subset)` (and `_opt` variant) instead.
+  The generic parameter is the *output container* (`Vec<T>`), not the element
+  type directly. `Vec<T>` implements `FromArrayBytes` when `T: ElementOwned`.
+- **`CodecOptions` lives in `zarrs_codec`, not `zarrs::array::codec`.** Add
+  `zarrs_codec` as an explicit dependency in Cargo.toml and import as
+  `use zarrs_codec::CodecOptions;`.
+- **`ElementOwned` is the right trait bound**, not `Element + Send + Sync`.
+  `ElementOwned: Element` is a supertrait, so `ElementOwned` alone suffices
+  for retrieve functions.
+
+### C-order → F-order conversion
+zarrs returns data in C-order (row-major). R uses F-order (column-major).
+For nD arrays, reshape with reversed dims then `aperm()` back:
+```r
+rev_shape <- rev(out_shape)
+arr <- array(result$data, dim = rev_shape)
+out$data <- aperm(arr, rev(seq_along(out_shape)))
+```
+For 1D arrays, `array(data, dim = shape)` is sufficient.
+
+### R-side dispatch pattern
+The zarrs fast path is inserted in `get_selection()` *before* the chunk
+iteration loop. `can_use_zarrs()` gates on: zarrs available, store has
+a URL (not MemoryStore), and all indexer dimensions are `SliceDimIndexer`
+(no scalar or fancy indexing). The `tryCatch` fallback ensures zarrs
+errors (unsupported codec, etc.) silently fall through to R-native.

@@ -498,6 +498,32 @@ ZarrArray <- R6::R6Class("ZarrArray",
         return(out)
       }
 
+      # --- zarrs fast path ---
+      if (can_use_zarrs(indexer, private$store)) {
+        ranges <- selection_to_ranges(indexer)
+        store_id <- private$store$get_store_identifier()
+        ct <- getOption("pizzarr.concurrent_target", NULL)
+        result <- tryCatch(
+          zarrs_retrieve_subset(store_id, private$path, ranges, ct),
+          error = function(e) NULL
+        )
+        if (!is.null(result)) {
+          # zarrs returns flat C-order data; reshape to dimensioned array.
+          # For nD, zarrs uses C-order (row-major) so reshape reversed dims
+          # then aperm back to F-order for R.
+          if (length(out_shape) > 1) {
+            rev_shape <- rev(out_shape)
+            arr <- array(result$data, dim = rev_shape)
+            out$data <- aperm(arr, rev(seq_along(out_shape)))
+          } else {
+            out$data <- array(result$data, dim = out_shape)
+          }
+          return(out)
+        }
+        # zarrs failed — fall through to R-native path
+      }
+
+      # --- R-native path ---
       ps <- get_parallel_settings(parallel_option = getOption("pizzarr.parallel_backend", NA))
       if(ps$close) on.exit(try(parallel::stopCluster(ps$cl), silent = TRUE))
 

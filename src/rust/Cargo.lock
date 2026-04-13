@@ -882,6 +882,7 @@ dependencies = [
  "serde_json",
  "thiserror",
  "zarrs",
+ "zarrs_codec",
  "zarrs_filesystem",
  "zarrs_storage",
 ]
