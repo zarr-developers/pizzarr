@@ -1,4 +1,4 @@
-# --- zarrs_retrieve_subset: raw Rust function tests ---
+# --- zarrs_get_subset: Rust read path tests ---
 
 test_that("zarrs retrieves 1D float64 array", {
   skip_if(!.pizzarr_env$zarrs_available, "zarrs backend not available")
@@ -6,7 +6,7 @@ test_that("zarrs retrieves 1D float64 array", {
   z <- zarr_create(store = d, shape = 10L, chunks = 5L, dtype = "<f8")
   z$set_item("...", as.double(1:10))
 
-  result <- zarrs_retrieve_subset(d, "", list(c(0L, 10L)), NULL)
+  result <- zarrs_get_subset(d, "", list(c(0L, 10L)), NULL)
   expect_equal(result$data, as.double(1:10))
   expect_equal(result$shape, 10L)
 
@@ -21,7 +21,7 @@ test_that("zarrs retrieves 2D integer array slice", {
   z$set_item("...", array(1:50, dim = c(10, 5)))
 
   # Read rows 2-5, all columns (0-based: 2:5 x 0:5)
-  result <- zarrs_retrieve_subset(d, "", list(c(2L, 5L), c(0L, 5L)), NULL)
+  result <- zarrs_get_subset(d, "", list(c(2L, 5L), c(0L, 5L)), NULL)
   expect_equal(result$shape, c(3L, 5L))
   expect_type(result$data, "integer")
   expect_equal(length(result$data), 15L)
@@ -38,7 +38,7 @@ test_that("zarrs retrieves V3 array", {
   a <- g$create_dataset("arr", shape = 6L, dtype = "<f8", compressor = NA)
   a$set_item("...", as.double(11:16))
 
-  result <- zarrs_retrieve_subset(d, "arr", list(c(0L, 6L)), NULL)
+  result <- zarrs_get_subset(d, "arr", list(c(0L, 6L)), NULL)
   expect_equal(result$data, as.double(11:16))
   expect_equal(result$shape, 6L)
 
@@ -52,7 +52,7 @@ test_that("zarrs retrieves int16 array widened to integer", {
   z <- zarr_create(store = d, shape = 5L, chunks = 5L, dtype = "<i2")
   z$set_item("...", 1:5)
 
-  result <- zarrs_retrieve_subset(d, "", list(c(0L, 5L)), NULL)
+  result <- zarrs_get_subset(d, "", list(c(0L, 5L)), NULL)
   expect_type(result$data, "integer")
   expect_equal(result$data, 1:5)
 
@@ -66,7 +66,7 @@ test_that("zarrs retrieves uint8 array widened to integer", {
   z <- zarr_create(store = d, shape = 5L, chunks = 5L, dtype = "|u1")
   z$set_item("...", 1:5)
 
-  result <- zarrs_retrieve_subset(d, "", list(c(0L, 5L)), NULL)
+  result <- zarrs_get_subset(d, "", list(c(0L, 5L)), NULL)
   expect_type(result$data, "integer")
   expect_equal(result$data, 1:5)
 
@@ -80,7 +80,7 @@ test_that("zarrs returns fill values for unwritten chunks", {
   z <- zarr_create(store = d, shape = 10L, chunks = 5L, dtype = "<f8",
                    fill_value = 42.0)
 
-  result <- zarrs_retrieve_subset(d, "", list(c(0L, 10L)), NULL)
+  result <- zarrs_get_subset(d, "", list(c(0L, 10L)), NULL)
   expect_equal(result$data, rep(42.0, 10))
 
   zarrs_close_store(d)
@@ -89,7 +89,7 @@ test_that("zarrs returns fill values for unwritten chunks", {
 
 test_that("zarrs errors on unsupported dtype (string)", {
   skip_if(!.pizzarr_env$zarrs_available, "zarrs backend not available")
-  # zarrs_retrieve_subset should error on string arrays
+  # zarrs_get_subset should error on string arrays
   # (we don't have a convenient way to create a string zarr array from R,
   #  so test via dtype_family returning None — the error path)
   # Instead, test that the dispatch function correctly falls back.
@@ -106,7 +106,7 @@ test_that("concurrent_target option is honored", {
   z <- zarr_create(store = d, shape = 10L, chunks = 5L, dtype = "<f8")
   z$set_item("...", as.double(1:10))
 
-  result <- zarrs_retrieve_subset(d, "", list(c(0L, 10L)), 1L)
+  result <- zarrs_get_subset(d, "", list(c(0L, 10L)), 1L)
   expect_equal(result$data, as.double(1:10))
 
   zarrs_close_store(d)
@@ -197,7 +197,7 @@ test_that("zarrs and R-native read produce identical results", {
   z$set_item("...", data)
 
   # Read via zarrs
-  zarrs_result <- zarrs_retrieve_subset(d, "", list(c(2L, 7L), c(1L, 6L)), NULL)
+  zarrs_result <- zarrs_get_subset(d, "", list(c(2L, 7L), c(1L, 6L)), NULL)
 
   # Read via R-native
   z2 <- zarr_open(store = d)

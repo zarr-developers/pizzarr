@@ -2,7 +2,7 @@
 //!
 //! Provides [`open_array_at_path`], which resolves the store from the
 //! cache and opens a zarrs [`Array`] at the given path. Used by
-//! `zarrs_open_array_metadata` now and `zarrs_retrieve_subset` later.
+//! `zarrs_open_array_metadata` now and `zarrs_get_subset` later.
 
 use zarrs::array::Array;
 use zarrs_storage::ReadableWritableListableStorageTraits;

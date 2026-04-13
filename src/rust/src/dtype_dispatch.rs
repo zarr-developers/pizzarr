@@ -10,7 +10,7 @@ use zarrs::array::DataType;
 /// R-compatible type family for a zarrs data type.
 ///
 /// Used by `zarrs_open_array_metadata` to report the R type, and by
-/// `zarrs_retrieve_subset` (next iteration) to dispatch retrieval.
+/// `zarrs_get_subset` to dispatch retrieval.
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum RTypeFamily {
     /// R double (REALSXP), stored as f64 — zero-cost.

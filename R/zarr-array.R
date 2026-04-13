@@ -504,7 +504,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
         store_id <- private$store$get_store_identifier()
         ct <- getOption("pizzarr.concurrent_target", NULL)
         result <- tryCatch(
-          zarrs_retrieve_subset(store_id, private$path, ranges, ct),
+          zarrs_get_subset(store_id, private$path, ranges, ct),
           error = function(e) NULL
         )
         if (!is.null(result)) {
@@ -655,8 +655,36 @@ ZarrArray <- R6::R6Class("ZarrArray",
           stop("UnsupportedOperation(object dtype requires object_codec in filters for set_item)")
         }
 
+        # --- zarrs write fast path ---
+        if (can_use_zarrs_write(indexer, private$store)) {
+          ranges <- selection_to_ranges(indexer)
+          store_id <- private$store$get_store_identifier()
+          ct <- getOption("pizzarr.concurrent_target", NULL)
+          # Extract flat data from value
+          if (inherits(value, "NestedArray")) {
+            write_data <- as.vector(value$data)
+          } else if (is_scalar(value)) {
+            write_data <- value
+          } else {
+            write_data <- as.vector(value)
+          }
+          # F-order to C-order for nD arrays
+          zarrs_shape <- vapply(ranges, function(r) r[2L] - r[1L], integer(1))
+          if (length(zarrs_shape) > 1 && !is_scalar(write_data)) {
+            arr <- array(write_data, dim = zarrs_shape)
+            arr <- aperm(arr, rev(seq_along(zarrs_shape)))
+            write_data <- as.vector(arr)
+          }
+          result <- tryCatch(
+            zarrs_set_subset(store_id, private$path, ranges, write_data, ct),
+            error = function(e) NULL
+          )
+          if (isTRUE(result)) return(invisible(NULL))
+          # zarrs failed — fall through to R-native path
+        }
+
         par_opt <- NA
-        
+
         if(getOption("pizzarr.parallel_write_enabled", FALSE)) {
           par_opt <- getOption("pizzarr.parallel_backend", NA)
         }

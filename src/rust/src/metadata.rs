@@ -51,7 +51,7 @@ pub(crate) fn open_array_metadata(
     // Fill value as a hex string of the native-endian bytes.
     // FillValue doesn't impl Serialize; use as_ne_bytes() instead.
     // R already has fill value parsing; typed extraction deferred
-    // to zarrs_retrieve_subset.
+    // to zarrs_get_subset.
     let fv_bytes = array.fill_value().as_ne_bytes();
     let fill_value_json = format!("{fv_bytes:?}");
 

@@ -41,6 +41,19 @@ can_use_zarrs <- function(indexer, store) {
 #' @param indexer A BasicIndexer with SliceDimIndexer or IntDimIndexer dims.
 #' @return List of integer vectors.
 #' @keywords internal
+#' Check whether the zarrs write path can handle this selection
+#'
+#' Same eligibility as read. Separate function for future extensibility
+#' (e.g., read-only remote stores).
+#'
+#' @param indexer A BasicIndexer or OrthogonalIndexer object.
+#' @param store A Store object.
+#' @return Logical scalar.
+#' @keywords internal
+can_use_zarrs_write <- function(indexer, store) {
+  can_use_zarrs(indexer, store)
+}
+
 selection_to_ranges <- function(indexer) {
   lapply(indexer$dim_indexers, function(di) {
     if (inherits(di, "IntDimIndexer")) {

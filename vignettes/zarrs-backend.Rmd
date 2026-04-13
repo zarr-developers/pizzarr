@@ -185,10 +185,12 @@ zarrs_runtime_info()$codec_concurrent_target
 
 ## Reading data via zarrs
 
-When the zarrs backend is available and the selection is a contiguous slice,
-`ZarrArray$get_item()` dispatches reads to zarrs automatically. zarrs handles
-chunk identification, parallel decompression, and codec execution internally,
-bypassing pizzarr's R-native chunk loop. Unsupported selections (scalar indexing,
+When the zarrs backend is available and the selection is a contiguous slice
+(step == 1), `ZarrArray$get_item()` dispatches reads to zarrs automatically.
+zarrs handles chunk identification, parallel decompression, and codec execution
+internally, bypassing pizzarr's R-native chunk loop. Scalar integer selections
+(e.g., selecting a single row of a matrix) are also eligible --- they become
+length-1 ranges on the Rust side. Unsupported selections (step > 1 slices,
 fancy indexing, MemoryStore) fall through to the R-native path transparently.
 
 ### Basic read
@@ -205,13 +207,14 @@ result <- z2$get_item(list(slice(1L, 10L), slice(1L, 5L)))
 dim(result$data)
 ```
 
-### Direct zarrs_retrieve_subset call
+### Direct zarrs_get_subset call
 
-For lower-level access, `zarrs_retrieve_subset()` reads a contiguous subset
+For lower-level access, `zarrs_get_subset()` reads a contiguous subset
 directly via the Rust backend. Ranges are 0-based with exclusive stop, matching
 zarrs conventions:
+
 ```{r, eval=has_zarrs}
-result <- zarrs_retrieve_subset(d, "", list(c(0L, 10L), c(0L, 5L)), NULL)
+result <- zarrs_get_subset(d, "", list(c(0L, 10L), c(0L, 5L)), NULL)
 str(result)
 ```
 
@@ -219,10 +222,10 @@ str(result)
 
 The optional `concurrent_target` parameter (or the `pizzarr.concurrent_target`
 R option) controls how many parallel codec operations zarrs uses within a single
-retrieve call. Setting it to `1L` disables parallel decompression:
+read call. Setting it to `1L` disables parallel decompression:
 
 ```{r, eval=has_zarrs}
-result <- zarrs_retrieve_subset(d, "", list(c(0L, 10L), c(0L, 5L)), 1L)
+result <- zarrs_get_subset(d, "", list(c(0L, 10L), c(0L, 5L)), 1L)
 length(result$data)
 ```
 
@@ -233,7 +236,67 @@ unlink(d, recursive = TRUE)
 
 ## Writing data via zarrs
 
-<!-- TODO: Phase 3 — zarrs_store_subset(), zarrs_create_array() -->
+The write path mirrors the read path. When the zarrs backend is available and
+the selection qualifies (contiguous slices, filesystem-backed store),
+`ZarrArray$set_item()` dispatches writes to zarrs instead of iterating over
+chunks in R. zarrs encodes the data, splits it across the affected chunks, and
+writes them to disk --- using its internal thread pool for parallel compression
+when multiple chunks are involved.
+
+Data type narrowing happens on the Rust side. R doubles narrow to the array's
+stored type (float32, int64, uint32, etc.) and R integers narrow to smaller
+integer types (int16, int8, uint8, uint16) with range checking. An out-of-range
+value produces an error rather than silent truncation.
+
+### Basic write
+
+```{r, eval=has_zarrs}
+d <- tempfile("zarrs_write_vignette_")
+z <- zarr_create(store = d, shape = c(20L, 10L), chunks = c(10L, 10L),
+                 dtype = "<f8")
+
+# set_item dispatches to zarrs when eligible
+z$set_item("...", array(as.double(1:200), dim = c(20, 10)))
+
+# Read back to confirm
+z2 <- zarr_open(store = d)
+result <- z2$get_item(list(slice(1L, 5L), slice(1L, 3L)))
+result$data
+```
+
+### Partial overwrite
+
+Writing to a subset of an existing array works the same way. zarrs reads the
+affected chunks, merges the new data, and writes them back:
+
+```{r, eval=has_zarrs}
+# Overwrite rows 3-7, columns 1-2
+z$set_item(list(slice(3L, 7L), slice(1L, 2L)),
+           array(rep(-1.0, 10), dim = c(5, 2)))
+
+result <- z2$get_item(list(slice(1L, 10L), slice(1L, 3L)))
+result$data
+```
+
+### Direct zarrs_set_subset call
+
+`zarrs_set_subset()` provides lower-level access to the Rust write path.
+Data must be a flat vector in C-order (row-major). The function returns `TRUE`
+on success:
+
+```{r, eval=has_zarrs}
+# Write 10 values to the first row (0-based range [0, 1) x [0, 10))
+zarrs_set_subset(d, "", list(c(0L, 1L), c(0L, 10L)),
+                   as.double(101:110), NULL)
+
+result <- zarrs_get_subset(d, "", list(c(0L, 1L), c(0L, 10L)), NULL)
+result$data
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(d)
+unlink(d, recursive = TRUE)
+```
 
 ## Remote stores
 

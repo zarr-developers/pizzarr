@@ -15,9 +15,9 @@ can_use_zarrs(indexer, store)
 Logical scalar.
 }
 \description{
-Returns TRUE only for BasicIndexer with all SliceDimIndexer dims
-(contiguous slice selections). IntDimIndexer (scalar selection),
-IntArrayDimIndexer (fancy indexing), OrthogonalIndexer, and
-negative steps all fall through to R-native.
+Returns TRUE for BasicIndexer with contiguous SliceDimIndexer
+(step==1) and/or IntDimIndexer on every dimension. Step>1 slices,
+IntArrayDimIndexer (fancy indexing), and OrthogonalIndexer fall
+through to R-native.
 }
 \keyword{internal}

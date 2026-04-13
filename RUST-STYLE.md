@@ -141,7 +141,7 @@ src/rust/src/
   dtype_dispatch.rs   # RTypeFamily enum + dtype_family() classifier
   metadata.rs         # zarrs_open_array_metadata implementation
   info.rs             # zarrs_runtime_info, zarrs_set_codec_concurrent_target
-  retrieve.rs         # zarrs_retrieve_subset (hot read path)
+  retrieve.rs         # zarrs_get_subset (hot read path)
 ```
 
 Planned (Phases 3–4):
@@ -149,7 +149,7 @@ Planned (Phases 3–4):
 src/rust/src/
   ...                 # all of the above, plus:
   runtime.rs          # tokio OnceLock (full-tier only)
-  store.rs            # zarrs_store_subset
+  store.rs            # zarrs_set_subset
   create.rs           # zarrs_create_array
 ```
 
@@ -255,8 +255,34 @@ out$data <- aperm(arr, rev(seq_along(out_shape)))
 For 1D arrays, `array(data, dim = shape)` is sufficient.
 
 ### R-side dispatch pattern
-The zarrs fast path is inserted in `get_selection()` *before* the chunk
-iteration loop. `can_use_zarrs()` gates on: zarrs available, store has
-a URL (not MemoryStore), and all indexer dimensions are `SliceDimIndexer`
-(no scalar or fancy indexing). The `tryCatch` fallback ensures zarrs
-errors (unsupported codec, etc.) silently fall through to R-native.
+The zarrs fast path is inserted in `get_selection()` and `set_selection()`
+*before* the chunk iteration loop. `can_use_zarrs()` gates on: zarrs
+available, store has a URL (not MemoryStore), all indexer dimensions are
+`SliceDimIndexer` (step==1) or `IntDimIndexer`, and no fancy indexing.
+The `tryCatch` fallback ensures zarrs errors (unsupported codec, etc.)
+silently fall through to R-native.
+
+## Lessons learned (Phase 2 Iteration 3)
+
+### zarrs 0.23 write API
+- **`store_array_subset_elements_opt` is deprecated.** Use
+  `store_array_subset_opt(subset, data, opts)` instead. The `data` parameter
+  is `impl IntoArrayBytes<'a>` — `Vec<T>` satisfies this when `T: Element`.
+  No turbofish needed (unlike retrieve which uses `retrieve_array_subset_opt::<Vec<T>>`).
+- **`ElementOwned` works as the trait bound for both read and write.**
+  `ElementOwned: Element` and `Vec<T: Element>: IntoArrayBytes`.
+
+### Rust `()` maps to R `NULL`
+When a Rust function returns `()`, R receives `NULL`. This is
+indistinguishable from a `tryCatch` returning `NULL` on error. For
+functions where success must be detectable, return `bool` (`true`)
+instead and check with `isTRUE(result)` in R.
+
+### F-order → C-order for writes
+Symmetric with the read path. R stores arrays in F-order (column-major),
+zarrs expects C-order (row-major). For nD writes:
+```r
+arr <- array(write_data, dim = zarrs_shape)
+arr <- aperm(arr, rev(seq_along(zarrs_shape)))
+write_data <- as.vector(arr)
+```

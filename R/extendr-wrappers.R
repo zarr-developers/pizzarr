@@ -67,7 +67,7 @@ zarrs_runtime_info <- function() .Call(wrap__zarrs_runtime_info)
 #' @export
 zarrs_set_codec_concurrent_target <- function(n) .Call(wrap__zarrs_set_codec_concurrent_target, n)
 
-#' Retrieve a contiguous subset of an array.
+#' Get a contiguous subset of an array.
 #'
 #' Returns a named list with `data` (numeric, integer, or logical vector)
 #' and `shape` (integer vector). Ranges are 0-based, exclusive stop.
@@ -77,7 +77,20 @@ zarrs_set_codec_concurrent_target <- function(n) .Call(wrap__zarrs_set_codec_con
 #' @param ranges R list of length-2 integer vectors `c(start, stop)`.
 #' @param concurrent_target Optional codec concurrency override.
 #' @export
-zarrs_retrieve_subset <- function(store_url, array_path, ranges, concurrent_target) .Call(wrap__zarrs_retrieve_subset, store_url, array_path, ranges, concurrent_target)
+zarrs_get_subset <- function(store_url, array_path, ranges, concurrent_target) .Call(wrap__zarrs_get_subset, store_url, array_path, ranges, concurrent_target)
+
+#' Set a contiguous subset of an array from R data.
+#'
+#' Returns `true` on success. Ranges are 0-based, exclusive stop.
+#' Data must be a flat vector in C-order (row-major).
+#'
+#' @param store_url Filesystem path or URL to the store root.
+#' @param array_path Path to the array within the store.
+#' @param ranges R list of length-2 integer vectors `c(start, stop)`.
+#' @param data R vector (numeric, integer, or logical).
+#' @param concurrent_target Optional codec concurrency override.
+#' @export
+zarrs_set_subset <- function(store_url, array_path, ranges, data, concurrent_target) .Call(wrap__zarrs_set_subset, store_url, array_path, ranges, data, concurrent_target)
 
 
 # nolint end
