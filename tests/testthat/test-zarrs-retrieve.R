@@ -151,6 +151,43 @@ test_that("selection_to_ranges converts indexer dims", {
   expect_equal(ranges[[2]], c(4L, 15L))
 })
 
+test_that("can_use_zarrs accepts IntDimIndexer (manual construction)", {
+  # IntDimIndexer is only created when normalize_list_selection uses
+  # convert_integer_selection_to_slices=FALSE (not the default get_item path).
+  # Test the dispatch function handles it correctly anyway.
+  skip_if(!.pizzarr_env$zarrs_available, "zarrs backend not available")
+  d <- tempfile("zarrs_int_dim_")
+  z <- zarr_create(store = d, shape = c(10L, 5L), chunks = c(5L, 5L),
+                   dtype = "<f8")
+  ds <- DirectoryStore$new(d)
+  # Manually build an indexer with IntDimIndexer on dim 1
+  int_di <- IntDimIndexer$new(3L, 10L, 5L)
+  slice_di <- SliceDimIndexer$new(slice(1L, 5L), 5L, 5L)
+  idx <- list()
+  idx$dim_indexers <- list(int_di, slice_di)
+  idx$shape <- list(5L)
+  class(idx) <- "BasicIndexer"
+  expect_true(can_use_zarrs(idx, ds))
+
+  unlink(d, recursive = TRUE)
+})
+
+test_that("selection_to_ranges handles IntDimIndexer", {
+  # IntDimIndexer stores 0-based dim_sel from normalize_integer_selection.
+  # 3L -> dim_sel=3 (0-based) -> range [3, 4)
+  int_di <- IntDimIndexer$new(3L, 10L, 5L)
+  slice_di <- SliceDimIndexer$new(slice(5L, 15L), 20L, 10L)
+  idx <- list()
+  idx$dim_indexers <- list(int_di, slice_di)
+  class(idx) <- "BasicIndexer"
+  ranges <- selection_to_ranges(idx)
+
+  expect_length(ranges, 2)
+  expect_equal(ranges[[1]], c(3L, 4L))
+  # slice(5L, 15L) is 1-based; SliceDimIndexer stores 0-based start=4, stop=15
+  expect_equal(ranges[[2]], c(4L, 15L))
+})
+
 test_that("zarrs and R-native read produce identical results", {
   skip_if(!.pizzarr_env$zarrs_available, "zarrs backend not available")
   d <- tempfile("zarrs_compare_")
@@ -201,6 +238,30 @@ test_that("ZarrArray$get_item dispatches to zarrs for 2D slice", {
   # Slice rows 3-7 (1-based), all cols
   result <- z2$get_item(list(slice(3L, 7L), slice(1L, 5L)))
   expect_equal(dim(result$data), c(5, 5))
+
+  zarrs_close_store(d)
+  unlink(d, recursive = TRUE)
+})
+
+test_that("ZarrArray$get_item dispatches to zarrs for scalar + slice", {
+  skip_if(!.pizzarr_env$zarrs_available, "zarrs backend not available")
+  d <- tempfile("zarrs_e2e_scalar_")
+  z <- zarr_create(store = d, shape = c(10L, 5L), chunks = c(5L, 5L),
+                   dtype = "<f8")
+  data <- array(as.double(1:50), dim = c(10, 5))
+  z$set_item("...", data)
+
+  z2 <- zarr_open(store = d)
+  # 3L (0-based index 3) selects the 4th row; get_item converts to slice(3,4)
+  # so output shape keeps the length-1 dim: c(1, 5)
+  zarrs_result <- z2$get_item(list(3L, slice(1L, 5L)))
+  expect_equal(dim(zarrs_result$data), c(1L, 5L))
+  # Compare with R-native
+  old <- .pizzarr_env$zarrs_available
+  .pizzarr_env$zarrs_available <- FALSE
+  r_result <- z2$get_item(list(3L, slice(1L, 5L)))
+  .pizzarr_env$zarrs_available <- old
+  expect_equal(zarrs_result$data, r_result$data)
 
   zarrs_close_store(d)
   unlink(d, recursive = TRUE)

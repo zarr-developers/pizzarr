@@ -508,16 +508,23 @@ ZarrArray <- R6::R6Class("ZarrArray",
           error = function(e) NULL
         )
         if (!is.null(result)) {
-          # zarrs returns flat C-order data; reshape to dimensioned array.
-          # For nD, zarrs uses C-order (row-major) so reshape reversed dims
-          # then aperm back to F-order for R.
-          if (length(out_shape) > 1) {
-            rev_shape <- rev(out_shape)
-            arr <- array(result$data, dim = rev_shape)
-            out$data <- aperm(arr, rev(seq_along(out_shape)))
+          # zarrs returns flat C-order data; reshape to F-order for R.
+          # Use the full zarrs shape (from ranges, including length-1 scalar
+          # dims) for C->F conversion, then squeeze to out_shape.
+          zarrs_shape <- vapply(ranges, function(r) r[2L] - r[1L], integer(1))
+          if (length(zarrs_shape) > 1) {
+            arr <- array(result$data, dim = rev(zarrs_shape))
+            arr <- aperm(arr, rev(seq_along(zarrs_shape)))
           } else {
-            out$data <- array(result$data, dim = out_shape)
+            arr <- array(result$data, dim = zarrs_shape)
           }
+          # Squeeze scalar dims (IntDimIndexer) to match out_shape.
+          # Only apply when out_shape has fewer dims (length-1 dims dropped).
+          os <- unlist(out_shape)
+          if (length(os) > 0 && !identical(zarrs_shape, os)) {
+            dim(arr) <- os
+          }
+          out$data <- arr
           return(out)
         }
         # zarrs failed — fall through to R-native path
