@@ -9,15 +9,64 @@ devtools::install()
 devtools::load_all()
 ```
 
-## Testing
+## Build and Test Cycles
 
-Tests run single-threaded (`Config/testthat/parallel: false` in
-DESCRIPTION).
+pizzarr has two build tiers that affect how you develop and test locally.
+
+### CRAN tier (pure R)
+
+If you are working on R-side logic (indexers, stores, codecs, R6 classes)
+and do not need the zarrs backend, this is the faster cycle:
 
 ``` r
-devtools::check()
+devtools::load_all()
 devtools::test()
+devtools::check()
 ```
+
+Tests run single-threaded (`Config/testthat/parallel: false` in
+DESCRIPTION). All zarrs-specific tests skip automatically when the Rust
+library is absent — they guard on `.pizzarr_env$zarrs_available`.
+
+To produce a CRAN-ready source tarball that strips `src/`, `configure`,
+and `SystemRequirements`:
+
+``` bash
+bash tools/cran-build.sh
+```
+
+The resulting `.tar.gz` passes `R CMD check` without a Rust toolchain.
+
+### r-universe tier (zarrs backend)
+
+The r-universe build compiles the [zarrs](https://github.com/zarrs/zarrs)
+Rust crate via [extendr](https://extendr.github.io/rextendr/). You need
+rustc >= 1.91 with the GNU target on Windows:
+
+``` bash
+rustup target add x86_64-pc-windows-gnu
+```
+
+After modifying any `#[extendr]` function in `src/rust/src/lib.rs`,
+regenerate the R wrappers:
+
+``` r
+rextendr::document()
+```
+
+This rebuilds the Rust library and regenerates `R/extendr-wrappers.R`.
+Never edit that file by hand. Then run the standard cycle:
+
+``` r
+devtools::load_all()
+devtools::test()
+devtools::check()
+```
+
+`devtools::check()` will emit a NOTE about downloading Rust crates — that
+is expected and is not a problem for r-universe builds. See
+[RUST-STYLE.md](RUST-STYLE.md) for Rust conventions, module layout, and
+build pipeline details.
 
 ## Building Documentation
 

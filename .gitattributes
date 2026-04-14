@@ -1,3 +1,5 @@
 * text=auto
 *.zip binary
 tests/fixtures/**/* -diff
+configure eol=lf
+configure.win eol=crlf
