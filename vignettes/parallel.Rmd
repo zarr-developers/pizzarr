@@ -69,7 +69,10 @@ sum(arr)
 ```{r}
 options(pizzarr.parallel_write_enabled = 4)
 
-root <- pizzarr_sample("dog.ome.zarr")
+# Copy to a temp directory so we don't modify the cached sample data.
+root <- file.path(tempdir(), "dog.ome.zarr")
+file.copy(pizzarr_sample("dog.ome.zarr"), dirname(root), recursive = TRUE)
+
 store <- SlowDirectoryStore$new(root)
 zarr_arr <- zarr_open(store = store, path = "/0")
 arr <- zarr_arr$get_item("...")$data
