@@ -29,7 +29,8 @@ Description: An implementation of chunked, compressed,
 Language: en-US
 License: MIT + file LICENSE
 BugReports: https://github.com/zarr-developers/pizzarr/issues
-URL: https://zarr.dev/pizzarr/
+URL: https://zarr.dev/pizzarr/,
+    https://github.com/zarr-developers/pizzarr
 Depends: 
     R (>= 4.2)
 Imports:

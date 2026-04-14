@@ -18,17 +18,36 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml/badge.svg)](https://github.com/zarr-developers/pizzarr/actions/workflows/R-CMD-Check.yml)
 [![logs](https://cranlogs.r-pkg.org/badges/pizzarr)](https://cran.r-project.org/package=pizzarr)
 [![CRAN status](https://www.r-pkg.org/badges/version/pizzarr)](https://CRAN.R-project.org/package=pizzarr)
+[![r-universe](https://zarr-developers.r-universe.dev/badges/pizzarr)](https://zarr-developers.r-universe.dev/pizzarr)
 
 A Zarr implementation for R.
 
 ## Installation
 
-Installation requires R 4.1.0 or greater.
+pizzarr ships in two tiers. The CRAN build is pure R and needs nothing beyond
+base R dependencies. The [r-universe](https://zarr-developers.r-universe.dev/pizzarr)
+build links in the [zarrs](https://github.com/zarrs/zarrs) Rust crate via
+[extendr](https://extendr.github.io/rextendr/), adding parallel decompression
+and additional codec support.
+
+### CRAN
 
 ```r
-install.packages("devtools")
-devtools::install_github("zarr-developers/pizzarr")
+install.packages("pizzarr")
 ```
+
+### r-universe (zarrs backend)
+
+```r
+install.packages("pizzarr",
+                 repos = c("https://zarr-developers.r-universe.dev",
+                            "https://cloud.r-project.org"))
+```
+
+r-universe distributes pre-compiled binaries for Windows and macOS, so users
+do not need a Rust toolchain. `pizzarr_compiled_features()` lists what the
+zarrs backend provides, and `pizzarr_upgrade()` prints the install command when
+zarrs is not compiled in. See `vignette("zarrs-backend")` for details.
 
 ## Usage
 
