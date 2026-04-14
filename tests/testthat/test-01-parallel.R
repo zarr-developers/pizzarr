@@ -90,6 +90,7 @@ run_parallel_set <- function(num_workers) {
 test_that("can run get_item() and set_item in parallel", {
   skip_if(!has_dog_sample, "dog.ome.zarr sample not available")
   skip_if_not_installed("bench")
+  skip_if(.pizzarr_env$zarrs_available, "zarrs bypasses R parallel path")
 
   bench_df <- bench::mark(
     run_parallel_get(1),
@@ -113,6 +114,7 @@ test_that("can run get_item() and set_item in parallel", {
 test_that("can run set_item() in parallel", {
   skip_if(!has_dog_sample, "dog.ome.zarr sample not available")
   skip_if_not_installed("bench")
+  skip_if(.pizzarr_env$zarrs_available, "zarrs bypasses R parallel path")
 
   bench_df <- bench::mark(
     run_parallel_set(1),
