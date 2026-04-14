@@ -1,0 +1,46 @@
+[package]
+name = "pizzarr"
+publish = false
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.91"
+
+[lib]
+crate-type = ["staticlib"]
+name = "pizzarr"
+
+[features]
+default = ["filesystem", "gzip", "zstd", "transpose"]
+filesystem = ["zarrs/filesystem", "dep:zarrs_filesystem"]
+transpose = ["zarrs/transpose"]
+gzip = ["zarrs/gzip"]
+blosc = ["zarrs/blosc"]
+zstd = ["zarrs/zstd"]
+sharding = ["zarrs/sharding"]
+
+[dependencies]
+extendr-api = { git = "https://github.com/extendr/extendr", branch = "master" }
+zarrs = { version = "0.23", default-features = false }
+zarrs_codec = "0.2"
+zarrs_storage = "0.4"
+zarrs_filesystem = { version = "0.3", optional = true }
+serde_json = "1"
+parking_lot = "0.12"
+thiserror = "2"
+
+[lints.rust]
+unused_variables = "warn"
+dead_code = "warn"
+missing_docs = "warn"
+unreachable_pub = "warn"
+unsafe_op_in_unsafe_fn = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+missing_panics_doc = "warn"
+missing_errors_doc = "warn"
+
+[profile.release]
+lto = true
+codegen-units = 1

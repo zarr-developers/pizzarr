@@ -43,6 +43,7 @@ Other Store classes:
 \item \href{#method-HttpStore-listdir}{\code{HttpStore$listdir()}}
 \item \href{#method-HttpStore-get_cache_time_seconds}{\code{HttpStore$get_cache_time_seconds()}}
 \item \href{#method-HttpStore-set_cache_time_seconds}{\code{HttpStore$set_cache_time_seconds()}}
+\item \href{#method-HttpStore-get_store_identifier}{\code{HttpStore$get_store_identifier()}}
 \item \href{#method-HttpStore-print}{\code{HttpStore$print()}}
 \item \href{#method-HttpStore-clone}{\code{HttpStore$clone()}}
 }
@@ -177,10 +178,25 @@ Set cache time of http requests.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HttpStore-get_store_identifier"></a>}}
+\if{latex}{\out{\hypertarget{method-HttpStore-get_store_identifier}{}}}
+\subsection{Method \code{get_store_identifier()}}{
+Print a human-readable summary of the store.
+
+
+Return the store URL for zarrs dispatch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HttpStore$get_store_identifier()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A character string.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-print"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-print}{}}}
 \subsection{Method \code{print()}}{
-Print a human-readable summary of the store.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HttpStore$print(...)}\if{html}{\out{</div>}}
 }

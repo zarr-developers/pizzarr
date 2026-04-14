@@ -16,3 +16,11 @@ r6-roxygen-convention.md
 cran-comments.md
 CONTRIBUTING.md
 ^CRAN-SUBMISSION$
+^dev\.md$
+^RUST-STYLE\.md$
+^\.vscode$
+^src/\.cargo$
+^src/rust/vendor$
+^src/rust/target$
+^src/Makevars$
+^src/Makevars\.win$

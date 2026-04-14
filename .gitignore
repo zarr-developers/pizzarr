@@ -23,3 +23,7 @@ cran-comments.md
 /.quarto/
 **/*.quarto_ipynb
 CRAN-SUBMISSION
+src/rust/vendor
+src/Makevars
+src/Makevars.win
+.vscode

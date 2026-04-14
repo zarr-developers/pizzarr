@@ -142,6 +142,15 @@ Store <- R6::R6Class("Store",
       return(private$zmetadata)
     },
     #' @description
+    #' Return a store identifier for zarrs dispatch.
+    #'
+    #' Subclasses override this to return a filesystem path or URL.
+    #' Returns `NULL` by default (signals: use R-native path).
+    #' @return A character string or `NULL`.
+    get_store_identifier = function() {
+      NULL
+    },
+    #' @description
     #' Print a human-readable summary of the store.
     #' @param ... Ignored.
     #' @return `self` (invisibly).
@@ -259,6 +268,12 @@ DirectoryStore <- R6::R6Class("DirectoryStore",
     },
     #' @description
     #' Print a human-readable summary of the store.
+    #' @description
+    #' Return the absolute filesystem path for zarrs dispatch.
+    #' @return A character string.
+    get_store_identifier = function() {
+      normalizePath(self$root, mustWork = FALSE)
+    },
     #' @param ... Ignored.
     #' @return `self` (invisibly).
     print = function(...) {
@@ -655,6 +670,12 @@ HttpStore <- R6::R6Class("HttpStore",
     },
     #' @description
     #' Print a human-readable summary of the store.
+    #' @description
+    #' Return the store URL for zarrs dispatch.
+    #' @return A character string.
+    get_store_identifier = function() {
+      private$url
+    },
     #' @param ... Ignored.
     #' @return `self` (invisibly).
     print = function(...) {
