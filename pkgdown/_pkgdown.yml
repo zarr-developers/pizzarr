@@ -91,6 +91,22 @@ reference:
   - zarr_volcano
   - pizzarr_option_defaults
   - Dtype
+- title: "zarrs backend"
+  desc: >
+    Functions for the optional zarrs Rust backend, providing parallel
+    chunk I/O and additional codec support. Available when the package
+    is installed from r-universe with Rust compilation.
+- contents:
+  - pizzarr_compiled_features
+  - pizzarr_upgrade
+  - zarrs_close_store
+  - zarrs_compiled_features
+  - zarrs_get_subset
+  - zarrs_node_exists
+  - zarrs_open_array_metadata
+  - zarrs_runtime_info
+  - zarrs_set_codec_concurrent_target
+  - zarrs_set_subset
 
 
 articles:
@@ -105,6 +121,7 @@ articles:
       - parallel
       - v3-read
       - v3-interop
+      - zarrs-backend
   - title: Troubleshooting
     navbar: Troubleshooting
     contents:
