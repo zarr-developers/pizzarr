@@ -3,9 +3,12 @@ on:
   push:
     branches:
       - main
+      - develop
+      - 'release/**'
   pull_request:
     branches:
       - main
+      - develop
 
 name: Zarr conformance tests
 
