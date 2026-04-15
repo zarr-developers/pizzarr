@@ -1,3 +1,18 @@
+# pizzarr 0.2.0-dev
+
+* Two-tier distribution: CRAN ships pure R; r-universe ships pre-built binaries
+  with the zarrs Rust backend compiled in.
+* Added zarrs Rust backend via extendr for parallel decompression and additional
+  codec support (gzip, zstd, transpose).
+* r-universe builds require no Rust toolchain for end users.
+* New functions: `is_zarrs_available()`, `pizzarr_compiled_features()`,
+  `pizzarr_upgrade()`.
+
+# pizzarr 0.1.3 (never released)
+
+* Added `set_dimension_names()` / `get_dimension_names()` methods to `ZarrArray` (#170).
+* pkgdown site and documentation improvements (#171).
+
 # pizzarr 0.1.2
 
 * Added `get_dimension_names()` method to `ZarrArray` for V3 dimension names support.

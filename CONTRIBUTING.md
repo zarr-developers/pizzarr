@@ -1,8 +1,45 @@
 # Contributing to pizzarr
 
+## Branching and Release Model
+
+pizzarr uses three branch types tied to its two distribution tiers
+(CRAN and r-universe).
+
+- **`develop`** — active development. Pull requests target `develop`.
+  DESCRIPTION carries a `.9000` suffix (e.g., `0.2.0.9000`) and
+  Cargo.toml uses a `-dev` pre-release tag (`0.2.0-dev`).
+- **`release/X.Y.Z`** — release candidate. Cut from `develop` when
+  ready to ship. The `.9000` / `-dev` suffixes are dropped, `NEWS.md`
+  is finalized, and the CRAN tarball is built with
+  `bash tools/cran-build.sh`. This branch is PR'd to `main`.
+- **`main`** — release-only. Always matches the latest version accepted
+  by CRAN. r-universe auto-builds from `main`, so the r-universe binary
+  (which includes the compiled zarrs Rust backend) tracks the same
+  release version as CRAN. pkgdown deploys from `main`.
+
+The release sequence:
+
+1. Development proceeds on `develop` (version `X.Y.Z.9000`).
+2. Cut a `release/X.Y.Z` branch from `develop`. Drop the `.9000` /
+   `-dev` suffixes, finalize `NEWS.md`, and submit to CRAN via
+   `bash tools/cran-build.sh`.
+3. Open a PR from `release/X.Y.Z` to `main`. Do not merge until CRAN
+   has accepted the package.
+4. After CRAN acceptance, merge the PR to `main`. r-universe picks up
+   the new commit and builds binaries with the zarrs backend. pkgdown
+   rebuilds.
+5. Merge `main` back into `develop` and bump the version to the next
+   `X.Y.Z.9000`.
+
+Both CRAN and r-universe serve the same version number. The difference
+is the build: CRAN gets pure R (no Rust), r-universe gets the zarrs
+backend. Users can check which tier they have with
+`pizzarr_compiled_features()`.
+
 ## Development Setup
 
 ``` r
+# make sure you are on the develop branch
 setwd("path/to/pizzarr")
 install.packages("devtools")
 devtools::install()

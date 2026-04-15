@@ -3,11 +3,14 @@
 //! Stores are expensive to open. This module provides a singleton
 //! `HashMap` that maps normalized store URLs to opened zarrs stores.
 //! Stores persist until explicitly removed via [`remove`].
+//!
+//! On native targets the cache lives in a `LazyLock<RwLock<...>>`.
+//! On Wasm (single-threaded) we use a `thread_local! { RefCell<...> }`
+//! to avoid `Send + Sync` bounds that the Wasm target cannot satisfy.
 
 use std::collections::HashMap;
-use std::sync::{Arc, LazyLock};
+use std::sync::Arc;
 
-use parking_lot::RwLock;
 use zarrs_storage::ReadableWritableListableStorage;
 
 use crate::error::PizzarrError;
@@ -20,9 +23,98 @@ use crate::error::PizzarrError;
 /// this will become a tagged enum.
 pub(crate) type StorageEntry = ReadableWritableListableStorage;
 
-/// Process-global store cache.
-static STORE_CACHE: LazyLock<RwLock<HashMap<String, StorageEntry>>> =
-    LazyLock::new(|| RwLock::new(HashMap::new()));
+// ---------------------------------------------------------------------------
+// Native: LazyLock + RwLock (thread-safe)
+// ---------------------------------------------------------------------------
+#[cfg(not(target_family = "wasm"))]
+mod inner {
+    use super::*;
+    use std::sync::LazyLock;
+    use parking_lot::RwLock;
+
+    static STORE_CACHE: LazyLock<RwLock<HashMap<String, StorageEntry>>> =
+        LazyLock::new(|| RwLock::new(HashMap::new()));
+
+    pub(crate) fn get_or_insert<F>(
+        key: &str,
+        normalized: &str,
+        factory: F,
+    ) -> Result<StorageEntry, PizzarrError>
+    where
+        F: FnOnce(&str) -> Result<StorageEntry, PizzarrError>,
+    {
+        // Fast path: read lock.
+        {
+            let cache = STORE_CACHE.read();
+            if let Some(entry) = cache.get(normalized) {
+                return Ok(Arc::clone(entry));
+            }
+        }
+
+        // Slow path: write lock + double-check.
+        let mut cache = STORE_CACHE.write();
+        if let Some(entry) = cache.get(normalized) {
+            return Ok(Arc::clone(entry));
+        }
+
+        let store = factory(key)?;
+        cache.insert(normalized.to_string(), Arc::clone(&store));
+        Ok(store)
+    }
+
+    pub(crate) fn remove(normalized: &str) -> bool {
+        let mut cache = STORE_CACHE.write();
+        cache.remove(normalized).is_some()
+    }
+
+    pub(crate) fn entry_count() -> usize {
+        let cache = STORE_CACHE.read();
+        cache.len()
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Wasm: thread_local + RefCell (single-threaded, no Send/Sync needed)
+// ---------------------------------------------------------------------------
+#[cfg(target_family = "wasm")]
+mod inner {
+    use super::*;
+    use std::cell::RefCell;
+
+    thread_local! {
+        static STORE_CACHE: RefCell<HashMap<String, StorageEntry>> =
+            RefCell::new(HashMap::new());
+    }
+
+    pub(crate) fn get_or_insert<F>(
+        key: &str,
+        normalized: &str,
+        factory: F,
+    ) -> Result<StorageEntry, PizzarrError>
+    where
+        F: FnOnce(&str) -> Result<StorageEntry, PizzarrError>,
+    {
+        STORE_CACHE.with(|cache| {
+            let map = cache.borrow();
+            if let Some(entry) = map.get(normalized) {
+                return Ok(Arc::clone(entry));
+            }
+            drop(map);
+
+            let store = factory(key)?;
+            cache.borrow_mut().insert(normalized.to_string(), Arc::clone(&store));
+            Ok(store)
+        })
+    }
+
+    pub(crate) fn remove(normalized: &str) -> bool {
+        STORE_CACHE.with(|cache| cache.borrow_mut().remove(normalized).is_some())
+    }
+
+    pub(crate) fn entry_count() -> usize {
+        STORE_CACHE.with(|cache| cache.borrow().len())
+    }
+}
 
 /// Normalize a store URL for use as a cache key.
 ///
@@ -59,24 +151,7 @@ where
     F: FnOnce(&str) -> Result<StorageEntry, PizzarrError>,
 {
     let key = normalize_store_url(url);
-
-    // Fast path: read lock.
-    {
-        let cache = STORE_CACHE.read();
-        if let Some(entry) = cache.get(&key) {
-            return Ok(Arc::clone(entry));
-        }
-    }
-
-    // Slow path: write lock + double-check.
-    let mut cache = STORE_CACHE.write();
-    if let Some(entry) = cache.get(&key) {
-        return Ok(Arc::clone(entry));
-    }
-
-    let store = factory(&key)?;
-    cache.insert(key, Arc::clone(&store));
-    Ok(store)
+    inner::get_or_insert(url, &key, factory)
 }
 
 /// Remove a store from the cache.
@@ -84,8 +159,7 @@ where
 /// Returns `true` if the entry existed and was removed.
 pub(crate) fn remove(url: &str) -> bool {
     let key = normalize_store_url(url);
-    let mut cache = STORE_CACHE.write();
-    cache.remove(&key).is_some()
+    inner::remove(&key)
 }
 
 /// Return the number of entries in the store cache.
@@ -94,8 +168,7 @@ pub(crate) fn remove(url: &str) -> bool {
 #[must_use]
 #[allow(dead_code)]
 pub(crate) fn entry_count() -> usize {
-    let cache = STORE_CACHE.read();
-    cache.len()
+    inner::entry_count()
 }
 
 #[cfg(test)]

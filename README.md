@@ -14,14 +14,14 @@ A Zarr implementation for R.
 
 ## Installation
 
-pizzarr ships in two tiers. The CRAN build is pure R and needs nothing
-beyond base R dependencies. The
-[r-universe](https://zarr-developers.r-universe.dev/pizzarr) build
-links in the [zarrs](https://github.com/zarrs/zarrs) Rust crate via
+pizzarr ships in two tiers — same version, different builds. The CRAN
+build is pure R and needs nothing beyond base R dependencies. The
+[r-universe](https://zarr-developers.r-universe.dev/pizzarr) build links
+in the [zarrs](https://github.com/zarrs/zarrs) Rust crate via
 [extendr](https://extendr.github.io/rextendr/), adding parallel
 decompression and additional codec support.
 
-### CRAN
+### CRAN (pure R)
 
 ``` r
 install.packages("pizzarr")
@@ -35,11 +35,16 @@ install.packages("pizzarr",
                             "https://cloud.r-project.org"))
 ```
 
-r-universe distributes pre-compiled binaries for Windows and macOS, so
-users do not need a Rust toolchain.
-`pizzarr_compiled_features()` lists what the zarrs backend provides,
-and `pizzarr_upgrade()` prints the install command when zarrs is not
-compiled in. See `vignette("zarrs-backend")` for details.
+Both sources serve the same release version. The r-universe build
+distributes pre-compiled binaries for Windows and macOS — no Rust
+toolchain needed. `pizzarr_compiled_features()` lists what the zarrs
+backend provides, and `pizzarr_upgrade()` prints the install command
+when zarrs is not compiled in. See `vignette("zarrs-backend")` for
+details.
+
+Development happens on the `develop` branch. See
+[CONTRIBUTING.md](https://github.com/zarr-developers/pizzarr/blob/main/CONTRIBUTING.md)
+for the branching and release model.
 
 ## Usage
 
@@ -195,5 +200,6 @@ run automatically in CI on every push and pull request to `main`.
 
 ## Contributing
 
-See [CONTRIBUTING.md](https://github.com/zarr-developers/pizzarr/blob/main/CONTRIBUTING.md) for development setup, testing,
-and documentation build instructions.
+See
+[CONTRIBUTING.md](https://github.com/zarr-developers/pizzarr/blob/main/CONTRIBUTING.md)
+for development setup, testing, and documentation build instructions.
