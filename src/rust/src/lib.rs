@@ -19,6 +19,7 @@ mod retrieve;
 mod store;
 mod store_cache;
 mod store_open;
+mod transpose;
 
 /// Return compiled zarrs feature flags as a character vector.
 ///
@@ -42,6 +43,9 @@ pub(crate) fn compiled_features() -> Vec<String> {
     // Store backends
     #[cfg(feature = "filesystem")]
     features.push("filesystem".into());
+
+    #[cfg(feature = "http_sync")]
+    features.push("http_sync".into());
 
     // Codec features are set via zarrs Cargo features.
     #[cfg(feature = "gzip")]
@@ -223,6 +227,7 @@ fn zarrs_set_subset(
 
 /// Convenience wrapper around `ReadableStorageTraits::get`.
 ///
+/// Extracts the readable storage from the cache entry and reads the key.
 /// Maps the zarrs `StorageError` into a [`error::PizzarrError::ArrayOpen`]
 /// with the given URL and path context.
 fn store_get(
@@ -232,7 +237,8 @@ fn store_get(
     path: &str,
 ) -> std::result::Result<zarrs_storage::MaybeBytes, error::PizzarrError> {
     use zarrs_storage::ReadableStorageTraits;
-    store.get(key).map_err(|e| error::PizzarrError::ArrayOpen {
+    let readable = store.as_readable();
+    readable.get(key).map_err(|e| error::PizzarrError::ArrayOpen {
         url: store_url.to_string(),
         path: path.to_string(),
         reason: e.to_string(),

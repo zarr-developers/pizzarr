@@ -27,9 +27,8 @@ test_that("zarrs round-trip write+read 2D int32", {
   # Read back via zarrs
   result <- zarrs_get_subset(d, "", list(c(0L, 4L), c(0L, 5L)), NULL)
   expect_equal(result$shape, c(4L, 5L))
-  # Verify values match (zarrs returns C-order, so reshape)
-  arr <- array(result$data, dim = rev(c(4, 5)))
-  arr <- aperm(arr, 2:1)
+  # zarrs returns F-order data; reshape directly
+  arr <- array(result$data, dim = c(4, 5))
   expect_equal(arr, data)
 
   zarrs_close_store(d)

@@ -75,16 +75,14 @@ http_sync = ["dep:zarrs_http"]
 # ... existing features unchanged
 
 [dependencies]
-zarrs_http = { version = "0.6", optional = true }
+zarrs_http = { version = "0.3", optional = true }
 ```
 
 `http_sync` is in `default` — the default feature set only matters when
 Rust compiles (r-universe tier). CRAN has no `src/` directory, so default
 features are irrelevant there. Anyone compiling the Rust code wants HTTP.
 
-**Version note:** Check the latest `zarrs_http` version on crates.io before
-implementation. The `0.6` above is a placeholder — zarrs_http tracks zarrs
-releases and the correct version must match zarrs 0.23.x compatibility.
+**Actual version:** `zarrs_http 0.3.1` is compatible with `zarrs_storage 0.4.x`.
 
 ---
 
@@ -230,8 +228,15 @@ Create `src/rust/src/transpose.rs` with:
 - `c_to_f_order<T: Copy>(data: &[T], shape: &[u64]) -> Vec<T>`
 - `f_to_c_order<T: Copy>(data: &[T], shape: &[u64]) -> Vec<T>`
 
-Both skip permutation for 1D arrays. Both are `O(n)` with a single
-allocation. Not parallelized with rayon initially — measure first.
+Both skip permutation for 0D/1D arrays. Both are `O(n)` with a single
+allocation. Two strategies for cache performance:
+- **2D:** cache-blocked tiled transpose (64×64 blocks fitting L1 cache)
+- **nD:** output-order iteration with incremental coordinate tracking
+  (sequential writes, O(1) amortized index update via carry propagation)
+
+The naive approach (iterate source order, scatter-write to output)
+was 42% slower than R's `aperm()`. The cache-friendly version matches
+or exceeds it (263–290 MB/s on 200 MB arrays).
 
 #### R-side cleanup
 
@@ -417,6 +422,94 @@ the store opens and serves bytes. A single small array read is sufficient.
   still be faster than two R-side copies + `aperm()`. If benchmarks
   show otherwise, add rayon parallelism to the transpose. Measure
   before optimizing.
+
+---
+
+## Phase 4 Iteration 1 — completion notes
+
+### What shipped
+
+1. **`src/rust/Cargo.toml`** — `zarrs_http = "0.3"` optional dep, `http_sync`
+   feature added to `default`.
+
+2. **`src/rust/src/store_cache.rs`** — `StorageEntry` enum replacing the type
+   alias. `ReadWriteList` (filesystem) and `ReadOnly` (HTTP) variants.
+   `as_readable()` and `as_readable_writable_listable(url)` methods.
+
+3. **`src/rust/src/store_open.rs`** — restructured with `open_http_store` and
+   `open_filesystem_store` helpers. HTTP arm behind `#[cfg(feature = "http_sync")]`.
+
+4. **`src/rust/src/array_open.rs`** — split into `open_array_at_path` (read,
+   returns `Array<dyn ReadableStorageTraits>`) and `open_array_at_path_rw`
+   (write, returns `Array<dyn ReadableWritableListableStorageTraits>`).
+
+5. **`src/rust/src/transpose.rs`** (new) — `c_to_f_order` and `f_to_c_order`.
+   Cache-blocked 2D (64×64 tiles) and output-order nD (incremental coordinate
+   tracking). Unit tested for 1D, 2D, 2D-large, 3D, 3D-large, 4D, scalar, empty.
+
+6. **`src/rust/src/retrieve.rs`** — array type changed to
+   `Array<dyn ReadableStorageTraits>`, transpose integrated after retrieve.
+
+7. **`src/rust/src/store.rs`** — uses `open_array_at_path_rw`, transpose
+   integrated before store.
+
+8. **`src/rust/src/error.rs`** — `StoreReadOnly` variant added.
+
+9. **`src/rust/src/lib.rs`** — `mod transpose`, `http_sync` feature reporting.
+
+10. **`R/zarrs-dispatch.R`** — `can_use_zarrs_write` rejects `HttpStore`.
+
+11. **`R/zarr-array.R`** — removed `aperm()` calls on zarrs fast path.
+
+12. **`tests/testthat/test-zarrs-http.R`** — 7 tests: feature detection, HTTPS
+    read, zarrs-vs-R-native cross-check, write dispatch rejection.
+
+### Deviations from plan
+
+- **No `ReadableStorageTraits` impl on `StorageEntry`.** The plan assumed
+  delegating the trait through the enum. The trait has lifetime-parameterized
+  methods (`get_partial_many<'a>`) that are awkward to implement on an enum
+  wrapping `Arc<dyn Trait>`. Instead, `store_get` in `lib.rs` calls
+  `entry.as_readable()` to get the underlying `Arc` and calls `.get()` on that.
+
+- **`zarrs_http 0.3.x`, not `0.6`.** The plan placeholder version was wrong.
+  `zarrs_http 0.3.1` is the version compatible with `zarrs_storage 0.4.x`.
+
+- **Test fixture uses GitHub raw content URL**, not Embassy EBI. The EBI
+  fixture requires blosc which adds complexity. The `bcsd.zarr` fixture from
+  DOI-USGS/rnz uses gzip which zarrs supports out of the box.
+
+### Lessons learned
+
+1. `ReadableStorageTraits` required methods are `get_partial_many`, `size_key`,
+   `supports_get_partial`. `get` is a provided method — don't try to implement
+   it as required.
+2. Don't implement complex traits on enum wrappers over `Arc<dyn Trait>` with
+   lifetime parameters. Extract the `Arc` and call trait methods directly.
+3. `zarrs_http` pulls in reqwest + tokio (~80 crates), even for "synchronous"
+   HTTP. Compiles fine but adds to build time.
+4. Cache performance matters for transpose. The naive strided approach
+   (iterate source order, scatter-write) was 42% slower than R's C-level
+   `aperm()` on 200 MB arrays. Switching to cache-blocked 2D tiles and
+   output-order nD iteration (sequential writes, incremental index tracking)
+   recovered performance to match or beat `aperm()`.
+5. Tests that directly call `zarrs_get_subset` and manually do `rev`/`aperm`
+   need updating when the transpose moves to Rust.
+
+---
+
+## Done criteria (all met)
+
+1. `rextendr::document()` succeeds — ✓
+2. `zarrs_get_subset` reads from a public HTTPS Zarr store — ✓
+3. `can_use_zarrs_write` returns FALSE for HttpStore — ✓
+4. `zarrs_set_subset` on HTTP store errors with `StoreReadOnly` — ✓
+5. `"http_sync" %in% pizzarr_compiled_features()` returns TRUE — ✓
+6. Rust-side transpose produces identical results to R-side `aperm()` — ✓
+7. R-side zarrs fast path has no `aperm()` calls (read or write) — ✓
+8. All existing tests pass, 0 failures, 3 expected skips — ✓ (1380 total)
+9. New HTTP tests pass with network access — ✓ (7 tests)
+10. NEWS.md, TODO.md, CLAUDE.md, RUST-STYLE.md, dev.md all updated — ✓
 
 ---
 

@@ -87,7 +87,7 @@ pub(crate) fn open_array_metadata(
 /// Queries the chunk grid at the origin index. Only regular
 /// (fixed-size) chunk grids are supported.
 fn extract_chunk_shape(
-    array: &zarrs::array::Array<dyn zarrs_storage::ReadableWritableListableStorageTraits>,
+    array: &zarrs::array::Array<dyn zarrs_storage::ReadableStorageTraits>,
     ndim: usize,
     store_url: &str,
     array_path: &str,

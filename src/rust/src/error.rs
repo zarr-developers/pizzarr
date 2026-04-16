@@ -61,6 +61,13 @@ pub(crate) enum PizzarrError {
         dtype: String,
     },
 
+    /// Attempted to write to a read-only store (e.g., HTTP).
+    #[error("StoreReadOnly({url}): cannot write to read-only store")]
+    StoreReadOnly {
+        /// Store URL or path.
+        url: String,
+    },
+
     /// A required compiled feature is not available.
     #[error("FeatureNotCompiled({feature}): install from r-universe")]
     FeatureNotCompiled {

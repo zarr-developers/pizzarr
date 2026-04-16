@@ -281,8 +281,9 @@ result$data
 ### Direct zarrs_set_subset call
 
 `zarrs_set_subset()` provides lower-level access to the Rust write path.
-Data must be a flat vector in C-order (row-major). The function returns `TRUE`
-on success:
+Data is a flat vector in R's native F-order (column-major) --- the Rust
+backend handles the F-to-C order conversion internally. The function returns
+`TRUE` on success:
 
 ```{r, eval=has_zarrs}
 # Write 10 values to the first row (0-based range [0, 1) x [0, 10))
@@ -298,9 +299,90 @@ zarrs_close_store(d)
 unlink(d, recursive = TRUE)
 ```
 
-## Remote stores
+## HTTP reads via zarrs
 
-<!-- TODO: Phase 4 — HTTP, S3, GCS backends via object_store -->
+When the `http_sync` feature is compiled in, the zarrs backend can read
+directly from HTTP/HTTPS Zarr stores using the
+[zarrs_http](https://github.com/zarrs/zarrs_http) crate. This bypasses
+pizzarr's R-native `crul`-based chunk loop, giving parallel chunk decode
+on remote data.
+
+HTTP stores are read-only in zarrs --- write dispatch (`set_item`) falls
+through to the R-native path automatically.
+
+### Transparent dispatch
+
+The zarrs fast path activates automatically when an `HttpStore`-backed
+array is read with a contiguous selection. No code changes are needed
+compared to the R-native path:
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+url <- "https://raw.githubusercontent.com/DOI-USGS/rnz/main/inst/extdata/bcsd.zarr"
+
+z <- zarr_open(store = HttpStore$new(url))
+
+# zarrs handles the HTTP reads + parallel decompression
+pr <- z$get_item("pr")
+pr
+```
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+# Read a subset --- zarrs fetches only the chunks that overlap
+result <- pr$get_item(list(slice(1L, 3L), slice(1L, 5L), slice(1L, 5L)))
+dim(result$data)
+```
+
+### Direct zarrs_get_subset from HTTP
+
+`zarrs_get_subset()` also works with HTTP URLs. The store handle is cached
+on the Rust side, so repeated reads to the same URL reuse the connection:
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+meta <- zarrs_open_array_metadata(url, "pr")
+str(meta[c("shape", "dtype", "zarr_format")])
+```
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+# Read a single element (first along each dimension)
+ranges <- lapply(seq_along(meta$shape), function(i) c(0L, 1L))
+result <- zarrs_get_subset(url, "pr", ranges, NULL)
+result$data
+```
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+zarrs_close_store(url)
+```
+
+### Feature detection
+
+Check whether HTTP support is compiled in with `pizzarr_compiled_features()`.
+When `"http_sync"` is present, zarrs can open `http://` and `https://` URLs.
+When it is absent, HTTP reads fall through to the R-native `crul`-based path:
+
+```{r, eval=has_zarrs}
+"http_sync" %in% pizzarr_compiled_features()
+```
+
+### Future: S3 and GCS
+
+Cloud object-store backends (S3, GCS, Azure) via
+[zarrs_object_store](https://github.com/zarrs/zarrs_object_store) are planned
+for a future iteration. These require a tokio async runtime and the `full`
+Cargo feature flag.
+
+## C/F order handling
+
+zarrs stores data in C-order (row-major), while R uses F-order (column-major).
+The Rust backend handles this conversion transparently:
+
+- **Reads:** `zarrs_get_subset()` returns data in F-order, ready for
+  `array(data, dim = shape)` with no `aperm()` needed.
+- **Writes:** `zarrs_set_subset()` accepts F-order data and converts to C-order
+  internally before writing to the store.
+
+The transpose uses cache-blocked tiling for 2D arrays and output-order
+iteration with incremental index tracking for higher dimensions, matching or
+exceeding the performance of R's C-level `aperm()`.
 
 ```{r, include=FALSE}
 if (clean) unlink(sample_dir, recursive = TRUE)

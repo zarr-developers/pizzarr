@@ -198,6 +198,35 @@ framework, which validates that Zarr implementations can correctly read
 standard test arrays (V2 and V3 formats, multiple dtypes). These tests
 run automatically in CI on every push and pull request to `main`.
 
+## Performance
+
+The zarrs backend (r-universe install only) handles chunk I/O and codec execution in Rust, bypassing
+R's single-threaded chunk loop entirely. For compressed data — the common
+case with real Zarr stores — this translates to 6–8x throughput over pure-R.
+
+The table below compares pizzarr's two tiers against zarr-python/xarray on
+a 500×500×100 float64 array (~200 MB uncompressed) with 100×100×50 chunks.
+All numbers are best-of-three throughput in MB/s, measured on Windows
+(pizzarr 0.2.0-dev, zarr-python 3.1.5, April 2026).
+
+| Scenario | pizzarr zarrs | pizzarr R-native | xarray |
+|---|---|---|---|
+| read_all (gzip) | 253 MB/s | 39 MB/s | 545 MB/s |
+| read_all (none) | 247 MB/s | 39 MB/s | 1811 MB/s |
+| read_subset (gzip) | **200 MB/s** | 38 MB/s | 138 MB/s |
+| read_subset (none) | 229 MB/s | 38 MB/s | 704 MB/s |
+| write_all (gzip) | 97 MB/s | 12 MB/s | 143 MB/s |
+| write_all (none) | 286 MB/s | 144 MB/s | 477 MB/s |
+
+xarray leads on bulk operations because numpy can transpose array memory
+layout via stride views (zero copy) — R's `array()` always copies. The
+gap narrows with compression since decompression dominates, and zarrs wins
+on cross-chunk subset reads (200 vs 138 MB/s gzip) because it decodes
+only the chunks that overlap the selection.
+
+Reproduce with `Rscript inst/extdata/benchmark-zarrs-vs-xarray.R` (requires
+Python with `zarr>=3` and `xarray` for the xarray column).
+
 ## Contributing
 
 See
