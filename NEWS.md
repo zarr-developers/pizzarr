@@ -7,6 +7,11 @@
 * r-universe builds require no Rust toolchain for end users.
 * New functions: `is_zarrs_available()`, `pizzarr_compiled_features()`,
   `pizzarr_upgrade()`.
+* HTTP/HTTPS reads via zarrs (`zarrs_http` crate). When the zarrs backend is
+  available, `HttpStore`-backed arrays use zarrs for parallel chunk decode
+  on remote data. R-native `crul`-based path remains as fallback.
+* C-order ↔ F-order transpose moved from R (`aperm`) to Rust, eliminating
+  two full-array copies per read and up to five per write.
 
 # pizzarr 0.1.3 (never released)
 

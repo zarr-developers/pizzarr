@@ -51,6 +51,8 @@ can_use_zarrs <- function(indexer, store) {
 #' @return Logical scalar.
 #' @keywords internal
 can_use_zarrs_write <- function(indexer, store) {
+  # HTTP stores are read-only in zarrs
+  if (inherits(store, "HttpStore")) return(FALSE)
   can_use_zarrs(indexer, store)
 }
 

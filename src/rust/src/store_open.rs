@@ -1,7 +1,7 @@
 //! Store opening: URL to zarrs store handle.
 //!
-//! Phase 1 supports only filesystem stores (bare paths and `file://`
-//! URLs). HTTP, S3, and GCS backends will be added in Phase 4.
+//! Phase 1 supports filesystem stores (bare paths and `file://` URLs).
+//! Phase 4 adds synchronous HTTP via `zarrs_http::HTTPStore`.
 
 use std::sync::Arc;
 
@@ -10,39 +10,83 @@ use crate::store_cache::{self, StorageEntry};
 
 /// Open (or reuse) a store for the given URL.
 ///
-/// Currently only filesystem paths are supported:
+/// Supported URL schemes:
 /// - Bare path: `/path/to/store` or `C:\path\to\store`
 /// - `file:///path/to/store`
+/// - `http://` or `https://` (requires `http_sync` feature)
 ///
 /// # Errors
 ///
-/// Returns [`PizzarrError::StoreOpen`] if the path is invalid or
+/// Returns [`PizzarrError::StoreOpen`] if the path/URL is invalid or
 /// the store cannot be created.
 /// Returns [`PizzarrError::FeatureNotCompiled`] for unsupported URL
-/// schemes (HTTP, S3, GCS, Azure).
+/// schemes.
 pub(crate) fn open_store(url: &str) -> Result<StorageEntry, PizzarrError> {
     store_cache::get_or_insert(url, |_normalized_url| {
+        let trimmed = url.trim_end_matches('/');
+
+        // --- HTTP/HTTPS ---
+        if trimmed.starts_with("http://") || trimmed.starts_with("https://") {
+            return open_http_store(trimmed);
+        }
+
+        // --- S3/GCS/Azure ---
+        if trimmed.starts_with("s3://")
+            || trimmed.starts_with("gs://")
+            || trimmed.starts_with("az://")
+        {
+            return Err(PizzarrError::FeatureNotCompiled {
+                feature: "full".to_string(),
+            });
+        }
+
+        // --- Filesystem ---
         let path = url_to_path(url)?;
-
-        #[cfg(feature = "filesystem")]
-        {
-            let store = zarrs_filesystem::FilesystemStore::new(&path).map_err(|e| {
-                PizzarrError::StoreOpen {
-                    url: url.to_string(),
-                    reason: e.to_string(),
-                }
-            })?;
-            Ok(Arc::new(store) as StorageEntry)
-        }
-
-        #[cfg(not(feature = "filesystem"))]
-        {
-            let _ = path;
-            Err(PizzarrError::FeatureNotCompiled {
-                feature: "filesystem".to_string(),
-            })
-        }
+        open_filesystem_store(url, &path)
     })
+}
+
+/// Open a filesystem store.
+fn open_filesystem_store(url: &str, path: &str) -> Result<StorageEntry, PizzarrError> {
+    #[cfg(feature = "filesystem")]
+    {
+        let store = zarrs_filesystem::FilesystemStore::new(path).map_err(|e| {
+            PizzarrError::StoreOpen {
+                url: url.to_string(),
+                reason: e.to_string(),
+            }
+        })?;
+        Ok(StorageEntry::ReadWriteList(Arc::new(store)))
+    }
+
+    #[cfg(not(feature = "filesystem"))]
+    {
+        let _ = path;
+        Err(PizzarrError::FeatureNotCompiled {
+            feature: "filesystem".to_string(),
+        })
+    }
+}
+
+/// Open an HTTP store (read-only).
+#[allow(unused_variables)]
+fn open_http_store(url: &str) -> Result<StorageEntry, PizzarrError> {
+    #[cfg(feature = "http_sync")]
+    {
+        let http_store =
+            zarrs_http::HTTPStore::new(url).map_err(|e| PizzarrError::StoreOpen {
+                url: url.to_string(),
+                reason: e.to_string(),
+            })?;
+        Ok(StorageEntry::ReadOnly(Arc::new(http_store)))
+    }
+
+    #[cfg(not(feature = "http_sync"))]
+    {
+        Err(PizzarrError::FeatureNotCompiled {
+            feature: "http_sync".to_string(),
+        })
+    }
 }
 
 /// Extract a filesystem path from a URL or bare path.
@@ -72,17 +116,6 @@ fn url_to_path(url: &str) -> Result<String, PizzarrError> {
         {
             Ok(rest.to_string())
         }
-    } else if trimmed.starts_with("http://") || trimmed.starts_with("https://") {
-        Err(PizzarrError::FeatureNotCompiled {
-            feature: "http".to_string(),
-        })
-    } else if trimmed.starts_with("s3://")
-        || trimmed.starts_with("gs://")
-        || trimmed.starts_with("az://")
-    {
-        Err(PizzarrError::FeatureNotCompiled {
-            feature: "full".to_string(),
-        })
     } else {
         // Bare filesystem path.
         Ok(trimmed.to_string())
@@ -112,14 +145,5 @@ mod tests {
             url_to_path("file:///C:/Users/data").unwrap(),
             "C:/Users/data"
         );
-    }
-
-    #[test]
-    fn url_to_path_unsupported_scheme_errors() {
-        assert!(url_to_path("http://example.com/data").is_err());
-        assert!(url_to_path("https://example.com/data").is_err());
-        assert!(url_to_path("s3://bucket/prefix").is_err());
-        assert!(url_to_path("gs://bucket/prefix").is_err());
-        assert!(url_to_path("az://container/prefix").is_err());
     }
 }

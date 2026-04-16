@@ -10,8 +10,9 @@ crate-type = ["staticlib"]
 name = "pizzarr"
 
 [features]
-default = ["filesystem", "gzip", "zstd", "transpose"]
+default = ["filesystem", "http_sync", "gzip", "zstd", "transpose"]
 filesystem = ["zarrs/filesystem", "dep:zarrs_filesystem"]
+http_sync = ["dep:zarrs_http"]
 transpose = ["zarrs/transpose"]
 gzip = ["zarrs/gzip"]
 blosc = ["zarrs/blosc"]
@@ -24,6 +25,7 @@ zarrs = { version = "0.23", default-features = false }
 zarrs_codec = "0.2"
 zarrs_storage = "0.4"
 zarrs_filesystem = { version = "0.3", optional = true }
+zarrs_http = { version = "0.3", optional = true }
 serde_json = "1"
 thiserror = "2"
 

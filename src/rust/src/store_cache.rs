@@ -11,17 +11,51 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use zarrs_storage::ReadableWritableListableStorage;
+use zarrs_storage::{ReadableStorage, ReadableWritableListableStorage};
 
 use crate::error::PizzarrError;
 
 /// A cached store entry.
 ///
-/// `FilesystemStore` implements all three trait families
-/// (`Readable`, `Writable`, `Listable`), so the widest trait object
-/// works for Phase 1. When read-only backends arrive (Phase 4),
-/// this will become a tagged enum.
-pub(crate) type StorageEntry = ReadableWritableListableStorage;
+/// Filesystem stores implement all three trait families (Readable,
+/// Writable, Listable) and get stored as `ReadWriteList`. HTTP stores
+/// are read-only and get stored as `ReadOnly`.
+#[derive(Clone)]
+pub(crate) enum StorageEntry {
+    /// Full read-write-list store (e.g., `FilesystemStore`).
+    ReadWriteList(ReadableWritableListableStorage),
+    /// Read-only store (e.g., `HTTPStore`).
+    ReadOnly(ReadableStorage),
+}
+
+impl StorageEntry {
+    /// Get a readable storage handle suitable for `Array::open` and
+    /// `retrieve_array_subset`.
+    ///
+    /// Both variants satisfy `ReadableStorageTraits`.
+    pub(crate) fn as_readable(&self) -> ReadableStorage {
+        match self {
+            Self::ReadWriteList(s) => Arc::clone(s) as ReadableStorage,
+            Self::ReadOnly(s) => Arc::clone(s),
+        }
+    }
+
+    /// Get the full read-write-list storage handle, or error if this
+    /// is a read-only store.
+    ///
+    /// Used by the write path, which requires `WritableStorageTraits`.
+    pub(crate) fn as_readable_writable_listable(
+        &self,
+        url: &str,
+    ) -> std::result::Result<ReadableWritableListableStorage, PizzarrError> {
+        match self {
+            Self::ReadWriteList(s) => Ok(Arc::clone(s)),
+            Self::ReadOnly(_) => Err(PizzarrError::StoreReadOnly {
+                url: url.to_string(),
+            }),
+        }
+    }
+}
 
 // ---------------------------------------------------------------------------
 // Native: LazyLock + RwLock (thread-safe)
@@ -47,18 +81,18 @@ mod inner {
         {
             let cache = STORE_CACHE.read();
             if let Some(entry) = cache.get(normalized) {
-                return Ok(Arc::clone(entry));
+                return Ok(entry.clone());
             }
         }
 
         // Slow path: write lock + double-check.
         let mut cache = STORE_CACHE.write();
         if let Some(entry) = cache.get(normalized) {
-            return Ok(Arc::clone(entry));
+            return Ok(entry.clone());
         }
 
         let store = factory(key)?;
-        cache.insert(normalized.to_string(), Arc::clone(&store));
+        cache.insert(normalized.to_string(), store.clone());
         Ok(store)
     }
 
@@ -97,12 +131,12 @@ mod inner {
         STORE_CACHE.with(|cache| {
             let map = cache.borrow();
             if let Some(entry) = map.get(normalized) {
-                return Ok(Arc::clone(entry));
+                return Ok(entry.clone());
             }
             drop(map);
 
             let store = factory(key)?;
-            cache.borrow_mut().insert(normalized.to_string(), Arc::clone(&store));
+            cache.borrow_mut().insert(normalized.to_string(), store.clone());
             Ok(store)
         })
     }
@@ -140,7 +174,7 @@ pub(crate) fn normalize_store_url(url: &str) -> String {
 /// Get or insert a store into the cache.
 ///
 /// If the normalized URL already has a cached entry, returns a clone
-/// of the `Arc`. Otherwise calls `factory` to create a new store and
+/// of the entry. Otherwise calls `factory` to create a new store and
 /// inserts it.
 ///
 /// # Errors
@@ -164,7 +198,7 @@ pub(crate) fn remove(url: &str) -> bool {
 
 /// Return the number of entries in the store cache.
 ///
-/// Used by `zarrs_runtime_info` (Phase 2).
+/// Used by `zarrs_runtime_info`.
 #[must_use]
 #[allow(dead_code)]
 pub(crate) fn entry_count() -> usize {

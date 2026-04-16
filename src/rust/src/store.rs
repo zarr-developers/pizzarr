@@ -1,8 +1,9 @@
 //! Store array subsets via zarrs.
 //!
 //! Implements the write path: open an array, convert R-side ranges to
-//! an `ArraySubset`, dispatch on the stored data type, narrow from R
-//! types to stored types, and write the data.
+//! an `ArraySubset`, transpose from F-order to C-order, dispatch on
+//! the stored data type, narrow from R types to stored types, and
+//! write the data.
 
 use std::ops::Range;
 
@@ -13,6 +14,7 @@ use zarrs_codec::CodecOptions;
 use crate::array_open;
 use crate::dtype_dispatch::{self, RTypeFamily};
 use crate::error::PizzarrError;
+use crate::transpose;
 
 /// Store a contiguous subset of an array from R data.
 ///
@@ -22,7 +24,7 @@ use crate::error::PizzarrError;
 /// * `array_path` - Path to the array within the store.
 /// * `ranges` - R list of length-2 integer vectors `c(start, stop)`,
 ///   0-based, exclusive stop.
-/// * `data` - R vector (numeric, integer, or logical) in C-order.
+/// * `data` - R vector (numeric, integer, or logical) in F-order.
 /// * `concurrent_target` - Optional codec concurrency override.
 ///
 /// # Returns
@@ -31,9 +33,9 @@ use crate::error::PizzarrError;
 ///
 /// # Errors
 ///
-/// Returns an R error if the store/array cannot be opened, the dtype
-/// is unsupported, data cannot be narrowed to the stored type, or the
-/// store operation fails.
+/// Returns an R error if the store is read-only, the store/array
+/// cannot be opened, the dtype is unsupported, data cannot be narrowed
+/// to the stored type, or the store operation fails.
 pub(crate) fn store_subset(
     store_url: &str,
     array_path: &str,
@@ -41,10 +43,13 @@ pub(crate) fn store_subset(
     data: Robj,
     concurrent_target: Nullable<i32>,
 ) -> extendr_api::Result<bool> {
-    let array = array_open::open_array_at_path(store_url, array_path)?;
+    let array = array_open::open_array_at_path_rw(store_url, array_path)?;
 
     // Convert R list of c(start, stop) to Vec<Range<u64>>.
     let ranges_vec = parse_ranges(&ranges, store_url, array_path)?;
+
+    // Compute shape from ranges for F→C transpose.
+    let shape: Vec<u64> = ranges_vec.iter().map(|r| r.end - r.start).collect();
 
     let subset = ArraySubset::new_with_ranges(&ranges_vec);
 
@@ -61,7 +66,7 @@ pub(crate) fn store_subset(
             dtype: dt.to_string(),
         })?;
 
-    dispatch_store(&array, &subset, &opts, family, &data, store_url, array_path)?;
+    dispatch_store(&array, &subset, &opts, family, &data, &shape, store_url, array_path)?;
 
     Ok(true)
 }
@@ -139,22 +144,26 @@ fn extract_integers(data: &Robj, store_url: &str, array_path: &str) -> std::resu
 
 /// Dispatch storage based on R type family, narrowing as needed.
 ///
-/// Each arm extracts the R data, narrows to the stored type with
-/// range checks where necessary, and calls `store_with_opts`.
+/// Each arm extracts the R data (in F-order), transposes to C-order,
+/// narrows to the stored type with range checks where necessary, and
+/// calls `store_with_opts`.
 fn dispatch_store(
     array: &zarrs::array::Array<dyn zarrs_storage::ReadableWritableListableStorageTraits>,
     subset: &ArraySubset,
     opts: &CodecOptions,
     family: RTypeFamily,
     data: &Robj,
+    shape: &[u64],
     store_url: &str,
     array_path: &str,
 ) -> std::result::Result<(), PizzarrError> {
     // Macro for narrowing R doubles to a smaller numeric type.
+    // Extracts, transposes F→C, then narrows.
     macro_rules! narrow_double_to {
         ($t:ty) => {{
             let raw = extract_doubles(data, store_url, array_path)?;
-            let narrowed: Vec<$t> = raw
+            let transposed = transpose::f_to_c_order(&raw, shape);
+            let narrowed: Vec<$t> = transposed
                 .into_iter()
                 .map(|v| {
                     let converted = v as $t;
@@ -179,10 +188,12 @@ fn dispatch_store(
     }
 
     // Macro for narrowing R integers to a smaller integer type.
+    // Extracts, transposes F→C, then narrows.
     macro_rules! narrow_integer_to {
         ($t:ty) => {{
             let raw = extract_integers(data, store_url, array_path)?;
-            let narrowed: Vec<$t> = raw
+            let transposed = transpose::f_to_c_order(&raw, shape);
+            let narrowed: Vec<$t> = transposed
                 .into_iter()
                 .map(|v| {
                     <$t>::try_from(v).map_err(|_| PizzarrError::Store {
@@ -203,16 +214,19 @@ fn dispatch_store(
     match family {
         RTypeFamily::Double => {
             let raw = extract_doubles(data, store_url, array_path)?;
-            store_with_opts(array, subset, raw, opts, store_url, array_path)
+            let transposed = transpose::f_to_c_order(&raw, shape);
+            store_with_opts(array, subset, transposed, opts, store_url, array_path)
         }
         RTypeFamily::Float32AsDouble => {
             let raw = extract_doubles(data, store_url, array_path)?;
-            let narrowed: Vec<f32> = raw.into_iter().map(|v| v as f32).collect();
+            let transposed = transpose::f_to_c_order(&raw, shape);
+            let narrowed: Vec<f32> = transposed.into_iter().map(|v| v as f32).collect();
             store_with_opts(array, subset, narrowed, opts, store_url, array_path)
         }
         RTypeFamily::Integer => {
             let raw = extract_integers(data, store_url, array_path)?;
-            store_with_opts(array, subset, raw, opts, store_url, array_path)
+            let transposed = transpose::f_to_c_order(&raw, shape);
+            store_with_opts(array, subset, transposed, opts, store_url, array_path)
         }
         RTypeFamily::Int16AsInteger => narrow_integer_to!(i16),
         RTypeFamily::Int8AsInteger => narrow_integer_to!(i8),
@@ -231,7 +245,8 @@ fn dispatch_store(
                 })?
                 .to_vec();
             let bools: Vec<bool> = logicals.into_iter().map(|v| v.is_true()).collect();
-            store_with_opts(array, subset, bools, opts, store_url, array_path)
+            let transposed = transpose::f_to_c_order(&bools, shape);
+            store_with_opts(array, subset, transposed, opts, store_url, array_path)
         }
     }
 }

@@ -244,15 +244,12 @@ CRAN ships pure R. See TODO.md §2.2.
   `ElementOwned: Element` is a supertrait, so `ElementOwned` alone suffices
   for retrieve functions.
 
-### C-order → F-order conversion
-zarrs returns data in C-order (row-major). R uses F-order (column-major).
-For nD arrays, reshape with reversed dims then `aperm()` back:
-```r
-rev_shape <- rev(out_shape)
-arr <- array(result$data, dim = rev_shape)
-out$data <- aperm(arr, rev(seq_along(out_shape)))
-```
-For 1D arrays, `array(data, dim = shape)` is sufficient.
+### C-order → F-order conversion (superseded by Phase 4 Iteration 1)
+~~zarrs returns data in C-order (row-major). R uses F-order (column-major).
+For nD arrays, reshape with reversed dims then `aperm()` back.~~ As of
+Phase 4 Iteration 1, the C↔F transpose is done in Rust (`transpose.rs`)
+using cache-blocked 2D and output-order nD algorithms. The R side receives
+F-order data directly — no `aperm()` needed.
 
 ### R-side dispatch pattern
 The zarrs fast path is inserted in `get_selection()` and `set_selection()`
@@ -278,11 +275,70 @@ indistinguishable from a `tryCatch` returning `NULL` on error. For
 functions where success must be detectable, return `bool` (`true`)
 instead and check with `isTRUE(result)` in R.
 
-### F-order → C-order for writes
-Symmetric with the read path. R stores arrays in F-order (column-major),
-zarrs expects C-order (row-major). For nD writes:
-```r
-arr <- array(write_data, dim = zarrs_shape)
-arr <- aperm(arr, rev(seq_along(zarrs_shape)))
-write_data <- as.vector(arr)
+### F-order → C-order for writes (superseded by Phase 4 Iteration 1)
+~~Symmetric with the read path. R stores arrays in F-order (column-major),
+zarrs expects C-order (row-major).~~ As of Phase 4 Iteration 1, the C↔F
+transpose is done in Rust (`transpose.rs`). The R side passes flat F-order
+data and receives flat F-order data — no `aperm()` needed.
+
+## Lessons learned (Phase 4 Iteration 1)
+
+### zarrs_http (synchronous HTTP store)
+- **`zarrs_http 0.3.x` with `zarrs_storage 0.4.x`.** `HTTPStore::new(url)`
+  returns `Result<Self, HTTPStoreCreateError>`. Read-only: only implements
+  `ReadableStorageTraits`, not `WritableStorageTraits` or `ListableStorageTraits`.
+- **`zarrs_http` pulls in reqwest + tokio.** Even though it's "synchronous",
+  it uses `reqwest::blocking::Client` which internally spawns a tokio runtime.
+  This adds ~80 crates to the dependency tree but does not conflict with a
+  separate explicit tokio runtime.
+
+### StorageEntry enum for mixed read-only/read-write stores
+The store cache previously used `type StorageEntry = ReadableWritableListableStorage`.
+HTTP stores don't satisfy that type. Solution: a `Clone`-able enum:
+```rust
+enum StorageEntry {
+    ReadWriteList(ReadableWritableListableStorage),
+    ReadOnly(ReadableStorage),
+}
 ```
+- `as_readable()` returns `ReadableStorage` from either variant (for reads).
+- `as_readable_writable_listable(url)` returns the RWL storage or
+  `PizzarrError::StoreReadOnly` (for writes).
+- Don't implement `ReadableStorageTraits` directly on the enum — the trait
+  has lifetime-parameterized methods (`get_partial_many<'a>`) that are
+  awkward to delegate through `Arc<dyn Trait>`. Instead, call
+  `entry.as_readable()` to get an `Arc` that impls the trait natively.
+
+### ReadableStorageTraits API (zarrs_storage 0.4.x)
+Required methods are `get_partial_many`, `size_key`, `supports_get_partial`.
+`get` and `get_partial` are **provided** methods (not required). Don't try
+to implement `get` as a required method — it won't compile.
+
+### Separate array open functions for read vs write
+`Array::open` only requires `ReadableStorageTraits`. The write methods
+(`store_array_subset_opt`) require `ReadableWritableStorageTraits`. Rather
+than one `open_array_at_path` function, provide two:
+- `open_array_at_path` → `Array<dyn ReadableStorageTraits>` (for reads)
+- `open_array_at_path_rw` → `Array<dyn ReadableWritableListableStorageTraits>` (for writes)
+
+### Rust-side C↔F transpose
+zarrs returns C-order (row-major), R uses F-order (column-major). The
+transpose is in `transpose.rs`:
+```rust
+fn c_to_f_order<T: Copy>(data: &[T], shape: &[u64]) -> Vec<T>
+fn f_to_c_order<T: Copy>(data: &[T], shape: &[u64]) -> Vec<T>
+```
+Both skip permutation for 0D/1D arrays. Single allocation, `O(n)`.
+
+**Cache performance is critical.** The naive approach (iterate source order,
+scatter-write to output) thrashes the cache on large arrays — 159 MB/s vs
+274 MB/s for R's `aperm()` on 200 MB arrays. The fix uses two strategies:
+- **2D: cache-blocked tiled transpose.** Process 64×64 element blocks that
+  fit in L1 cache. Both source and destination accesses stay cache-local.
+- **nD: output-order iteration with incremental index tracking.** Iterate
+  output positions sequentially (cache-friendly writes). Track the source
+  index incrementally via coordinate carry propagation — O(1) amortized per
+  element, no division/modulo. Reads are scattered but hardware prefetching
+  handles reads better than scattered writes (no write-allocate overhead).
+
+This recovers performance: 263-290 MB/s, matching or exceeding R's `aperm()`.

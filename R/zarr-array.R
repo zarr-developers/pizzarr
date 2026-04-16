@@ -508,16 +508,10 @@ ZarrArray <- R6::R6Class("ZarrArray",
           error = function(e) NULL
         )
         if (!is.null(result)) {
-          # zarrs returns flat C-order data; reshape to F-order for R.
-          # Use the full zarrs shape (from ranges, including length-1 scalar
-          # dims) for C->F conversion, then squeeze to out_shape.
+          # zarrs returns flat F-order data (transposed in Rust).
+          # Reshape directly into R array with correct dims.
           zarrs_shape <- vapply(ranges, function(r) r[2L] - r[1L], integer(1))
-          if (length(zarrs_shape) > 1) {
-            arr <- array(result$data, dim = rev(zarrs_shape))
-            arr <- aperm(arr, rev(seq_along(zarrs_shape)))
-          } else {
-            arr <- array(result$data, dim = zarrs_shape)
-          }
+          arr <- array(result$data, dim = zarrs_shape)
           # Squeeze scalar dims (IntDimIndexer) to match out_shape.
           # Only apply when out_shape has fewer dims (length-1 dims dropped).
           os <- unlist(out_shape)
@@ -668,13 +662,8 @@ ZarrArray <- R6::R6Class("ZarrArray",
           } else {
             write_data <- as.vector(value)
           }
-          # F-order to C-order for nD arrays
-          zarrs_shape <- vapply(ranges, function(r) r[2L] - r[1L], integer(1))
-          if (length(zarrs_shape) > 1 && !is_scalar(write_data)) {
-            arr <- array(write_data, dim = zarrs_shape)
-            arr <- aperm(arr, rev(seq_along(zarrs_shape)))
-            write_data <- as.vector(arr)
-          }
+          # Rust handles F→C transpose internally; just flatten.
+          # Shape is passed via ranges so Rust knows the dimensions.
           result <- tryCatch(
             zarrs_set_subset(store_id, private$path, ranges, write_data, ct),
             error = function(e) NULL

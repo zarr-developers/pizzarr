@@ -2,7 +2,8 @@
 //!
 //! Implements the hot-path read function: open an array, convert R-side
 //! ranges to an `ArraySubset`, dispatch on the stored data type, retrieve
-//! elements, widen to R-compatible types, and return `list(data, shape)`.
+//! elements, transpose from C-order to F-order, widen to R-compatible
+//! types, and return `list(data, shape)`.
 
 use std::ops::Range;
 
@@ -13,6 +14,7 @@ use zarrs_codec::CodecOptions;
 use crate::array_open;
 use crate::dtype_dispatch::{self, RTypeFamily};
 use crate::error::PizzarrError;
+use crate::transpose;
 
 /// Retrieve a contiguous subset of an array as an R list.
 ///
@@ -27,7 +29,7 @@ use crate::error::PizzarrError;
 /// # Returns
 ///
 /// A named list with:
-/// - `data`: numeric, integer, or logical vector
+/// - `data`: numeric, integer, or logical vector (F-order)
 /// - `shape`: integer vector (one element per dimension)
 ///
 /// # Errors
@@ -46,7 +48,7 @@ pub(crate) fn retrieve_subset(
     let ranges_vec = parse_ranges(&ranges, store_url, array_path)?;
 
     // Compute output shape from ranges (each dim: stop - start).
-    let shape: Vec<i32> = ranges_vec.iter().map(|r| (r.end - r.start) as i32).collect();
+    let shape: Vec<u64> = ranges_vec.iter().map(|r| r.end - r.start).collect();
 
     let subset = ArraySubset::new_with_ranges(&ranges_vec);
 
@@ -64,9 +66,10 @@ pub(crate) fn retrieve_subset(
         dtype: dt.to_string(),
     })?;
 
-    let data = dispatch_retrieve(&array, &subset, &opts, family, store_url, array_path)?;
+    let data = dispatch_retrieve(&array, &subset, &opts, family, &shape, store_url, array_path)?;
 
-    Ok(list!(data = data, shape = shape))
+    let shape_i32: Vec<i32> = shape.iter().map(|&s| s as i32).collect();
+    Ok(list!(data = data, shape = shape_i32))
 }
 
 /// Parse R list of `c(start, stop)` into `Vec<Range<u64>>`.
@@ -99,7 +102,7 @@ fn parse_ranges(
 
 /// Helper: retrieve elements as `Vec<T>` using the current API.
 fn retrieve_with_opts<T: zarrs::array::ElementOwned>(
-    array: &zarrs::array::Array<dyn zarrs_storage::ReadableWritableListableStorageTraits>,
+    array: &zarrs::array::Array<dyn zarrs_storage::ReadableStorageTraits>,
     subset: &ArraySubset,
     opts: &CodecOptions,
     store_url: &str,
@@ -116,30 +119,34 @@ fn retrieve_with_opts<T: zarrs::array::ElementOwned>(
 
 /// Dispatch retrieval based on R type family, widening as needed.
 ///
-/// Each arm retrieves as the stored type, then converts to the
-/// R-compatible type before crossing the FFI boundary.
+/// Each arm retrieves as the stored type, then transposes from C-order
+/// to F-order, then converts to the R-compatible type before crossing
+/// the FFI boundary.
 fn dispatch_retrieve(
-    array: &zarrs::array::Array<dyn zarrs_storage::ReadableWritableListableStorageTraits>,
+    array: &zarrs::array::Array<dyn zarrs_storage::ReadableStorageTraits>,
     subset: &ArraySubset,
     opts: &CodecOptions,
     family: RTypeFamily,
+    shape: &[u64],
     store_url: &str,
     array_path: &str,
 ) -> std::result::Result<Robj, PizzarrError> {
-    // Macros to reduce boilerplate for the widen-to-double and
-    // widen-to-integer dispatch arms.
+    // Macro: retrieve, transpose C→F, widen to f64 for R.
     macro_rules! retrieve_as_double {
         ($t:ty) => {{
             let raw: Vec<$t> = retrieve_with_opts(array, subset, opts, store_url, array_path)?;
-            let widened: Vec<f64> = raw.into_iter().map(|v| v as f64).collect();
+            let transposed = transpose::c_to_f_order(&raw, shape);
+            let widened: Vec<f64> = transposed.into_iter().map(|v| v as f64).collect();
             Ok(widened.into_robj())
         }};
     }
 
+    // Macro: retrieve, transpose C→F, widen to i32 for R.
     macro_rules! retrieve_as_integer {
         ($t:ty) => {{
             let raw: Vec<$t> = retrieve_with_opts(array, subset, opts, store_url, array_path)?;
-            let widened: Vec<i32> = raw.into_iter().map(|v| v as i32).collect();
+            let transposed = transpose::c_to_f_order(&raw, shape);
+            let widened: Vec<i32> = transposed.into_iter().map(|v| v as i32).collect();
             Ok(widened.into_robj())
         }};
     }
@@ -147,11 +154,13 @@ fn dispatch_retrieve(
     match family {
         RTypeFamily::Double => {
             let data: Vec<f64> = retrieve_with_opts(array, subset, opts, store_url, array_path)?;
+            let data = transpose::c_to_f_order(&data, shape);
             Ok(data.into_robj())
         }
         RTypeFamily::Float32AsDouble => retrieve_as_double!(f32),
         RTypeFamily::Integer => {
             let data: Vec<i32> = retrieve_with_opts(array, subset, opts, store_url, array_path)?;
+            let data = transpose::c_to_f_order(&data, shape);
             Ok(data.into_robj())
         }
         RTypeFamily::Int16AsInteger => retrieve_as_integer!(i16),
@@ -163,7 +172,8 @@ fn dispatch_retrieve(
         RTypeFamily::Uint64AsDouble => retrieve_as_double!(u64),
         RTypeFamily::Logical => {
             let raw: Vec<bool> = retrieve_with_opts(array, subset, opts, store_url, array_path)?;
-            let logical: Vec<Rbool> = raw.into_iter().map(Rbool::from).collect();
+            let transposed = transpose::c_to_f_order(&raw, shape);
+            let logical: Vec<Rbool> = transposed.into_iter().map(Rbool::from).collect();
             Ok(logical.into_robj())
         }
     }
