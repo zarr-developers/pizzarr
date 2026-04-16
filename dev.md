@@ -1,3 +1,63 @@
+# zarrs_create_array — array creation via Rust
+
+## What shipped
+
+New `#[extendr]` function: `zarrs_create_array(store_url, array_path, shape,
+chunks, dtype, codec_preset, fill_value, attributes_json, zarr_format)`.
+Creates V2 or V3 arrays via zarrs, with transparent dispatch from
+`init_array_metadata()` in R. 9th `#[extendr]` function, completing the
+zarrs lifecycle: create → read → write → close.
+
+### Files added/modified
+
+- `src/rust/src/create.rs` (new) — dtype mapping, fill value construction,
+  codec preset mapping, V2/V3 metadata JSON construction, `Array::new_with_metadata`
+- `src/rust/src/lib.rs` — `mod create`, `#[extendr] fn zarrs_create_array`,
+  registered in `extendr_module!`
+- `src/rust/src/error.rs` — `ArrayCreate` variant
+- `R/zarrs-dispatch.R` — `can_use_zarrs_create()`, `compressor_to_preset()`
+- `R/creation.R` — zarrs dispatch in `init_array_metadata()` with `tryCatch` fallback
+- `tests/testthat/test-zarrs-create.R` — 53 tests (V2, V3, all dtypes,
+  roundtrips, fill values, cross-read, nested paths, error cases)
+
+### Design decisions
+
+- **JSON-based metadata, not `ArrayBuilder`.** Both V2 and V3 metadata are
+  constructed as `serde_json::Value`, then deserialized into `ArrayMetadataV2`
+  or `ArrayMetadataV3`. This decouples from the exact `ArrayBuilder` API shape
+  and works uniformly for both zarr formats.
+
+- **Codec presets only.** Four presets: `"none"`, `"gzip"`, `"blosc"`, `"zstd"`.
+  Unknown compressors cause the R dispatch to fall through to the R-native path
+  (via `compressor_to_preset()` returning `NA`).
+
+- **V2 gzip uses `"gzip"` id, not `"zlib"`.** zarrs treats zlib and gzip as
+  separate codecs. The R-native V2 path uses `"zlib"` (zarr-python compat),
+  but zarrs-created V2 arrays use `"gzip"`. Both are readable by zarrs.
+
+- **Parent groups handled in R.** `require_parent_group()` runs before
+  `init_array_metadata()`, so parent groups already exist when `zarrs_create_array`
+  is called. No Rust-side group creation needed.
+
+- **Fill values dispatch on dtype.** Bool requires JSON `true`/`false` (not `0`/`1`).
+  Float NA maps to `"NaN"`. Integer NA maps to `0`.
+
+### Gotchas discovered
+
+1. `DataType::to_string()` returns `"float64 / <f8"`, not `"float64"`.
+   Must split on `" / "` for clean return values.
+2. `ArrayMetadataV3` is re-exported from `zarrs::array`, not from the
+   private `zarrs::metadata::v3::array` module.
+3. zarrs rejects V2 arrays with `"zlib"` compressor — use `"gzip"` instead.
+4. zarrs rejects integer fill values for bool dtype — must use JSON boolean.
+
+### Test results
+
+- 1433 tests passing, 0 failures, 3 skips (Windows parallel + zarrs bypass)
+- 53 new tests in `test-zarrs-create.R`
+
+---
+
 # Phase 4, Iteration 1: HTTP reads + Rust-side C/F transpose
 
 ## Previous phases (complete)

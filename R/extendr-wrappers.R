@@ -92,5 +92,21 @@ zarrs_get_subset <- function(store_url, array_path, ranges, concurrent_target) .
 #' @export
 zarrs_set_subset <- function(store_url, array_path, ranges, data, concurrent_target) .Call(wrap__zarrs_set_subset, store_url, array_path, ranges, data, concurrent_target)
 
+#' Create a new zarr array and write its metadata to the store.
+#'
+#' Returns the same metadata list as `zarrs_open_array_metadata`.
+#'
+#' @param store_url Filesystem path to the store root.
+#' @param array_path Path to the array within the store.
+#' @param shape Integer vector of array dimensions.
+#' @param chunks Integer vector of chunk dimensions.
+#' @param dtype V3-style data type name (e.g., "float64", "int32").
+#' @param codec_preset Compression preset: "none", "gzip", "blosc", or "zstd".
+#' @param fill_value Scalar fill value (numeric, integer, logical, or NA).
+#' @param attributes_json JSON string of array attributes.
+#' @param zarr_format Integer: 2 for V2, 3 for V3.
+#' @export
+zarrs_create_array <- function(store_url, array_path, shape, chunks, dtype, codec_preset, fill_value, attributes_json, zarr_format) .Call(wrap__zarrs_create_array, store_url, array_path, shape, chunks, dtype, codec_preset, fill_value, attributes_json, zarr_format)
+
 
 # nolint end

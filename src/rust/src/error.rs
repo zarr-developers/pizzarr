@@ -54,6 +54,17 @@ pub(crate) enum PizzarrError {
         reason: String,
     },
 
+    /// Failed to create an array.
+    #[error("ArrayCreate({path} in {url}): {reason}")]
+    ArrayCreate {
+        /// Store URL or path.
+        url: String,
+        /// Array path within the store.
+        path: String,
+        /// Description of what went wrong.
+        reason: String,
+    },
+
     /// Data type not supported by the zarrs bridge.
     #[error("DTypeUnsupported({dtype}): use R-native path")]
     DTypeUnsupported {

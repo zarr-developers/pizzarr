@@ -113,6 +113,26 @@ init_array_metadata <- function(
         filters_config <- NA
     }
 
+    # --- zarrs create fast path ---
+    if (can_use_zarrs_create(store, dtype)) {
+        preset <- compressor_to_preset(compressor, compressor_config)
+        if (!is.na(preset)) {
+            store_id <- store$get_store_identifier()
+            v3_dtype <- v2_dtype_to_v3_dtype(dtype$dtype)$data_type
+            result <- tryCatch(
+                zarrs_create_array(
+                    store_id, normalize_storage_path(path),
+                    as.integer(shape), as.integer(chunks),
+                    v3_dtype, preset, fill_value,
+                    "{}", zarr_format
+                ),
+                error = function(e) NULL
+            )
+            if (!is.null(result)) return(invisible(NULL))
+            # zarrs failed — fall through to R-native path
+        }
+    }
+
     # initialize metadata
     if (zarr_format == 3L) {
         v3_meta <- create_v3_array_meta(

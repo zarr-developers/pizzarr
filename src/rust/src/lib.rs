@@ -11,6 +11,7 @@
 use extendr_api::prelude::*;
 
 mod array_open;
+mod create;
 mod dtype_dispatch;
 mod error;
 mod info;
@@ -225,6 +226,46 @@ fn zarrs_set_subset(
     store::store_subset(store_url, array_path, ranges, data, concurrent_target)
 }
 
+/// Create a new zarr array and write its metadata to the store.
+///
+/// Returns the same metadata list as `zarrs_open_array_metadata`.
+///
+/// @param store_url Filesystem path to the store root.
+/// @param array_path Path to the array within the store.
+/// @param shape Integer vector of array dimensions.
+/// @param chunks Integer vector of chunk dimensions.
+/// @param dtype V3-style data type name (e.g., "float64", "int32").
+/// @param codec_preset Compression preset: "none", "gzip", "blosc", or "zstd".
+/// @param fill_value Scalar fill value (numeric, integer, logical, or NA).
+/// @param attributes_json JSON string of array attributes.
+/// @param zarr_format Integer: 2 for V2, 3 for V3.
+/// @export
+#[extendr]
+fn zarrs_create_array(
+    store_url: &str,
+    array_path: &str,
+    shape: &[i32],
+    chunks: &[i32],
+    dtype: &str,
+    codec_preset: &str,
+    fill_value: Robj,
+    attributes_json: &str,
+    zarr_format: i32,
+) -> extendr_api::Result<List> {
+    create::create_array(
+        store_url,
+        array_path,
+        shape,
+        chunks,
+        dtype,
+        codec_preset,
+        &fill_value,
+        attributes_json,
+        zarr_format,
+    )
+    .map_err(extendr_api::Error::from)
+}
+
 /// Convenience wrapper around `ReadableStorageTraits::get`.
 ///
 /// Extracts the readable storage from the cache entry and reads the key.
@@ -258,4 +299,5 @@ extendr_module! {
     fn zarrs_set_codec_concurrent_target;
     fn zarrs_get_subset;
     fn zarrs_set_subset;
+    fn zarrs_create_array;
 }

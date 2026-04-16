@@ -56,6 +56,47 @@ can_use_zarrs_write <- function(indexer, store) {
   can_use_zarrs(indexer, store)
 }
 
+#' Check whether the zarrs create path can handle this array
+#'
+#' Returns TRUE when zarrs is available, the store is writable and
+#' has a store identifier, and the dtype is numeric/logical (not
+#' object or string).
+#'
+#' @param store A Store object.
+#' @param dtype A Dtype object.
+#' @return Logical scalar.
+#' @keywords internal
+can_use_zarrs_create <- function(store, dtype) {
+  if (!.pizzarr_env$zarrs_available) return(FALSE)
+  store_id <- store$get_store_identifier()
+  if (is.null(store_id)) return(FALSE)  # MemoryStore
+  if (inherits(store, "HttpStore")) return(FALSE)  # read-only
+  if (dtype$is_object) return(FALSE)
+  if (dtype$basic_type %in% c("S", "U")) return(FALSE)
+  TRUE
+}
+
+#' Map an R compressor object to a zarrs codec preset string
+#'
+#' Returns one of \code{"none"}, \code{"gzip"}, \code{"blosc"},
+#' \code{"zstd"}, or \code{NA_character_} if the compressor is not
+#' recognised (signalling fallback to R-native).
+#'
+#' @param compressor A codec object or NA.
+#' @param compressor_config A config list or NA.
+#' @return Character scalar.
+#' @keywords internal
+compressor_to_preset <- function(compressor, compressor_config) {
+  if (is_na(compressor) || is.null(compressor)) return("none")
+  if (is.list(compressor_config)) {
+    id <- compressor_config$id
+    if (id %in% c("zlib", "gzip")) return("gzip")
+    if (identical(id, "blosc")) return("blosc")
+    if (identical(id, "zstd")) return("zstd")
+  }
+  NA_character_
+}
+
 selection_to_ranges <- function(indexer) {
   lapply(indexer$dim_indexers, function(di) {
     if (inherits(di, "IntDimIndexer")) {
