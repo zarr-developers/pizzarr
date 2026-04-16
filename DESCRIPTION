@@ -55,10 +55,6 @@ Suggests:
     crul,
     blosc,
     vcr (>= 0.6.0),
-    pbapply,
-    parallel,
-    future,
-    future.apply,
     bench,
     bit64,
     withr

@@ -448,15 +448,6 @@ item_to_key <- function(item) {
 #' @description
 #' Store class that uses HTTP requests.
 #' Read-only. Depends on the `crul` package.
-#' @details For parallel operation, set the "pizzarr.parallel_backend" option
-#' to one of:
-#' * `"future"` if a future plan has been set up
-#' * `integer` if you would like a one-time use cluster created per call
-#' * `cluster` object created with `parallel::make_cluster()` if you want to reuse a cluster
-#' 
-#' Set the option "pizzarr.progress_bar" to TRUE to get a progress bar for long running reads.
-#' 
-#' For more, see `vignette("parallel").`
 #' @format [R6::R6Class] inheriting from [Store].
 #' @family Store classes
 #' @rdname HttpStore
@@ -480,65 +471,14 @@ HttpStore <- R6::R6Class("HttpStore",
       path <- paste(private$base_path, key, sep="/")
 
       ret <- try_from_zmeta(key, self)
-      
-      if(!is.null(ret)) return(ret)
-      
-      parallel_option <- getOption("pizzarr.parallel_backend", NA)
-      parallel_option <- parse_parallel_option(parallel_option)
-      is_parallel <- is_truthy_parallel_option(parallel_option)
 
-      parallel_get <- function(path) {
-        # For some reason, the crul::HttpClient fails in parallel settings
-        # This alternative
-        # with HttpRequest and AsyncVaried seems to work.
-        # Reference: https://docs.ropensci.org/crul/articles/async.html
-        req <- crul::HttpRequest$new(
-          url = private$domain,
-          opts = private$options,
-          headers = private$headers
-        )
-        req$get(path = path)
-        res <- crul::AsyncVaried$new(req)
-        res$request()
-        return(unclass(res$responses())[[1]])
-      }
-      
-      # Despite getOption above, when running in parallel, options may not be passed to workers as expected.
-      # For this reason, if the `private$client$get` fails, which is known to not work in parallel,
-      # then we first guess that the failure is due to running in a worker (despite is_parallel being false).
-      # Reference: https://github.com/zarr-developers/pizzarr/issues/128
-      
-      if(is_parallel) {
-        
-        return(parallel_get(path))
-        
-      } else {
-        
-        ret <- tryCatch(private$client$get(path = path),
-                        error = function(e) {
-                          
-                          # if the error involves a bad handle
-                          if(inherits(e, "simpleError") &&
-                             !is.null(e$message) &&
-                             grepl("handle", e$message)) {
-                            
-                            warning("http request issue, are we running in parallel? \n",
-                                    "set parallel options in environment variables or .Rprofile \n",
-                                    "trying fallback method")
-                            
-                            tryCatch(parallel_get(path), 
-                                     error = function(e2) {
-                                       warning("Can't procede, web request failed. Error was:", e2)
-                                       NULL
-                                     })
-                          } else {
-                            warning("Can't procede, web request failed. Error was:", e)
-                            NULL
-                          }
-                        })
-        
-        return(ret)
-      }
+      if(!is.null(ret)) return(ret)
+
+      tryCatch(private$client$get(path = path),
+               error = function(e) {
+                 warning("Can't proceed, web request failed. Error was:", e)
+                 NULL
+               })
     },
     memoize_make_request = function() {
       if(private$cache_enabled) {

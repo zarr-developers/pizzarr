@@ -5,7 +5,7 @@
 \alias{pizzarr_option_defaults}
 \title{pizzarr_option_defaults}
 \format{
-An object of class \code{list} of length 4.
+An object of class \code{list} of length 1.
 }
 \usage{
 pizzarr_option_defaults
@@ -13,9 +13,6 @@ pizzarr_option_defaults
 \description{
 \itemize{
 \item pizzarr.http_store_cache_time_seconds how long to cache web requests
-\item pizzarr.parallel_backend "future", a cluster object, or an integer (if not on windows)
-\item pizzarr.parallel_write_enabled logical, whether to use parallel backend for writing
-\item pizzarr.progress_bar logical whether to use \code{pbapply} to emit a progress bar
 }
 }
 \keyword{datasets}
