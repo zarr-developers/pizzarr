@@ -76,6 +76,26 @@ cfg <- if (is_debug) "debug" else "release"
 # read in the Makevars.in file checking
 is_windows <- .Platform[["OS.type"]] == "windows"
 
+# On Linux, zarrs_http links OpenSSL via reqwest/native-tls.
+# macOS uses Security.framework (handled by Rust build scripts).
+# Use pkg-config to get the right flags; fall back to -lssl -lcrypto.
+is_linux <- Sys.info()[["sysname"]] == "Linux"
+.pkg_libs_extra <- ""
+if (is_linux) {
+  openssl_libs <- tryCatch(
+    system2("pkg-config", c("--libs", "openssl"), stdout = TRUE, stderr = FALSE),
+    error = function(e) NULL,
+    warning = function(w) NULL
+  )
+  if (!is.null(openssl_libs) && length(openssl_libs) > 0) {
+    .pkg_libs_extra <- paste(openssl_libs, collapse = " ")
+    message("OpenSSL found via pkg-config: ", .pkg_libs_extra)
+  } else {
+    .pkg_libs_extra <- "-lssl -lcrypto"
+    message("pkg-config not found or no openssl; using default: ", .pkg_libs_extra)
+  }
+}
+
 # if windows we replace in the Makevars.win.in
 mv_fp <- ifelse(
   is_windows,
@@ -105,7 +125,8 @@ new_txt <- gsub("@CRAN_FLAGS@", .cran_flags, mv_txt) |>
   gsub("@CLEAN_TARGET@", .clean_targets, x = _) |>
   gsub("@LIBDIR@", .libdir, x = _) |>
   gsub("@TARGET@", .target, x = _) |>
-  gsub("@PANIC_EXPORTS@", .panic_exports, x = _)
+  gsub("@PANIC_EXPORTS@", .panic_exports, x = _) |>
+  gsub("@PKG_LIBS_EXTRA@", .pkg_libs_extra, x = _)
 
 message("Writing `", mv_ofp, "`.")
 con <- file(mv_ofp, open = "wb")

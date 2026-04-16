@@ -65,4 +65,5 @@ Suggests:
 Config/testthat/parallel: false
 Config/testthat/edition: 3
 Config/rextendr/version: 0.4.2
-SystemRequirements: Cargo (Rust's package manager), rustc >= 1.91
+SystemRequirements: Cargo (Rust's package manager), rustc >= 1.91,
+    OpenSSL (libssl-dev on Debian/Ubuntu, openssl-devel on Fedora/RHEL)
