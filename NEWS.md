@@ -12,6 +12,10 @@
   on remote data. R-native `crul`-based path remains as fallback.
 * C-order ↔ F-order transpose moved from R (`aperm`) to Rust, eliminating
   two full-array copies per read and up to five per write.
+* Array creation via zarrs: `zarr_create()` transparently dispatches to the
+  zarrs backend when available. Supports V2 and V3 formats with four codec
+  presets (none, gzip, blosc, zstd). Completes the zarrs lifecycle:
+  create, read, write, close.
 
 # pizzarr 0.1.3 (never released)
 

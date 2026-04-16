@@ -577,9 +577,9 @@ the store opens and serves bytes. A single small array read is sufficient.
 
 - **Phase 4, Iteration 2:** `object_store` HTTP backend (auth, pooling,
   retries) + S3/GCS via `zarrs_object_store`. Requires tokio runtime.
+  `zarrs_create_array` is now complete — S3/GCS write path is unblocked.
 - **P2 (Array cache):** Cache opened `zarrs::Array` objects in Rust to
   skip metadata re-parse on repeated reads.
 - **P3 (Skip NestedArray):** Return raw R array from zarrs fast path,
   skip NestedArray R6 wrapping.
 - **Phase 5:** Strip R-native parallelism, ship to CRAN as pure-R update.
-- **`zarrs_create_array`** (§4.7 in TODO.md) — deferred.
