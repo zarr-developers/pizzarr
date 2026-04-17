@@ -73,11 +73,14 @@ fn open_filesystem_store(url: &str, path: &str) -> Result<StorageEntry, PizzarrE
 fn open_http_store(url: &str) -> Result<StorageEntry, PizzarrError> {
     #[cfg(feature = "http_sync")]
     {
-        let http_store =
+        let mut http_store =
             zarrs_http::HTTPStore::new(url).map_err(|e| PizzarrError::StoreOpen {
                 url: url.to_string(),
                 reason: e.to_string(),
             })?;
+        // Apply global HTTP config before wrapping in Arc.
+        let batch = crate::http_config::http_batch_range_requests();
+        http_store.set_batch_range_requests(batch);
         Ok(StorageEntry::ReadOnly(Arc::new(http_store)))
     }
 

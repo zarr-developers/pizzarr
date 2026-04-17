@@ -5,7 +5,7 @@
 \alias{pizzarr_option_defaults}
 \title{pizzarr_option_defaults}
 \format{
-An object of class \code{list} of length 1.
+An object of class \code{list} of length 4.
 }
 \usage{
 pizzarr_option_defaults
@@ -13,6 +13,15 @@ pizzarr_option_defaults
 \description{
 \itemize{
 \item pizzarr.http_store_cache_time_seconds how long to cache web requests
+\item pizzarr.nthreads number of threads for parallel codec operations
+(NULL = all CPUs). Set-once: takes effect only before the first zarrs
+operation. Use env var PIZZARR_NTHREADS for reliable session-level control.
+\item pizzarr.concurrent_target codec concurrency level — how many codec
+operations zarrs runs in parallel within a single read/write call
+(NULL = zarrs default, typically CPU count). Can be changed at any time.
+\item pizzarr.http_batch_range_requests whether HTTP stores use multipart
+range requests (TRUE by default). Set to FALSE for servers with
+incomplete multipart range support. Takes effect on next store open.
 }
 }
 \keyword{datasets}

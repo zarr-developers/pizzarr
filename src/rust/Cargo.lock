@@ -1340,6 +1340,7 @@ version = "0.2.0"
 dependencies = [
  "extendr-api",
  "parking_lot",
+ "rayon",
  "serde_json",
  "thiserror",
  "zarrs",
