@@ -85,3 +85,27 @@ test_that("pizzarr_config works without zarrs backend", {
   )
   expect_equal(getOption("pizzarr.concurrent_target"), 3L)
 })
+
+test_that("pizzarr_config(nthreads) messages when zarrs unavailable", {
+  orig <- .pizzarr_env$zarrs_available
+  on.exit(.pizzarr_env$zarrs_available <- orig, add = TRUE)
+  .pizzarr_env$zarrs_available <- FALSE
+
+  saved <- options(pizzarr.nthreads = NULL)
+  on.exit(do.call(options, saved), add = TRUE)
+
+  expect_message(pizzarr_config(nthreads = 4L), "not available")
+  expect_equal(getOption("pizzarr.nthreads"), 4L)
+})
+
+test_that("pizzarr_config(http_batch_range_requests) messages when zarrs unavailable", {
+  orig <- .pizzarr_env$zarrs_available
+  on.exit(.pizzarr_env$zarrs_available <- orig, add = TRUE)
+  .pizzarr_env$zarrs_available <- FALSE
+
+  saved <- options(pizzarr.http_batch_range_requests = TRUE)
+  on.exit(do.call(options, saved), add = TRUE)
+
+  expect_message(pizzarr_config(http_batch_range_requests = FALSE), "not available")
+  expect_false(getOption("pizzarr.http_batch_range_requests"))
+})

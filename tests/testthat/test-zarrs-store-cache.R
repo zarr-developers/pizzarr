@@ -84,3 +84,13 @@ test_that("zarrs_close_store returns TRUE then FALSE", {
 
   unlink(d, recursive = TRUE)
 })
+
+test_that("HttpStore get_store_identifier returns URL", {
+  hs <- HttpStore$new("http://example.com/data")
+  expect_equal(hs$get_store_identifier(), "http://example.com/data")
+})
+
+test_that("base Store get_store_identifier returns NULL", {
+  s <- Store$new()
+  expect_null(s$get_store_identifier())
+})
