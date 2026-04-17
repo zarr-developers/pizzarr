@@ -67,6 +67,25 @@ zarrs_runtime_info <- function() .Call(wrap__zarrs_runtime_info)
 #' @export
 zarrs_set_codec_concurrent_target <- function(n) .Call(wrap__zarrs_set_codec_concurrent_target, n)
 
+#' Set the rayon thread pool size.
+#'
+#' Initialises the rayon global thread pool with `n` threads. The pool
+#' can only be initialised once per process; returns TRUE on success,
+#' FALSE if the pool was already initialised.
+#'
+#' @param n Positive integer.
+#' @export
+zarrs_set_nthreads <- function(n) .Call(wrap__zarrs_set_nthreads, n)
+
+#' Set whether new HTTP stores use batched range requests.
+#'
+#' Controls multipart range request behaviour for HTTP stores created
+#' after this call. Existing cached stores are not affected.
+#'
+#' @param enable Logical scalar.
+#' @export
+zarrs_set_http_batch_range_requests <- function(enable) .Call(wrap__zarrs_set_http_batch_range_requests, enable)
+
 #' Get a contiguous subset of an array.
 #'
 #' Returns a named list with `data` (numeric, integer, or logical vector)

@@ -16,6 +16,14 @@
   zarrs backend when available. Supports V2 and V3 formats with four codec
   presets (none, gzip, blosc, zstd). Completes the zarrs lifecycle:
   create, read, write, close.
+* New `pizzarr_config()` function for viewing and setting concurrency options,
+  analogous to `zarr.config.set()` in Python. Three settings: `nthreads`
+  (rayon thread pool size), `concurrent_target` (codec concurrency level),
+  and `http_batch_range_requests` (multipart range toggle for HTTP stores).
+  All three backed by environment variables (`PIZZARR_NTHREADS`,
+  `PIZZARR_CONCURRENT_TARGET`, `PIZZARR_HTTP_BATCH_RANGE_REQUESTS`) for
+  persistent session-level configuration without `.Rprofile` edits.
+* `zarrs_runtime_info()` now includes `nthreads` (rayon thread pool size).
 * Removed R-native parallel chunk I/O infrastructure. The `pizzarr.parallel_backend`,
   `pizzarr.parallel_write_enabled`, and `pizzarr.progress_bar` options are no longer
   used. Setting them has no effect. On r-universe builds, zarrs handles parallelism

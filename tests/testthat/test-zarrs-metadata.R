@@ -66,9 +66,11 @@ test_that("zarrs_runtime_info returns expected fields", {
   info <- zarrs_runtime_info()
   expect_true(is.list(info))
   expect_true("codec_concurrent_target" %in% names(info))
+  expect_true("nthreads" %in% names(info))
   expect_true("store_cache_entries" %in% names(info))
   expect_true("compiled_features" %in% names(info))
   expect_true(info$codec_concurrent_target > 0L)
+  expect_true(info$nthreads > 0L)
 })
 
 test_that("zarrs_set_codec_concurrent_target validates input", {

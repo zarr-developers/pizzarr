@@ -167,16 +167,47 @@ zarrs_close_store(v3_root)
 ## Runtime info and tuning
 
 `zarrs_runtime_info()` reports the current zarrs configuration --- the codec
-concurrency target, how many store handles are cached, and which features were
-compiled in:
+concurrency target, thread pool size, how many store handles are cached, and
+which features were compiled in:
 
 ```{r, eval=has_zarrs}
 zarrs_runtime_info()
 ```
 
-`zarrs_set_codec_concurrent_target()` controls how many concurrent codec
-operations zarrs uses within a single array operation. The default matches the
-number of available CPUs. Setting it to 1 disables parallel decompression:
+### pizzarr_config()
+
+`pizzarr_config()` is the main interface for viewing and changing concurrency
+settings. Called with no arguments it returns the current state; with arguments
+it sets the specified values:
+
+```{r, eval=has_zarrs}
+# View current settings
+pizzarr_config()
+
+# Set codec concurrency to 2 parallel operations per read/write
+pizzarr_config(concurrent_target = 2L)
+zarrs_runtime_info()$codec_concurrent_target
+```
+
+Three settings are available:
+
+- **nthreads** --- rayon thread pool size. Set-once per R session (the thread
+  pool can only be initialised once). For reliable session-level control, set
+  the `PIZZARR_NTHREADS` environment variable before starting R.
+- **concurrent_target** --- how many codec operations zarrs runs in parallel
+  within a single read or write call. Can be changed at any time.
+- **http_batch_range_requests** --- whether HTTP stores use multipart range
+  requests (default TRUE). Set to FALSE for servers with incomplete multipart
+  support. Takes effect on the next store open.
+
+All three settings can also be configured via environment variables
+(`PIZZARR_NTHREADS`, `PIZZARR_CONCURRENT_TARGET`,
+`PIZZARR_HTTP_BATCH_RANGE_REQUESTS`) or R options (`pizzarr.nthreads`, etc.),
+which are read at package load time. Environment variables persist across
+sessions without needing `.Rprofile` edits.
+
+The lower-level `zarrs_set_codec_concurrent_target()` function is still
+available for direct use:
 
 ```{r, eval=has_zarrs}
 zarrs_set_codec_concurrent_target(2L)

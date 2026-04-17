@@ -2,6 +2,9 @@
 .onLoad <- function(libname = NULL, pkgname = NULL) {
   init_options()
   .pizzarr_env$zarrs_available <- is_zarrs_available()
+  if (.pizzarr_env$zarrs_available) {
+    apply_zarrs_config()
+  }
 }
 
 #' @keywords internal

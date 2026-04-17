@@ -130,7 +130,7 @@ rustup target add x86_64-pc-windows-gnu
 
 ## Module organization
 
-12 source files, 9 `#[extendr]` functions:
+13 source files, 11 `#[extendr]` functions:
 ```
 src/rust/src/
   lib.rs              # extendr_module!, #[extendr] wrappers, compiled_features()
@@ -140,7 +140,8 @@ src/rust/src/
   array_open.rs       # open_array_at_path (read) + open_array_at_path_rw (write)
   dtype_dispatch.rs   # RTypeFamily enum + dtype_family() classifier
   metadata.rs         # zarrs_open_array_metadata implementation
-  info.rs             # zarrs_runtime_info, zarrs_set_codec_concurrent_target
+  info.rs             # zarrs_runtime_info, zarrs_set_codec_concurrent_target, zarrs_set_nthreads
+  http_config.rs      # process-global HTTP store settings (batch range requests)
   retrieve.rs         # zarrs_get_subset (hot read path, C→F transpose)
   store.rs            # zarrs_set_subset (write path, F→C transpose)
   create.rs           # zarrs_create_array (V2/V3 metadata construction)
@@ -380,3 +381,23 @@ let dtype_str = dt.to_string().split(" / ").next().unwrap_or(&full).to_string();
 zarrs rejects integer fill values (`0`, `1`) for bool data type. The JSON
 metadata must use `true` / `false`. The `fill_value_to_json` helper dispatches
 on dtype to produce the correct JSON type.
+
+## Lessons learned (concurrency configuration)
+
+### rayon as a direct dependency
+`rayon` is pulled in transitively by zarrs. Adding it as a direct dependency
+in `Cargo.toml` costs nothing (no extra compile, no binary bloat) and provides
+access to `rayon::current_num_threads()` (for `zarrs_runtime_info()`) and
+`rayon::ThreadPoolBuilder::build_global()` (for `zarrs_set_nthreads()`). The
+global pool is set-once: `build_global()` succeeds on the first call and
+returns `Err` on subsequent calls. `zarrs_set_nthreads` returns `bool` so R
+can warn the user rather than error.
+
+### Process-global config via AtomicBool
+HTTP store settings (e.g. batch range requests) use `static AtomicBool` with
+`Ordering::Relaxed`. This is the simplest pattern for configuration flags read
+at store creation time — no locks, no `Arc<Mutex<>>`, no R FFI calls inside
+the store cache. The value is read in `open_http_store()` and applied to the
+mutable `HTTPStore` before wrapping in `Arc`. Changing the flag after a store
+is cached has no effect on that store; the user must `zarrs_close_store()` and
+reopen. This is documented in the R-side `pizzarr_config()` help.
