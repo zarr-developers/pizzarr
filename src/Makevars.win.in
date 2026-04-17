@@ -3,7 +3,7 @@ TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/@LIBDIR@
 STATLIB = $(LIBDIR)/libpizzarr.a
-PKG_LIBS = -L$(LIBDIR) -lpizzarr -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll
+PKG_LIBS = -L$(LIBDIR) -lpizzarr -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll -lstdc++ -Wl,--allow-multiple-definition
 
 all: $(SHLIB) rust_clean
 
@@ -27,7 +27,7 @@ $(STATLIB):
 	# Build the project using Cargo with additional flags
 	export CARGO_HOME=$(CARGOTMP) && \
 	export LIBRARY_PATH="$(LIBRARY_PATH);$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
-	RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --target=$(TARGET) --lib @PROFILE@ --manifest-path=rust/Cargo.toml --target-dir=$(TARGET_DIR)
+	RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ @CARGO_FEATURES@ --target=$(TARGET) --lib @PROFILE@ --manifest-path=rust/Cargo.toml --target-dir=$(TARGET_DIR)
 
 	# Always clean up CARGOTMP
 	rm -Rf $(CARGOTMP);

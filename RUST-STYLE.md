@@ -148,10 +148,10 @@ src/rust/src/
   transpose.rs        # c_to_f_order / f_to_c_order (cache-blocked 2D, output-order nD)
 ```
 
-Planned (Phase 4 Iteration 2):
+Phase 4 Iteration 2 (COMPLETE):
 ```
 src/rust/src/
-  runtime.rs          # tokio OnceLock (full-tier only, for S3/GCS)
+  runtime.rs          # tokio OnceLock + TokioBlockOn (full-tier only, for S3/GCS)
 ```
 
 Each file gets a `//!` module-level doc comment.
@@ -401,3 +401,39 @@ the store cache. The value is read in `open_http_store()` and applied to the
 mutable `HTTPStore` before wrapping in `Arc`. Changing the flag after a store
 is cached has no effect on that store; the user must `zarrs_close_store()` and
 reopen. This is documented in the R-side `pizzarr_config()` help.
+
+## Lessons learned (Phase 4 Iteration 2)
+
+### object_store S3/GCS backend
+- **`object_store` is bucket-level, not prefix-level.** `AmazonS3Builder::with_url("s3://bucket/prefix")`
+  sets the bucket only. Keys are relative to the bucket root. Wrap with
+  `object_store::prefix::PrefixStore` to handle sub-bucket paths.
+- **`PrefixStore` is at `object_store::prefix::PrefixStore`**, not
+  `object_store::PrefixStore` (re-export was removed in 0.13).
+- **S3 anonymous access: `with_skip_signature(true)`.** GCS has no equivalent —
+  `GoogleCloudStorageBuilder` always tries auth (GCE metadata, ADC). For public
+  GCS data, use the HTTPS endpoint (`https://storage.googleapis.com/bucket/path`).
+
+### Tokio runtime singleton
+- **`OnceLock<Runtime>`, not per-store.** One runtime shared across all
+  async-backed stores. `PIZZARR_TOKIO_THREADS` env var controls worker count.
+- **`TokioBlockOn` struct implementing `AsyncToSyncBlockOn`.** Delegates to the
+  singleton runtime. Constructed as a zero-size struct (no Arc/Handle needed).
+- **`zarrs_http` already spawns its own tokio runtime** (via
+  `reqwest::blocking::Client`). This does not conflict with the explicit
+  `OnceLock<Runtime>` — they coexist.
+
+### Blosc on Windows
+- **`blosc-src` bundles snappy (C++) and its own `win32/pthread.c`.**
+  On Rtools/mingw, the bundled pthread symbols conflict with `libpthread`.
+  Fix: `-lstdc++ -Wl,--allow-multiple-definition` in PKG_LIBS.
+- **`zarrs/sharding` requires `zarrs/crc32c`.** Sharding code references
+  `Crc32cCodec`; without the feature, compilation fails with unresolved import.
+
+### Build-time feature selection
+- **`PIZZARR_FEATURES` env var** → `tools/config.R` → `@CARGO_FEATURES@`
+  placeholder in `Makevars.{in,win.in}`. Set to `s3,gcs` for full cloud builds.
+- **r-universe builds** should set this env var in the build configuration.
+- **`devtools::load_all()` / `rextendr::document()`** inherit the env var from
+  the calling R process. But `devtools::install()` spawns a child process that
+  may not inherit — use `R CMD INSTALL` with the env var set directly.

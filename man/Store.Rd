@@ -16,8 +16,10 @@ Abstract store for Zarr
 \seealso{
 Other Store classes: 
 \code{\link{DirectoryStore}},
+\code{\link{GcsStore}},
 \code{\link{HttpStore}},
-\code{\link{MemoryStore}}
+\code{\link{MemoryStore}},
+\code{\link{S3Store}}
 }
 \concept{Store classes}
 \keyword{internal}

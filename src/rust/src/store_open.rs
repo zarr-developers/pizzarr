@@ -1,7 +1,8 @@
 //! Store opening: URL to zarrs store handle.
 //!
 //! Phase 1 supports filesystem stores (bare paths and `file://` URLs).
-//! Phase 4 adds synchronous HTTP via `zarrs_http::HTTPStore`.
+//! Phase 4 Iteration 1 adds synchronous HTTP via `zarrs_http::HTTPStore`.
+//! Phase 4 Iteration 2 adds S3/GCS via `object_store` + async-to-sync adapter.
 
 use std::sync::Arc;
 
@@ -30,11 +31,18 @@ pub(crate) fn open_store(url: &str) -> Result<StorageEntry, PizzarrError> {
             return open_http_store(trimmed);
         }
 
-        // --- S3/GCS/Azure ---
-        if trimmed.starts_with("s3://")
-            || trimmed.starts_with("gs://")
-            || trimmed.starts_with("az://")
-        {
+        // --- S3 ---
+        if trimmed.starts_with("s3://") {
+            return open_s3_store(trimmed);
+        }
+
+        // --- GCS ---
+        if trimmed.starts_with("gs://") {
+            return open_gcs_store(trimmed);
+        }
+
+        // --- Azure (not yet supported) ---
+        if trimmed.starts_with("az://") {
             return Err(PizzarrError::FeatureNotCompiled {
                 feature: "full".to_string(),
             });
@@ -122,6 +130,107 @@ fn url_to_path(url: &str) -> Result<String, PizzarrError> {
     } else {
         // Bare filesystem path.
         Ok(trimmed.to_string())
+    }
+}
+
+/// Parse a cloud URL into bucket-only URL and prefix path.
+///
+/// `s3://bucket/prefix/path` → (`s3://bucket`, `prefix/path`)
+/// `gs://bucket/prefix`      → (`gs://bucket`, `prefix`)
+/// `s3://bucket`             → (`s3://bucket`, `""`)
+#[cfg(any(feature = "s3", feature = "gcs"))]
+fn split_bucket_prefix(url: &str) -> (String, String) {
+    // Find the third slash (after scheme://)
+    if let Some(scheme_end) = url.find("://") {
+        let rest = &url[scheme_end + 3..];
+        if let Some(slash_pos) = rest.find('/') {
+            let bucket_url = format!("{}{}", &url[..scheme_end + 3], &rest[..slash_pos]);
+            let prefix = rest[slash_pos + 1..].trim_end_matches('/').to_string();
+            (bucket_url, prefix)
+        } else {
+            (url.to_string(), String::new())
+        }
+    } else {
+        (url.to_string(), String::new())
+    }
+}
+
+/// Wrap an object_store backend with optional prefix and async-to-sync adapter.
+#[cfg(any(feature = "s3", feature = "gcs"))]
+fn wrap_object_store(
+    store: impl object_store::ObjectStore,
+    prefix: &str,
+    url: &str,
+) -> Result<StorageEntry, PizzarrError> {
+    use object_store::prefix::PrefixStore;
+    use zarrs::storage::storage_adapter::async_to_sync::AsyncToSyncStorageAdapter;
+    use zarrs_object_store::AsyncObjectStore;
+
+    if prefix.is_empty() {
+        let async_store = Arc::new(AsyncObjectStore::new(store));
+        let sync_store =
+            Arc::new(AsyncToSyncStorageAdapter::new(async_store, crate::runtime::TokioBlockOn));
+        Ok(StorageEntry::ReadWriteList(sync_store))
+    } else {
+        let prefix_path = object_store::path::Path::from(prefix);
+        let prefix_store = PrefixStore::new(store, prefix_path);
+        let async_store = Arc::new(AsyncObjectStore::new(prefix_store));
+        let sync_store =
+            Arc::new(AsyncToSyncStorageAdapter::new(async_store, crate::runtime::TokioBlockOn));
+        Ok(StorageEntry::ReadWriteList(sync_store))
+    }
+}
+
+/// Open an S3 store via object_store + async-to-sync adapter.
+#[allow(unused_variables)]
+fn open_s3_store(url: &str) -> Result<StorageEntry, PizzarrError> {
+    #[cfg(feature = "s3")]
+    {
+        use object_store::aws::AmazonS3Builder;
+
+        let (bucket_url, prefix) = split_bucket_prefix(url);
+        let store = AmazonS3Builder::from_env()
+            .with_url(&bucket_url)
+            .with_skip_signature(true)
+            .build()
+            .map_err(|e| PizzarrError::StoreOpen {
+                url: url.to_string(),
+                reason: e.to_string(),
+            })?;
+        wrap_object_store(store, &prefix, url)
+    }
+
+    #[cfg(not(feature = "s3"))]
+    {
+        Err(PizzarrError::FeatureNotCompiled {
+            feature: "s3".to_string(),
+        })
+    }
+}
+
+/// Open a GCS store via object_store + async-to-sync adapter.
+#[allow(unused_variables)]
+fn open_gcs_store(url: &str) -> Result<StorageEntry, PizzarrError> {
+    #[cfg(feature = "gcs")]
+    {
+        use object_store::gcp::GoogleCloudStorageBuilder;
+
+        let (bucket_url, prefix) = split_bucket_prefix(url);
+        let store = GoogleCloudStorageBuilder::from_env()
+            .with_url(&bucket_url)
+            .build()
+            .map_err(|e| PizzarrError::StoreOpen {
+                url: url.to_string(),
+                reason: e.to_string(),
+            })?;
+        wrap_object_store(store, &prefix, url)
+    }
+
+    #[cfg(not(feature = "gcs"))]
+    {
+        Err(PizzarrError::FeatureNotCompiled {
+            feature: "gcs".to_string(),
+        })
     }
 }
 

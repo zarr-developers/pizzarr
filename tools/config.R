@@ -4,9 +4,10 @@
 # check the packages MSRV first
 source("tools/msrv.R")
 
-# check DEBUG and NOT_CRAN environment variables
+# check DEBUG, NOT_CRAN, and PIZZARR_FEATURES environment variables
 env_debug <- Sys.getenv("DEBUG")
 env_not_cran <- Sys.getenv("NOT_CRAN")
+env_features <- Sys.getenv("PIZZARR_FEATURES")
 
 # check if the vendored zip file exists
 vendor_exists <- file.exists("src/rust/vendor.tar.xz")
@@ -35,6 +36,17 @@ if (!is_not_cran) {
 
 # when DEBUG env var is present we use `--debug` build
 .profile <- ifelse(is_debug, "", "--release")
+
+# PIZZARR_FEATURES env var enables extra Cargo features (e.g., "s3,gcs")
+# r-universe builds should set this to "s3,gcs" for full cloud support.
+.cargo_features <- ifelse(
+  nzchar(env_features),
+  paste0("--features ", env_features),
+  ""
+)
+if (nzchar(env_features)) {
+  message("Extra Cargo features: ", env_features)
+}
 # Only clean the build cache for CRAN builds (vendored, offline).
 # Development builds (NOT_CRAN or DEBUG) keep the target dir for
 # incremental compilation — avoids 5-minute full rebuilds.
@@ -126,6 +138,7 @@ new_txt <- gsub("@CRAN_FLAGS@", .cran_flags, mv_txt) |>
   gsub("@LIBDIR@", .libdir, x = _) |>
   gsub("@TARGET@", .target, x = _) |>
   gsub("@PANIC_EXPORTS@", .panic_exports, x = _) |>
+  gsub("@CARGO_FEATURES@", .cargo_features, x = _) |>
   gsub("@PKG_LIBS_EXTRA@", .pkg_libs_extra, x = _)
 
 message("Writing `", mv_ofp, "`.")

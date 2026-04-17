@@ -21,10 +21,17 @@ pub(crate) fn runtime_info() -> List {
     let entries = store_cache::entry_count() as i32;
     // Re-use the compiled features logic from lib.rs.
     let features = crate::compiled_features();
+
+    #[cfg(feature = "full")]
+    let tokio_active = crate::runtime::TokioBlockOn::is_active();
+    #[cfg(not(feature = "full"))]
+    let tokio_active = false;
+
     list!(
         codec_concurrent_target = target,
         nthreads = nthreads,
         store_cache_entries = entries,
+        tokio_active = tokio_active,
         compiled_features = features
     )
 }
