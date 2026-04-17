@@ -51,6 +51,8 @@ Both sources serve the same release version. The r-universe build distributes
 pre-compiled binaries for Windows and macOS — no Rust toolchain needed.
 `pizzarr_compiled_features()` lists what the zarrs backend provides, and
 `pizzarr_upgrade()` prints the install command when zarrs is not compiled in.
+`pizzarr_config()` controls concurrency settings (thread pool size, codec
+concurrency, HTTP range request batching).
 See `vignette("zarrs-backend")` for details.
 
 Development happens on the `develop` branch. See
@@ -96,7 +98,8 @@ z$get_item(list(slice(1, 2), slice(1, 5)))$data
 ## Features
 
 - **Zarr V2 and V3** read and write (format auto-detected on open)
-- **Stores:** MemoryStore, DirectoryStore (read/write); HttpStore (read-only)
+- **Stores:** MemoryStore, DirectoryStore (read/write); HttpStore (read-only);
+  S3Store, GcsStore (r-universe tier, via `object_store`)
 - **Data types:** boolean, int8--int64, uint8--uint64, float16/32/64, string, Unicode, VLenUTF8
 - **Compression:** zlib/gzip, bzip2, blosc, LZMA, LZ4, Zstd
 - **Blosc** requires the optional [`blosc`](https://cran.r-project.org/package=blosc) package (`install.packages("blosc")`)
@@ -107,7 +110,8 @@ pizzarr uses [R6](https://r6.r-lib.org/) classes mirroring the
 [zarr-python](https://github.com/zarr-developers/zarr-python) object model:
 
 - **Store** --- backend storage (`DirectoryStore` for local files,
-  `MemoryStore` for in-memory, `HttpStore` for remote read-only)
+  `MemoryStore` for in-memory, `HttpStore` for remote read-only,
+  `S3Store` and `GcsStore` for cloud buckets on the r-universe tier)
 - **ZarrGroup** --- hierarchical container holding arrays and sub-groups
   (like a directory)
 - **ZarrArray** --- chunked, compressed N-dimensional array (like a file)

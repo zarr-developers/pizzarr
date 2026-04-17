@@ -18,6 +18,10 @@ use crate::transpose;
 
 /// Store a contiguous subset of an array from R data.
 ///
+/// Returns `bool` (not `()`) because Rust `()` maps to R `NULL`,
+/// which is indistinguishable from a `tryCatch` returning `NULL` on
+/// error. Callers check success with `isTRUE(result)`.
+///
 /// # Arguments
 ///
 /// * `store_url` - Filesystem path or URL to the store root.
@@ -102,7 +106,8 @@ fn parse_ranges(
 /// Helper: store elements as `Vec<T>` using the current API.
 ///
 /// `Vec<T>` implements `IntoArrayBytes` when `T: Element`, so we can
-/// pass it directly to `store_array_subset_opt`.
+/// pass it directly to `store_array_subset_opt`. No turbofish needed
+/// (unlike retrieve which uses `retrieve_array_subset_opt::<Vec<T>>`).
 fn store_with_opts<T: zarrs::array::ElementOwned>(
     array: &zarrs::array::Array<dyn zarrs_storage::ReadableWritableListableStorageTraits>,
     subset: &ArraySubset,

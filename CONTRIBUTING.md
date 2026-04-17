@@ -20,15 +20,19 @@ pizzarr uses three branch types tied to its two distribution tiers
 The release sequence:
 
 1. Development proceeds on `develop` (version `X.Y.Z.9000`).
-2. Cut a `release/X.Y.Z` branch from `develop`. Drop the `.9000` /
+2. **Pre-release (r-universe only):** merge `develop` to `main` and tag
+   `X.Y.Z-pre`. r-universe builds binaries from `main` for testing
+   before CRAN submission. The DESCRIPTION version is `X.Y.Z` (R does
+   not support pre-release suffixes). NEWS.md carries the `-pre` label.
+3. Cut a `release/X.Y.Z` branch from `develop`. Drop the `.9000` /
    `-dev` suffixes, finalize `NEWS.md`, and submit to CRAN via
    `bash tools/cran-build.sh`.
-3. Open a PR from `release/X.Y.Z` to `main`. Do not merge until CRAN
+4. Open a PR from `release/X.Y.Z` to `main`. Do not merge until CRAN
    has accepted the package.
-4. After CRAN acceptance, merge the PR to `main`. r-universe picks up
+5. After CRAN acceptance, merge the PR to `main`. r-universe picks up
    the new commit and builds binaries with the zarrs backend. pkgdown
    rebuilds.
-5. Merge `main` back into `develop` and bump the version to the next
+6. Merge `main` back into `develop` and bump the version to the next
    `X.Y.Z.9000`.
 
 Both CRAN and r-universe serve the same version number. The difference
@@ -150,3 +154,4 @@ pkgdown::build_site()
   - [zarr.js](https://github.com/gzuidhof/zarr.js)
   - [zarrita.js](https://github.com/manzt/zarrita.js)
   - [v2 spec](https://zarr.readthedocs.io/en/stable/spec/v2.html)
+  - [v3 spec](https://zarr-specs.readthedocs.io/en/latest/v3/core/v3.0.html)

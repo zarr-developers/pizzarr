@@ -64,7 +64,8 @@ fn fill_value_to_json(robj: &Robj, dtype: &str) -> serde_json::Value {
         };
     }
 
-    // Bool dtype: coerce any scalar to true/false
+    // Bool dtype: zarrs rejects integer fill values (0/1) for bool.
+    // Must produce JSON true/false.
     if dtype == "bool" {
         if let Some(slice) = robj.as_logical_slice() {
             if let Some(v) = slice.first() {
@@ -143,6 +144,9 @@ fn v2_compressor_json(
     store_url: &str,
     array_path: &str,
 ) -> std::result::Result<Option<serde_json::Value>, PizzarrError> {
+    // zarrs treats "zlib" and "gzip" as separate codecs. zarr-python V2
+    // uses "zlib" as the compressor id, but zarrs rejects "zlib". Use
+    // "gzip" here; zarrs reads both on input.
     match preset {
         "none" => Ok(None),
         "gzip" => Ok(Some(serde_json::json!({
@@ -272,6 +276,11 @@ fn dtype_byte_size(dtype: &str) -> usize {
 // ---------------------------------------------------------------------------
 
 /// Create a V2 array by building `.zarray` JSON metadata.
+///
+/// Metadata is constructed as `serde_json::Value` and deserialized into
+/// `ArrayMetadataV2` rather than using `ArrayBuilder`. This decouples
+/// from the builder's exact API shape (which varies across zarrs
+/// versions) and works identically for V2 and V3.
 fn create_array_v2(
     store: zarrs_storage::ReadableWritableListableStorage,
     store_url: &str,
@@ -593,7 +602,7 @@ mod tests {
     #[test]
     fn test_v2_compressor_gzip() {
         let result = v2_compressor_json("gzip", "", "").unwrap().unwrap();
-        assert_eq!(result["id"], "zlib");
+        assert_eq!(result["id"], "gzip");
         assert_eq!(result["level"], 1);
     }
 

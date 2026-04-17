@@ -101,6 +101,9 @@ fn parse_ranges(
 }
 
 /// Helper: retrieve elements as `Vec<T>` using the current API.
+///
+/// The generic parameter is the *output container* (`Vec<T>`), not
+/// the element type. `Vec<T>: FromArrayBytes` requires `T: ElementOwned`.
 fn retrieve_with_opts<T: zarrs::array::ElementOwned>(
     array: &zarrs::array::Array<dyn zarrs_storage::ReadableStorageTraits>,
     subset: &ArraySubset,

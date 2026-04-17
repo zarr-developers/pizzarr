@@ -135,6 +135,10 @@ fn url_to_path(url: &str) -> Result<String, PizzarrError> {
 
 /// Parse a cloud URL into bucket-only URL and prefix path.
 ///
+/// `object_store` builders are bucket-level: `with_url("s3://bucket/prefix")`
+/// sets the bucket only, not a prefix. Sub-bucket paths require wrapping
+/// with `PrefixStore`.
+///
 /// `s3://bucket/prefix/path` → (`s3://bucket`, `prefix/path`)
 /// `gs://bucket/prefix`      → (`gs://bucket`, `prefix`)
 /// `s3://bucket`             → (`s3://bucket`, `""`)
@@ -189,6 +193,9 @@ fn open_s3_store(url: &str) -> Result<StorageEntry, PizzarrError> {
         use object_store::aws::AmazonS3Builder;
 
         let (bucket_url, prefix) = split_bucket_prefix(url);
+        // S3 anonymous access: skip_signature(true). GCS has no equivalent;
+        // for public GCS data without credentials, use the HTTPS endpoint
+        // (https://storage.googleapis.com/bucket/path) instead of gs://.
         let store = AmazonS3Builder::from_env()
             .with_url(&bucket_url)
             .with_skip_signature(true)
