@@ -19,6 +19,11 @@ can_use_zarrs <- function(indexer, store) {
   store_id <- store$get_store_identifier()
   if (is.null(store_id)) return(FALSE)  # MemoryStore
 
+  # Check cloud store features are compiled
+  features <- pizzarr_compiled_features()
+  if (inherits(store, "S3Store") && !("s3" %in% features)) return(FALSE)
+  if (inherits(store, "GcsStore") && !("gcs" %in% features)) return(FALSE)
+
   # BasicIndexer with contiguous SliceDimIndexer or IntDimIndexer on every dim
   if (!inherits(indexer, "BasicIndexer")) return(FALSE)
   all(vapply(indexer$dim_indexers, function(di) {
@@ -51,8 +56,10 @@ can_use_zarrs <- function(indexer, store) {
 #' @return Logical scalar.
 #' @keywords internal
 can_use_zarrs_write <- function(indexer, store) {
-  # HTTP stores are read-only in zarrs
+  # Remote stores are read-only for now
   if (inherits(store, "HttpStore")) return(FALSE)
+  if (inherits(store, "S3Store")) return(FALSE)
+  if (inherits(store, "GcsStore")) return(FALSE)
   can_use_zarrs(indexer, store)
 }
 
@@ -71,6 +78,8 @@ can_use_zarrs_create <- function(store, dtype) {
   store_id <- store$get_store_identifier()
   if (is.null(store_id)) return(FALSE)  # MemoryStore
   if (inherits(store, "HttpStore")) return(FALSE)  # read-only
+  if (inherits(store, "S3Store")) return(FALSE)  # read-only for now
+  if (inherits(store, "GcsStore")) return(FALSE)  # read-only for now
   if (dtype$is_object) return(FALSE)
   if (dtype$basic_type %in% c("S", "U")) return(FALSE)
   TRUE

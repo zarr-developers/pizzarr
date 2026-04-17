@@ -17,7 +17,9 @@ MemoryStore for Zarr
 \seealso{
 Other Store classes: 
 \code{\link{DirectoryStore}},
+\code{\link{GcsStore}},
 \code{\link{HttpStore}},
+\code{\link{S3Store}},
 \code{\link{Store}}
 }
 \concept{Store classes}

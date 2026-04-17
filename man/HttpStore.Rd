@@ -14,7 +14,9 @@ Read-only. Depends on the \code{crul} package.
 \seealso{
 Other Store classes: 
 \code{\link{DirectoryStore}},
+\code{\link{GcsStore}},
 \code{\link{MemoryStore}},
+\code{\link{S3Store}},
 \code{\link{Store}}
 }
 \concept{Store classes}

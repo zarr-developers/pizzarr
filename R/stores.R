@@ -624,3 +624,99 @@ HttpStore <- R6::R6Class("HttpStore",
     }
   )
 )
+
+#' S3 Store for Zarr (zarrs backend)
+#' @title S3Store Class
+#' @docType class
+#' @description
+#' Thin store wrapper for S3 URLs. All I/O is delegated to the zarrs Rust
+#' backend via `object_store`. Requires the `s3` compiled feature
+#' (r-universe tier).
+#'
+#' @format [R6::R6Class]
+#' @family Store classes
+#' @rdname S3Store
+#' @export
+S3Store <- R6::R6Class("S3Store",
+  inherit = Store,
+  private = list(
+    url = NULL
+  ),
+  public = list(
+    #' @description
+    #' Create an `S3Store`.
+    #' @param url Character. S3 URL (e.g., `"s3://bucket/prefix"`).
+    initialize = function(url) {
+      super$initialize()
+      if (!grepl("^s3://", url)) {
+        stop("S3Store requires an s3:// URL, got: ", url)
+      }
+      private$url <- url
+      private$writeable <- FALSE
+      private$erasable <- FALSE
+      private$listable <- FALSE
+    },
+    #' @description
+    #' Return the S3 URL for zarrs dispatch.
+    #' @return A character string.
+    get_store_identifier = function() {
+      private$url
+    },
+    #' @description
+    #' Print a human-readable summary of the store.
+    #' @param ... Ignored.
+    #' @return `self` (invisibly).
+    print = function(...) {
+      cat(paste0("<S3Store> ", private$url, "\n"))
+      invisible(self)
+    }
+  )
+)
+
+#' GCS Store for Zarr (zarrs backend)
+#' @title GcsStore Class
+#' @docType class
+#' @description
+#' Thin store wrapper for Google Cloud Storage URLs. All I/O is delegated
+#' to the zarrs Rust backend via `object_store`. Requires the `gcs`
+#' compiled feature (r-universe tier).
+#'
+#' @format [R6::R6Class]
+#' @family Store classes
+#' @rdname GcsStore
+#' @export
+GcsStore <- R6::R6Class("GcsStore",
+  inherit = Store,
+  private = list(
+    url = NULL
+  ),
+  public = list(
+    #' @description
+    #' Create a `GcsStore`.
+    #' @param url Character. GCS URL (e.g., `"gs://bucket/prefix"`).
+    initialize = function(url) {
+      super$initialize()
+      if (!grepl("^gs://", url)) {
+        stop("GcsStore requires a gs:// URL, got: ", url)
+      }
+      private$url <- url
+      private$writeable <- FALSE
+      private$erasable <- FALSE
+      private$listable <- FALSE
+    },
+    #' @description
+    #' Return the GCS URL for zarrs dispatch.
+    #' @return A character string.
+    get_store_identifier = function() {
+      private$url
+    },
+    #' @description
+    #' Print a human-readable summary of the store.
+    #' @param ... Ignored.
+    #' @return `self` (invisibly).
+    print = function(...) {
+      cat(paste0("<GcsStore> ", private$url, "\n"))
+      invisible(self)
+    }
+  )
+)

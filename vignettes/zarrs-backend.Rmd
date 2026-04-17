@@ -482,12 +482,74 @@ When it is absent, HTTP reads fall through to the R-native `crul`-based path:
 "http_sync" %in% pizzarr_compiled_features()
 ```
 
-### Future: S3 and GCS
+## S3 reads via zarrs
 
-Cloud object-store backends (S3, GCS, Azure) via
-[zarrs_object_store](https://github.com/zarrs/zarrs_object_store) are planned
-for a future iteration. These require a tokio async runtime and the `full`
-Cargo feature flag.
+When the `s3` feature is compiled in, the zarrs backend can read from Amazon S3
+buckets using the [object_store](https://docs.rs/object_store/) crate with an
+async-to-sync adapter. Public buckets work without credentials (unsigned
+requests). Authenticated access uses standard AWS environment variables
+(`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`).
+
+S3 stores are currently read-only via zarrs --- write operations fall through to
+the R-native path.
+
+```{r, eval=has_zarrs && ("s3" %in% pizzarr_compiled_features())}
+# OME-Zarr bonsai dataset on AWS Open Data (V2, zstd, uint8)
+s3_url <- "s3://ome-zarr-scivis/v0.4/64x0/bonsai.ome.zarr"
+
+# Read array metadata
+meta <- zarrs_open_array_metadata(s3_url, "scale0/bonsai")
+str(meta[c("shape", "dtype", "zarr_format")])
+```
+
+```{r, eval=has_zarrs && ("s3" %in% pizzarr_compiled_features())}
+# Read a small subset (first 4x4x4 corner)
+result <- zarrs_get_subset(s3_url, "scale0/bonsai",
+                           list(c(0L, 4L), c(0L, 4L), c(0L, 4L)), NULL)
+str(result)
+```
+
+```{r, eval=has_zarrs && ("s3" %in% pizzarr_compiled_features())}
+zarrs_close_store(s3_url)
+```
+
+### GCS and other cloud stores
+
+GCS data hosted on Google Cloud Storage is publicly accessible via HTTPS
+endpoints. The zarrs HTTP backend reads these directly:
+
+```{r, eval=has_zarrs && ("blosc" %in% pizzarr_compiled_features())}
+# Pangeo ECCO ocean basins (V2, blosc/lz4, float32)
+gcs_url <- "https://storage.googleapis.com/pangeo-data/ECCO_basins.zarr"
+
+meta <- zarrs_open_array_metadata(gcs_url, "basin_mask")
+cat("Shape:", paste(meta$shape, collapse = " x "), "\n")
+cat("Dtype:", meta$dtype, "\n")
+```
+
+```{r, eval=has_zarrs && ("blosc" %in% pizzarr_compiled_features())}
+# Read a single basin mask slice
+result <- zarrs_get_subset(gcs_url, "basin_mask",
+                           list(c(0L, 1L), c(0L, 90L), c(0L, 90L)), NULL)
+cat("Slice dimensions:", paste(result$shape, collapse = " x "), "\n")
+```
+
+```{r, eval=has_zarrs && ("blosc" %in% pizzarr_compiled_features())}
+zarrs_close_store(gcs_url)
+```
+
+Authenticated GCS access via `gs://` URLs requires the `gcs` compiled feature
+and GCP credentials (environment variables or application default credentials).
+The `S3Store` and `GcsStore` R6 classes provide URL wrappers for high-level
+use with `zarr_open()`:
+
+```r
+# S3 (requires s3 feature)
+z <- zarr_open(store = S3Store$new("s3://bucket/path/to/store.zarr"))
+
+# GCS (requires gcs feature + credentials)
+z <- zarr_open(store = GcsStore$new("gs://bucket/path/to/store.zarr"))
+```
 
 ## C/F order handling
 

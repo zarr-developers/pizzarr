@@ -18,6 +18,8 @@ mod http_config;
 mod info;
 mod metadata;
 mod retrieve;
+#[cfg(feature = "full")]
+mod runtime;
 mod store;
 mod store_cache;
 mod store_open;
@@ -61,6 +63,15 @@ pub(crate) fn compiled_features() -> Vec<String> {
 
     #[cfg(feature = "sharding")]
     features.push("sharding".into());
+
+    #[cfg(feature = "full")]
+    features.push("object_store".into());
+
+    #[cfg(feature = "s3")]
+    features.push("s3".into());
+
+    #[cfg(feature = "gcs")]
+    features.push("gcs".into());
 
     features
 }
