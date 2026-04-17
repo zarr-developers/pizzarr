@@ -344,34 +344,3 @@ test_that("[<-.ZarrArray raises error", {
   a <- make_array(shape = c(4, 4), chunks = c(2, 2))
   expect_error(`[<-.ZarrArray`(a, value = 1), "not yet supported")
 })
-
-# --- Parallel settings ---
-
-test_that("get_parallel_settings returns lapply by default (no parallelism)", {
-  ps <- get_parallel_settings(parallel_option = NA)
-  expect_false(ps$close)
-  result <- ps$apply_func(list(1, 2, 3), function(x) x * 2)
-  expect_equal(result, list(2, 4, 6))
-})
-
-test_that("get_parallel_settings with integer option on non-Windows uses mclapply", {
-  skip_on_os("windows")
-  ps <- get_parallel_settings(on_windows = FALSE, parallel_option = 2L)
-  expect_false(ps$close)
-  result <- ps$apply_func(list(1, 2, 3), function(x) x * 2, cl = ps$cl)
-  expect_equal(result, list(2, 4, 6))
-})
-
-test_that("get_parallel_settings with integer >1 on Windows creates cluster", {
-  skip_on_os(c("linux", "mac", "solaris"))
-  ps <- get_parallel_settings(on_windows = TRUE, parallel_option = 2L)
-  expect_true(ps$close)
-  parallel::stopCluster(ps$cl)
-})
-
-test_that("get_parallel_settings with on_windows=TRUE and integer=1 creates cluster", {
-  skip_on_os(c("linux", "mac"))
-  ps <- get_parallel_settings(on_windows = TRUE, parallel_option = 1L)
-  if (ps$close) parallel::stopCluster(ps$cl)
-  expect_true(TRUE)
-})

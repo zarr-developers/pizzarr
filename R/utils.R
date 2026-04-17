@@ -318,17 +318,6 @@ get_list_product <- function(dim_indexer_iterables) {
   return(partial_results)
 }
 
-#' @keywords internal
-is_truthy_parallel_option <- function(val) {
-  if(is.na(val)) return(FALSE)
-
-  if(inherits(val, "cluster")) return(TRUE)
-
-  if(val == "future") return(TRUE)
-
-  return(as.logical(as.integer(val)))
-}
-
 #' Check if the bit64 package is available
 #' @return Logical.
 #' @keywords internal

@@ -130,27 +130,27 @@ rustup target add x86_64-pc-windows-gnu
 
 ## Module organization
 
-Current (Phase 1 + Phase 2 Iterations 1–2):
+12 source files, 9 `#[extendr]` functions:
 ```
 src/rust/src/
   lib.rs              # extendr_module!, #[extendr] wrappers, compiled_features()
   error.rs            # PizzarrError enum + From impls
-  store_cache.rs      # process-global store handle map
-  store_open.rs       # URL → store handle (filesystem only)
-  array_open.rs       # open_array_at_path() shared helper
+  store_cache.rs      # process-global store handle map (StorageEntry enum)
+  store_open.rs       # URL → store handle (filesystem, HTTP)
+  array_open.rs       # open_array_at_path (read) + open_array_at_path_rw (write)
   dtype_dispatch.rs   # RTypeFamily enum + dtype_family() classifier
   metadata.rs         # zarrs_open_array_metadata implementation
   info.rs             # zarrs_runtime_info, zarrs_set_codec_concurrent_target
-  retrieve.rs         # zarrs_get_subset (hot read path)
+  retrieve.rs         # zarrs_get_subset (hot read path, C→F transpose)
+  store.rs            # zarrs_set_subset (write path, F→C transpose)
+  create.rs           # zarrs_create_array (V2/V3 metadata construction)
+  transpose.rs        # c_to_f_order / f_to_c_order (cache-blocked 2D, output-order nD)
 ```
 
-Planned (Phases 3–4):
+Planned (Phase 4 Iteration 2):
 ```
 src/rust/src/
-  ...                 # all of the above, plus:
-  runtime.rs          # tokio OnceLock (full-tier only)
-  store.rs            # zarrs_set_subset
-  create.rs           # zarrs_create_array
+  runtime.rs          # tokio OnceLock (full-tier only, for S3/GCS)
 ```
 
 Each file gets a `//!` module-level doc comment.
@@ -342,3 +342,41 @@ scatter-write to output) thrashes the cache on large arrays — 159 MB/s vs
   handles reads better than scattered writes (no write-allocate overhead).
 
 This recovers performance: 263-290 MB/s, matching or exceeding R's `aperm()`.
+
+## Lessons learned (zarrs_create_array)
+
+### JSON-based metadata construction
+Rather than depending on `ArrayBuilder`'s exact API shape (which varies across
+zarrs versions), both V2 and V3 metadata are constructed as `serde_json::Value`
+and deserialized into `ArrayMetadataV2` / `ArrayMetadataV3`:
+```rust
+let meta_json = serde_json::json!({ "zarr_format": 2, "shape": shape, ... });
+let v2: ArrayMetadataV2 = serde_json::from_value(meta_json)?;
+let array = Array::new_with_metadata(store, &path, ArrayMetadata::V2(v2))?;
+array.store_metadata()?;
+```
+This pattern is robust against upstream API changes and works identically for
+both zarr formats.
+
+### zarrs V2 codec name divergence
+zarrs treats `"zlib"` and `"gzip"` as separate codecs. The zarr-python V2
+convention uses `"zlib"` as the compressor id for gzip-compatible compression,
+but zarrs rejects `"zlib"` as unsupported. Use `"gzip"` in V2 `.zarray`
+metadata when creating arrays through zarrs. Arrays created by zarr-python
+with `"zlib"` id are still readable by zarrs (it handles both on read).
+
+### DataType display format
+`DataType::to_string()` returns `"float64 / <f8"` (V3 name + V2 name).
+Split on `" / "` to extract just the V3 name for return values:
+```rust
+let dtype_str = dt.to_string().split(" / ").next().unwrap_or(&full).to_string();
+```
+
+### ArrayMetadataV3 accessibility
+`ArrayMetadataV3` is re-exported from `zarrs::array`, not from the private
+`zarrs::metadata::v3::array` module. Import as `use zarrs::array::ArrayMetadataV3;`.
+
+### Bool fill values
+zarrs rejects integer fill values (`0`, `1`) for bool data type. The JSON
+metadata must use `true` / `false`. The `fill_value_to_json` helper dispatches
+on dtype to produce the correct JSON type.

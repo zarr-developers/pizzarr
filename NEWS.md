@@ -12,6 +12,15 @@
   on remote data. R-native `crul`-based path remains as fallback.
 * C-order ↔ F-order transpose moved from R (`aperm`) to Rust, eliminating
   two full-array copies per read and up to five per write.
+* Array creation via zarrs: `zarr_create()` transparently dispatches to the
+  zarrs backend when available. Supports V2 and V3 formats with four codec
+  presets (none, gzip, blosc, zstd). Completes the zarrs lifecycle:
+  create, read, write, close.
+* Removed R-native parallel chunk I/O infrastructure. The `pizzarr.parallel_backend`,
+  `pizzarr.parallel_write_enabled`, and `pizzarr.progress_bar` options are no longer
+  used. Setting them has no effect. On r-universe builds, zarrs handles parallelism
+  internally via its Rust thread pool. On CRAN (pure R), chunk I/O is sequential.
+  Dropped `pbapply`, `parallel`, `future`, and `future.apply` from Suggests.
 
 # pizzarr 0.1.3 (never released)
 

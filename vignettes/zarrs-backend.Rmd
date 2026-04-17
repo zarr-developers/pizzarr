@@ -234,6 +234,94 @@ zarrs_close_store(d)
 unlink(d, recursive = TRUE)
 ```
 
+## Creating arrays via zarrs
+
+When the zarrs backend is available and the store is a writable filesystem path,
+`zarr_create()` dispatches array creation to zarrs instead of building metadata
+JSON in R. zarrs validates the metadata structure, writes it to the store, and
+the array is ready for data. The dispatch is transparent --- the same
+`zarr_create()` call works on both tiers, and unsupported configurations
+(MemoryStore, object dtypes, custom filters) fall through to the R-native path.
+
+### Transparent dispatch
+
+The `zarr_create()` examples earlier in this vignette already use this path when
+zarrs is available. The zarrs backend handles V2 and V3 formats, all 11 numeric
+data types, and four codec presets:
+
+```{r, eval=has_zarrs}
+# V3 array with gzip compression
+d <- tempfile("zarrs_create_vignette_")
+z <- zarr_create(store = d, shape = c(20L, 10L), chunks = c(10L, 10L),
+                 dtype = "<f8", zarr_format = 3L)
+z
+```
+
+```{r, eval=has_zarrs}
+# Confirm V3 metadata was written
+file.exists(file.path(d, "zarr.json"))
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(d)
+unlink(d, recursive = TRUE)
+```
+
+### Direct zarrs_create_array call
+
+`zarrs_create_array()` provides lower-level access to the Rust creation path.
+It accepts V3-style data type names (`"float64"`, `"int32"`, `"bool"`, etc.)
+and a codec preset string (`"none"`, `"gzip"`, `"blosc"`, or `"zstd"`).
+The return value is the same metadata list as `zarrs_open_array_metadata()`:
+
+```{r, eval=has_zarrs}
+d <- tempfile("zarrs_create_direct_")
+dir.create(d)
+
+meta <- zarrs_create_array(
+  store_url = d,
+  array_path = "",
+  shape = c(100L, 50L),
+  chunks = c(10L, 10L),
+  dtype = "float64",
+  codec_preset = "gzip",
+  fill_value = 0.0,
+  attributes_json = "{}",
+  zarr_format = 3L
+)
+str(meta)
+```
+
+The array is immediately usable for reads and writes:
+
+```{r, eval=has_zarrs}
+zarrs_set_subset(d, "", list(c(0L, 10L), c(0L, 5L)),
+                 as.double(1:50), NULL)
+result <- zarrs_get_subset(d, "", list(c(0L, 10L), c(0L, 5L)), NULL)
+head(result$data)
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(d)
+unlink(d, recursive = TRUE)
+```
+
+### Codec presets
+
+The zarrs creation path supports four named codec presets. Custom codec
+configurations fall through to the R-native path.
+
+| Preset | V2 compressor | V3 codec chain | Notes |
+|--------|--------------|----------------|-------|
+| `"none"` | null | bytes only | No compression |
+| `"gzip"` | gzip, level 1 | bytes + gzip(1) | Fast, reasonable ratio |
+| `"blosc"` | blosc, lz4, clevel 5 | bytes + blosc(lz4, 5) | Requires `blosc` feature |
+| `"zstd"` | --- | bytes + zstd(3) | V3 only; requires `zstd` feature |
+
+One difference from the R-native path: zarrs uses the `"gzip"` compressor id
+for V2 arrays, while zarr-python uses `"zlib"`. Both produce gzip-compatible
+output, and zarrs reads either id when opening existing arrays.
+
 ## Writing data via zarrs
 
 The write path mirrors the read path. When the zarrs backend is available and
