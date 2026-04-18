@@ -37,8 +37,21 @@ if (!is_not_cran) {
 # when DEBUG env var is present we use `--debug` build
 .profile <- ifelse(is_debug, "", "--release")
 
-# PIZZARR_FEATURES env var enables extra Cargo features (e.g., "s3,gcs")
-# r-universe builds should set this to "s3,gcs" for full cloud support.
+# PIZZARR_FEATURES env var enables extra Cargo features (e.g., "s3,gcs").
+# When NOT_CRAN is set (r-universe, DEBUG) and PIZZARR_FEATURES is empty,
+# default to "s3,gcs" so r-universe binaries ship with cloud store support.
+if (!nzchar(env_features) && is_not_cran) {
+  env_features <- "s3,gcs"
+  message("Defaulting PIZZARR_FEATURES to '", env_features, "' (NOT_CRAN build).")
+}
+
+# "none" is an escape hatch: suppresses the NOT_CRAN default without
+# passing any extra features to Cargo.
+if (identical(env_features, "none")) {
+  env_features <- ""
+  message("PIZZARR_FEATURES='none': using default Cargo features only.")
+}
+
 .cargo_features <- ifelse(
   nzchar(env_features),
   paste0("--features ", env_features),

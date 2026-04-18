@@ -37,10 +37,65 @@ install.packages("pizzarr",
 
 Both sources serve the same release version. The r-universe build
 distributes pre-compiled binaries for Windows and macOS — no Rust
-toolchain needed. `pizzarr_compiled_features()` lists what the zarrs
-backend provides, and `pizzarr_upgrade()` prints the install command
-when zarrs is not compiled in. See `vignette("zarrs-backend")` for
-details.
+toolchain needed.
+
+The r-universe binaries compile the zarrs backend with local
+filesystem I/O, synchronous HTTP reads, gzip/zstd/blosc codecs,
+sharding, and S3/GCS cloud store support via `object_store`. The
+build system enables these features automatically when `NOT_CRAN` is
+set (which r-universe does). To compile with a different feature set,
+set `PIZZARR_FEATURES` explicitly (see below).
+
+`pizzarr_compiled_features()` lists what the zarrs backend provides,
+and `pizzarr_upgrade()` prints the install command when zarrs is not
+compiled in. `pizzarr_config()` controls concurrency settings (thread
+pool size, codec concurrency, HTTP range request batching). See
+`vignette("zarrs-backend")` for details.
+
+### Building from source (zarrs backend)
+
+If you need to compile the zarrs backend yourself — either because no
+binary is available for your platform, or because you are developing
+the Rust side — you need rustc \>= 1.91. On Windows, add the GNU
+target:
+
+``` bash
+rustup target add x86_64-pc-windows-gnu
+```
+
+The build system uses two environment variables to control compilation:
+
+- **`DEBUG`** — set to any non-empty value for a debug build. This
+  enables Cargo's incremental compilation, so subsequent rebuilds are
+  fast (seconds instead of minutes). The resulting library is slower at
+  runtime because it skips link-time optimization and does not strip
+  symbols. Use this during active development on the Rust code.
+- **`PIZZARR_FEATURES`** — a comma-separated list of extra Cargo
+  features. When `NOT_CRAN` is set and `PIZZARR_FEATURES` is empty,
+  the build defaults to `s3,gcs` (S3 and GCS cloud store support via
+  `object_store` and `tokio`). Set this explicitly to override — e.g.,
+  `PIZZARR_FEATURES=none` for default features only, or
+  `PIZZARR_FEATURES=s3` for S3 without GCS.
+
+A release build (no `DEBUG`) uses LTO, single codegen unit, and symbol
+stripping — fast at runtime but takes several minutes to compile from
+scratch.
+
+``` bash
+# Development: fast rebuilds, slower runtime, S3/GCS included
+DEBUG=1 R CMD INSTALL .
+
+# Production: slow first build, fast runtime, S3/GCS included
+NOT_CRAN=true R CMD INSTALL .
+
+# Production with default features only (no cloud stores)
+R CMD INSTALL .
+```
+
+`NOT_CRAN` is set automatically when `DEBUG` is present. For builds
+without vendored crates (the normal case for local development),
+`NOT_CRAN` prevents the build system from attempting offline
+compilation.
 
 Development happens on the `develop` branch. See
 [CONTRIBUTING.md](https://github.com/zarr-developers/pizzarr/blob/main/CONTRIBUTING.md)
