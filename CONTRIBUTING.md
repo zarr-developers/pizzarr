@@ -5,17 +5,19 @@
 pizzarr uses three branch types tied to its two distribution tiers
 (CRAN and r-universe).
 
-- **`develop`** — active development. Pull requests target `develop`.
-  DESCRIPTION carries a `.9000` suffix (e.g., `0.2.0.9000`) and
-  Cargo.toml uses a `-dev` pre-release tag (`0.2.0-dev`).
+- **`develop`** — active development. **All pull requests should target
+  `develop`**, not `main`. DESCRIPTION carries a `.9000` suffix (e.g.,
+  `0.2.0.9000`) and Cargo.toml uses a `-dev` pre-release tag
+  (`0.2.0-dev`).
 - **`release/X.Y.Z`** — release candidate. Cut from `develop` when
   ready to ship. The `.9000` / `-dev` suffixes are dropped, `NEWS.md`
   is finalized, and the CRAN tarball is built with
   `bash tools/cran-build.sh`. This branch is PR'd to `main`.
-- **`main`** — release-only. Always matches the latest version accepted
-  by CRAN. r-universe auto-builds from `main`, so the r-universe binary
-  (which includes the compiled zarrs Rust backend) tracks the same
-  release version as CRAN. pkgdown deploys from `main`.
+- **`main`** — release-only and the GitHub default branch. Always
+  matches the latest version accepted by CRAN. r-universe auto-builds
+  from `main`, so the r-universe binary (which includes the compiled
+  zarrs Rust backend) tracks the same release version as CRAN. pkgdown
+  deploys from `main`.
 
 The release sequence:
 
