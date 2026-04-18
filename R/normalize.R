@@ -78,31 +78,18 @@ normalize_storage_path <- function(path) {
   if(!is.na(path)) {
     # convert backslash to forward slash
     path <- gsub("\\\\", "/", path)
-    path_list <- str_to_vec(path)
-
-    # ensure no leading slash
-    while(length(path_list) > 0 && path_list[1] == '/') {
-      path <- stringr::str_sub(path, start = 2)
-      path_list <- str_to_vec(path)
-    }
-
-    # ensure no trailing slash
-    while(length(path_list) > 0 && path_list[length(path_list)] == "/") {
-      path <- stringr::str_sub(path, start = 1, end = length(path_list) - 1)
-      path_list <- str_to_vec(path)
-    }
-
+    # strip leading and trailing slashes
+    path <- gsub("^/+|/+$", "", path)
     # collapse any repeated slashes
     path <- gsub("/+", "/", path)
 
     # don't allow path segments with just '.' or '..'
-    path_segments <- stringr::str_split(path, "/")[[1]]
-    for(segment in path_segments) {
-      if(segment == "." || segment == "..") {
+    if (nchar(path) > 0) {
+      segments <- strsplit(path, "/", fixed = TRUE)[[1]]
+      if (any(segments %in% c(".", ".."))) {
         stop("path containing '.' or '..' segment not allowed")
       }
     }
-
   } else {
     path <- ""
   }

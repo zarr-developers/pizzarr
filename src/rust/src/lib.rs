@@ -90,6 +90,8 @@ pub(crate) fn compiled_features() -> Vec<String> {
 ///
 /// Returns an R error if the store cannot be opened or a storage I/O
 /// error occurs while probing keys.
+/// @param store_url Filesystem path or URL to the store root.
+/// @param path Path within the store (e.g. `"group1/array1"` or `""` for root).
 /// @export
 #[extendr]
 fn zarrs_node_exists(store_url: &str, path: &str) -> extendr_api::Result<List> {
@@ -155,6 +157,7 @@ fn zarrs_node_exists(store_url: &str, path: &str) -> extendr_api::Result<List> {
 ///
 /// Returns `TRUE` if the store was in the cache and was removed,
 /// `FALSE` if it was not cached.
+/// @param store_url Filesystem path or URL of the store to close.
 /// @export
 #[extendr]
 fn zarrs_close_store(store_url: &str) -> bool {

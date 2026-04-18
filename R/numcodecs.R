@@ -726,32 +726,25 @@ VLenUtf8Codec <- R6::R6Class("VLenUtf8Codec",
 #'
 #' @param config A codec config as a named list.
 #' @return The instance of the codec.
+#' @keywords internal
+CODEC_CONSTRUCTORS <- list(
+  lz4 = Lz4Codec,
+  zstd = ZstdCodec,
+  zlib = ZlibCodec,
+  gzip = GzipCodec,
+  lzma = LzmaCodec,
+  bz2 = Bz2Codec,
+  blosc = BloscCodec,
+  `vlen-utf8` = VLenUtf8Codec
+)
+
 get_codec <- function(config) {
-  result <- Codec$new()
-  if(!is_na(config)) {
-    codec_id <- config$id
-    config$id <- NULL
-    if(codec_id == "lz4") {
-      result <- do.call(Lz4Codec$new, config)
-    } else if(codec_id == "zstd") {
-      result <- do.call(ZstdCodec$new, config)
-    } else if(codec_id == "zlib") {
-      result <- do.call(ZlibCodec$new, config)
-    } else if(codec_id == "gzip") {
-      result <- do.call(GzipCodec$new, config)
-    } else if(codec_id == "lzma") {
-      result <- do.call(LzmaCodec$new, config)
-    } else if(codec_id == "bz2") {
-      result <- do.call(Bz2Codec$new, config)
-    } else if(codec_id == "blosc") {
-      result <- do.call(BloscCodec$new, config)
-    } else if(codec_id == "vlen-utf8") {
-      result <- do.call(VLenUtf8Codec$new, config)
-    } else {
-      stop(paste("Unknown codec", codec_id))
-    }
-  }
-  return(result)
+  if (is_na(config)) return(Codec$new())
+  codec_id <- as.character(config$id)
+  config$id <- NULL
+  constructor <- CODEC_CONSTRUCTORS[[codec_id]]
+  if (is.null(constructor)) stop("Unknown codec: ", codec_id)
+  do.call(constructor$new, config)
 }
 
 #' Get the default compressor.

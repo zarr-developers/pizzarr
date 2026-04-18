@@ -6,6 +6,9 @@
 \usage{
 zarrs_close_store(store_url)
 }
+\arguments{
+\item{store_url}{Filesystem path or URL of the store to close.}
+}
 \description{
 Returns \code{TRUE} if the store was in the cache and was removed,
 \code{FALSE} if it was not cached.

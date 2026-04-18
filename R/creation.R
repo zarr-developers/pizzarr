@@ -98,9 +98,7 @@ init_array_metadata <- function(
     # obtain filters config
     filters_config <- list()
     if(!is_na(filters)) {
-        for(f in filters) {
-            append(filters_config, list(f$get_config()))
-        }
+        filters_config <- lapply(filters, \(f) f$get_config())
     }
 
     # Append object codec config to filters (validation already done above)

@@ -42,42 +42,39 @@ contains_group <- function(store, path=NA) {
 # Reference: https://zarr-specs.readthedocs.io/en/latest/v3/core/v3.0.html
 # In V3, both arrays and groups are identified by zarr.json with a node_type field.
 
-# Check if the store contains a V3 array at the given path.
-# V3 arrays are identified by zarr.json with node_type="array".
+# Fetch and parse zarr.json node_type at a given path.
+# Returns the node_type string ("array" or "group") or NULL on failure.
 # @keywords internal
-contains_array_v3 <- function(store, path = NA) {
+get_v3_node_type <- function(store, path = NA) {
   path <- normalize_storage_path(path)
   prefix <- path_to_prefix(path)
   key <- paste0(prefix, ZARR_JSON)
-  if (!store$contains_item(key)) return(FALSE)
+  if (!store$contains_item(key)) return(NULL)
 
   tryCatch({
     raw_meta <- store$get_item(key)
     meta <- try_fromJSON(rawToChar(raw_meta), simplifyVector = FALSE)
-    !is.null(meta$zarr_format) && meta$zarr_format == 3 &&
-      !is.null(meta$node_type) && meta$node_type == "array"
+    if (!is.null(meta$zarr_format) && meta$zarr_format == 3 &&
+        !is.null(meta$node_type)) {
+      meta$node_type
+    } else {
+      NULL
+    }
   }, error = function(e) {
-    FALSE
+    NULL
   })
 }
 
+# Check if the store contains a V3 array at the given path.
+# @keywords internal
+contains_array_v3 <- function(store, path = NA) {
+  identical(get_v3_node_type(store, path), "array")
+}
+
 # Check if the store contains a V3 group at the given path.
-# V3 groups are identified by zarr.json with node_type="group".
 # @keywords internal
 contains_group_v3 <- function(store, path = NA) {
-  path <- normalize_storage_path(path)
-  prefix <- path_to_prefix(path)
-  key <- paste0(prefix, ZARR_JSON)
-  if (!store$contains_item(key)) return(FALSE)
-
-  tryCatch({
-    raw_meta <- store$get_item(key)
-    meta <- try_fromJSON(rawToChar(raw_meta), simplifyVector = FALSE)
-    !is.null(meta$zarr_format) && meta$zarr_format == 3 &&
-      !is.null(meta$node_type) && meta$node_type == "group"
-  }, error = function(e) {
-    FALSE
-  })
+  identical(get_v3_node_type(store, path), "group")
 }
 
 # Detect zarr format version at a given path.

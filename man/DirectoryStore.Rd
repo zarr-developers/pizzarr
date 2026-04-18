@@ -189,13 +189,13 @@ Remove a path within a Store.
 \subsection{Method \code{listdir()}}{
 List the store directory.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$listdir(key = NA)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$listdir(path = NA)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{key}}{Character key.}
+\item{\code{path}}{Character path.}
 }
 \if{html}{\out{</div>}}
 }

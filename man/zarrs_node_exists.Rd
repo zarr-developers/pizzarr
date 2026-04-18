@@ -6,6 +6,11 @@
 \usage{
 zarrs_node_exists(store_url, path)
 }
+\arguments{
+\item{store_url}{Filesystem path or URL to the store root.}
+
+\item{path}{Path within the store (e.g. \code{"group1/array1"} or \code{""} for root).}
+}
 \description{
 Open (or reuse) the store at \code{store_url}, then probe for V3 and V2
 metadata keys at \code{path}.

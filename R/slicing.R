@@ -58,7 +58,7 @@ Slice <- R6::R6Class("Slice",
         if(step < 0) {
           start <- MAX_SAFE_INTEGER
         } else {
-          0
+          start <- 0
         }
       } else {
         start <- self$start

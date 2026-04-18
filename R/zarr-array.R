@@ -139,7 +139,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
       }
       private$fill_value <- meta$fill_value
       private$order <- meta$order
-      if("dimension_separator" %in% names(meta) && !is.na(meta$dimension_separator) && !is.null(meta$dimension_separator)) {
+      if(!is.null(meta$dimension_separator) && !is.na(meta$dimension_separator)) {
         private$dimension_separator <- meta$dimension_separator
       } else {
         # V2 stores don't carry dimension separators; "." is the spec default.
@@ -155,10 +155,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
         private$filters <- NA
         object_codec <- NA
       } else {
-        private$filters <- list()
-        for(config in meta$filters) {
-          private$filters <- append(private$filters, get_codec(config))
-        }
+        private$filters <- lapply(meta$filters, get_codec)
         if(length(private$filters) == 1) {
           object_codec <- private$filters[[1]]
         }
@@ -445,8 +442,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
           # From array().
           return(NestedArray$new(chunk_inner, shape = private$chunks, dtype = private$dtype, order = private$order))
         } else {
-          print(cond$message)
-          stop("rethrow")
+          stop(cond)
         }
       })      
 
@@ -533,7 +529,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
 
       # Return scalar instead of zero-dimensional array.
       if(length(out$shape) == 0) {
-        return(out$data[0])
+        return(out$data[1])
       }
       return(out)
 
@@ -708,7 +704,8 @@ ZarrArray <- R6::R6Class("ZarrArray",
       # Reference: https://github.com/gzuidhof/zarr.js/blob/15e3a3f00eb19f0133018fb65f002311ea53bb7c/src/core/index.ts#L380
 
       if(length(chunk_coords) != length(private$chunks)) {
-        stop("Inconsistent shapes: chunkCoordsLength: ${chunkCoords.length}, cDataShapeLength: ${this.chunkDataShape.length}")
+        stop("Inconsistent shapes: chunk_coords length ", length(chunk_coords),
+             " != chunks length ", length(private$chunks))
       }
       c_key <- private$chunk_key(chunk_coords)
 
@@ -738,8 +735,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
             out$set(out_selection, as_scalar(private$fill_value))
           }
         } else {
-          print(cond$message)
-          stop("Different type of error - rethrow")
+          stop(cond)
         }
       })
     },
@@ -755,9 +751,6 @@ ZarrArray <- R6::R6Class("ZarrArray",
       
       # Obtain key for chunk storage
       chunk_key <- private$chunk_key(chunk_coords)
-
-      dtype_constr = private$dtype$get_typed_array_ctr()
-      chunk_size <- compute_size(private$chunks)
 
       if (is_total_slice(chunk_selection, private$chunks)) {
         # Totally replace chunk
@@ -814,11 +807,12 @@ ZarrArray <- R6::R6Class("ZarrArray",
         }, error = function(cond) {
           if (is_key_error(cond)) {
             # Chunk is not initialized
+            dtype_constr <- private$dtype$get_typed_array_ctr()
+            chunk_size <- compute_size(private$chunks)
             chunk_data <- dtype_constr(chunk_size)
             # NaN is a valid fill value; is.na(NaN)==TRUE so check is.nan first
-            if (is.numeric(private$fill_value) && is.nan(private$fill_value)) {
-              chunk_data <- chunk_fill(chunk_data, private$fill_value)
-            } else if (!is_na(private$fill_value)) {
+            if ((is.numeric(private$fill_value) && is.nan(private$fill_value)) ||
+                !is_na(private$fill_value)) {
               chunk_data <- chunk_fill(chunk_data, private$fill_value)
             }
             # From base R array.
@@ -829,9 +823,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
               order = private$order
             ))
           } else {
-            print(cond$message)
-            # // Different type of error - rethrow
-            stop("throw error;")
+            stop(cond)
           }
         })
         

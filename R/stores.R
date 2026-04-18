@@ -197,12 +197,12 @@ DirectoryStore <- R6::R6Class("DirectoryStore",
     get_item = function(key) {
       fp <- file.path(self$root, key)
       if(!file.exists(fp)) {
-        stop("KeyError:", key)
+        stop("KeyError: ", key)
       }
       fp_size <- file.info(fp)$size
       fp_pointer <- file(fp, "rb")
+      on.exit(close(fp_pointer), add = TRUE)
       fp_data <- readBin(fp_pointer, what = "raw", n = fp_size)
-      close(fp_pointer)
       return(fp_data)
     },
     #' @description
@@ -214,8 +214,8 @@ DirectoryStore <- R6::R6Class("DirectoryStore",
       fp <- file.path(self$root, key)
       dir.create(dirname(fp), recursive = TRUE, showWarnings = FALSE)
       fp_pointer <- file(fp, "wb")
+      on.exit(close(fp_pointer), add = TRUE)
       writeBin(value, fp_pointer)
-      close(fp_pointer)
     },
     #' @description
     #' Determine whether the store contains an item.
@@ -251,16 +251,16 @@ DirectoryStore <- R6::R6Class("DirectoryStore",
     },
     #' @description
     #' List the store directory.
-    #' @param key Character key.
+    #' @param path Character path.
     #' @return `character()` vector of entries.
-    listdir = function(key=NA) {
-      if(is_na(key)) {
+    listdir = function(path=NA) {
+      if(is_na(path)) {
         dir_path <- self$root
       } else {
-        dir_path <- file.path(self$root, key)
+        dir_path <- file.path(self$root, path)
       }
       if(!dir.exists(dir_path)) {
-        stop("KeyError:", key)
+        stop("KeyError: ", path)
       }
       dir_list <- sort(list.files(dir_path, full.names = FALSE, all.files = TRUE, include.dirs = TRUE))
       dir_list <- dir_list[!dir_list %in% c(".", "..")]
@@ -318,10 +318,12 @@ MemoryStore <- R6::R6Class("MemoryStore",
      get_parent = function(item) {
        parent <- self$root
        segments <- strsplit(item, "/")[[1]]
-       for(k in segments[1:length(segments)-1]) {
-         parent <- parent[[k]]
-         if(!is.list(parent)) {
-           stop("KeyError:", item)
+       if (length(segments) > 1) {
+         for(k in segments[1:(length(segments)-1)]) {
+           parent <- parent[[k]]
+           if(!is.list(parent)) {
+             stop("KeyError: ", item)
+           }
          }
        }
        return(list(parent = parent, key = segments[length(segments)]))
@@ -341,7 +343,7 @@ MemoryStore <- R6::R6Class("MemoryStore",
        if(key %in% names(parent)) {
          value <- parent[[key]]
        } else {
-         stop("KeyError:", item)
+         stop("KeyError: ", item)
        }
        return(value)
      },
@@ -357,11 +359,11 @@ MemoryStore <- R6::R6Class("MemoryStore",
            k <- segments[i]
            if(i == 1 && k %in% names(self$root)) {
              if(!is.list(self$root[[k]])) {
-               stop("KeyError:", item)
+               stop("KeyError: ", item)
              }
            } else if(i > 1 && k %in% names(self$root[[segments[1:(i-1)]]])) {
              if(!is.list(self$root[[segments[1:i]]])) {
-               stop("KeyError:", item)
+               stop("KeyError: ", item)
              }
            } else {
              self$root[[segments[1:i]]] <- obj_list()
@@ -392,12 +394,12 @@ MemoryStore <- R6::R6Class("MemoryStore",
      },
      #' @description
      #' List the store directory.
-     #' @param key Character key.
+     #' @param path Character path.
      #' @return `character()` vector of entries.
-     listdir = function(key=NA) {
-      item <- self$get_item(key)
+     listdir = function(path=NA) {
+      item <- self$get_item(path)
       if(!is.list(item)) {
-        stop("KeyError:", key)
+        stop("KeyError: ", path)
       }
       return(sort(names(item)))
      },
@@ -476,7 +478,8 @@ HttpStore <- R6::R6Class("HttpStore",
 
       tryCatch(private$client$get(path = path),
                error = function(e) {
-                 warning("Can't proceed, web request failed. Error was:", e)
+                 warning("Can't proceed, web request failed for '", key,
+                         "'. Error was: ", conditionMessage(e))
                  NULL
                })
     },
