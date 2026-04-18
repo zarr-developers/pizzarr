@@ -14,6 +14,7 @@ NULL
 #'
 #' Called once at `.onLoad` to populate `.pizzarr_env$zarrs_available`.
 #' The feature list is determined at compile time via `cfg!` checks.
+#' Also installs a no-op panic hook on first call (see [`init_panic_hook`]).
 #' @export
 zarrs_compiled_features <- function() .Call(wrap__zarrs_compiled_features)
 

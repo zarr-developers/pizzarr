@@ -10,6 +10,24 @@
 
 use extendr_api::prelude::*;
 
+use std::sync::Once;
+
+static PANIC_HOOK_INIT: Once = Once::new();
+
+/// Install a no-op panic hook to suppress stderr output from panics.
+///
+/// extendr wraps `#[extendr]` functions in `catch_unwind`, so panics
+/// are caught and converted to R errors. But the default panic hook
+/// writes the panic message to stderr before `catch_unwind` runs.
+/// `R CMD check --as-cran` treats stderr output from tests as errors,
+/// causing spurious failures on Windows. This suppresses that output
+/// while preserving the panic → R-error conversion.
+fn init_panic_hook() {
+    PANIC_HOOK_INIT.call_once(|| {
+        std::panic::set_hook(Box::new(|_| {}));
+    });
+}
+
 mod array_open;
 mod create;
 mod dtype_dispatch;
@@ -29,9 +47,11 @@ mod transpose;
 ///
 /// Called once at `.onLoad` to populate `.pizzarr_env$zarrs_available`.
 /// The feature list is determined at compile time via `cfg!` checks.
+/// Also installs a no-op panic hook on first call.
 /// @export
 #[extendr]
 fn zarrs_compiled_features() -> Vec<String> {
+    init_panic_hook();
     compiled_features()
 }
 

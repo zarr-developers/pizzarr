@@ -66,6 +66,9 @@ pizzarr_config <- function(nthreads = NULL, concurrent_target = NULL,
 
   if (!is.null(nthreads)) {
     nthreads <- as.integer(nthreads)
+    if (is.na(nthreads) || nthreads < 1L) {
+      stop("nthreads must be a positive integer")
+    }
     options(pizzarr.nthreads = nthreads)
     if (.pizzarr_env$zarrs_available) {
       ok <- zarrs_set_nthreads(nthreads)
@@ -84,6 +87,9 @@ pizzarr_config <- function(nthreads = NULL, concurrent_target = NULL,
 
   if (!is.null(concurrent_target)) {
     concurrent_target <- as.integer(concurrent_target)
+    if (is.na(concurrent_target) || concurrent_target < 1L) {
+      stop("concurrent_target must be a positive integer")
+    }
     options(pizzarr.concurrent_target = concurrent_target)
     if (.pizzarr_env$zarrs_available) {
       zarrs_set_codec_concurrent_target(concurrent_target)
@@ -120,12 +126,18 @@ pizzarr_config <- function(nthreads = NULL, concurrent_target = NULL,
 apply_zarrs_config <- function() {
   ct <- getOption("pizzarr.concurrent_target")
   if (!is.null(ct)) {
-    zarrs_set_codec_concurrent_target(as.integer(ct))
+    ct <- as.integer(ct)
+    if (!is.na(ct) && ct >= 1L) {
+      zarrs_set_codec_concurrent_target(ct)
+    }
   }
 
   nt <- getOption("pizzarr.nthreads")
   if (!is.null(nt)) {
-    zarrs_set_nthreads(as.integer(nt))
+    nt <- as.integer(nt)
+    if (!is.na(nt) && nt >= 1L) {
+      zarrs_set_nthreads(nt)
+    }
     # If FALSE (pool already init), silently accept — .onLoad should not warn.
   }
 
