@@ -2,7 +2,7 @@
 % Please edit documentation in R/zarrs-dispatch.R
 \name{can_use_zarrs_write}
 \alias{can_use_zarrs_write}
-\title{Convert pizzarr indexer to zarrs ranges}
+\title{Check whether the zarrs write path can handle this selection}
 \usage{
 can_use_zarrs_write(indexer, store)
 }
@@ -12,37 +12,10 @@ can_use_zarrs_write(indexer, store)
 \item{store}{A Store object.}
 }
 \value{
-List of integer vectors.
-
 Logical scalar.
 }
 \description{
-Extracts per-dimension start/stop from a BasicIndexer's
-SliceDimIndexer and IntDimIndexer objects. Returns a list of
-length-2 integer vectors: \code{list(c(start, stop), ...)}.
-0-based, exclusive stop. IntDimIndexer dims become length-1 ranges.
+Same eligibility as read. Separate function for future extensibility
+(e.g., read-only remote stores).
 }
-\keyword{(e.g.,}
-\keyword{Check}
-\keyword{Same}
-\keyword{Separate}
-\keyword{as}
-\keyword{can}
-\keyword{eligibility}
-\keyword{extensibility}
-\keyword{for}
-\keyword{function}
-\keyword{future}
-\keyword{handle}
 \keyword{internal}
-\keyword{path}
-\keyword{read-only}
-\keyword{read.}
-\keyword{remote}
-\keyword{selection}
-\keyword{stores).}
-\keyword{the}
-\keyword{this}
-\keyword{whether}
-\keyword{write}
-\keyword{zarrs}

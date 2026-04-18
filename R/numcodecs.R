@@ -722,10 +722,6 @@ VLenUtf8Codec <- R6::R6Class("VLenUtf8Codec",
   )
 )
 
-#' Get a codec instance from the registry.
-#'
-#' @param config A codec config as a named list.
-#' @return The instance of the codec.
 #' @keywords internal
 CODEC_CONSTRUCTORS <- list(
   lz4 = Lz4Codec,
@@ -738,6 +734,11 @@ CODEC_CONSTRUCTORS <- list(
   `vlen-utf8` = VLenUtf8Codec
 )
 
+#' Get a codec instance from the registry.
+#'
+#' @param config A codec config as a named list.
+#' @return The instance of the codec.
+#' @keywords internal
 get_codec <- function(config) {
   if (is_na(config)) return(Codec$new())
   codec_id <- as.character(config$id)

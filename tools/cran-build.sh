@@ -67,7 +67,8 @@ rm -f cleanup cleanup.win
 rm -f tools/config.R tools/msrv.R
 
 # Remove SystemRequirements from DESCRIPTION (Rust not needed)
-sed -i '/^SystemRequirements:/d' DESCRIPTION
+# Field may span multiple lines (continuation lines start with whitespace)
+sed -i '/^SystemRequirements:/,/^[^ \t]/{/^SystemRequirements:/d;/^[ \t]/d;}' DESCRIPTION
 
 # Remove Config/rextendr/version from DESCRIPTION
 sed -i '/^Config\/rextendr\/version:/d' DESCRIPTION
@@ -103,6 +104,20 @@ fi
 
 # Remove useDynLib from NAMESPACE (no shared library on CRAN tier)
 sed -i '/^useDynLib/d' NAMESPACE
+
+# Remove exports for Rust-only functions (keep zarrs_compiled_features, which is stubbed)
+sed -i '/^export(zarrs_/{ /zarrs_compiled_features/!d; }' NAMESPACE
+
+# Remove Rd files for Rust-only functions (no code to back them on CRAN)
+rm -f man/zarrs_close_store.Rd man/zarrs_create_array.Rd \
+      man/zarrs_get_subset.Rd man/zarrs_node_exists.Rd \
+      man/zarrs_open_array_metadata.Rd man/zarrs_runtime_info.Rd \
+      man/zarrs_set_codec_concurrent_target.Rd \
+      man/zarrs_set_http_batch_range_requests.Rd \
+      man/zarrs_set_nthreads.Rd man/zarrs_set_subset.Rd
+
+# Include vignettes in CRAN tarball (excluded in .Rbuildignore for r-universe)
+sed -i '/^\^vignettes\$/d' .Rbuildignore
 
 # Remove tools/ if now empty
 rmdir tools 2>/dev/null || true

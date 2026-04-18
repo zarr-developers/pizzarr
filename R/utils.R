@@ -1,4 +1,11 @@
-utils::globalVariables("volcano")
+utils::globalVariables(c(
+  "volcano",
+  # zarrs functions — called inside is_zarrs_available() guards,
+  # defined in extendr-wrappers.R (r-universe) or absent (CRAN)
+  "zarrs_create_array", "zarrs_runtime_info",
+  "zarrs_set_nthreads", "zarrs_set_codec_concurrent_target",
+  "zarrs_set_http_batch_range_requests"
+))
 
 #' pizzarr demo data
 #' @details
