@@ -1,7 +1,7 @@
 Package: pizzarr
 Type: Package
 Title: Slice into 'Zarr' Arrays
-Version: 0.1.3
+Version: 0.2.0
 Authors@R: c(
     person(given = "David",
            family = "Blodgett",
@@ -29,8 +29,10 @@ Description: An implementation of chunked, compressed,
 Language: en-US
 License: MIT + file LICENSE
 BugReports: https://github.com/zarr-developers/pizzarr/issues
-URL: https://zarr.dev/pizzarr/
-Depends: R (>= 4.1.0)
+URL: https://zarr.dev/pizzarr/,
+    https://github.com/zarr-developers/pizzarr
+Depends: 
+    R (>= 4.2)
 Imports:
     jsonlite,
     stats,
@@ -42,6 +44,7 @@ Imports:
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 RoxygenNote: 7.3.3
+VignetteBuilder: knitr
 Suggests:
     testthat,
     knitr,
@@ -52,12 +55,11 @@ Suggests:
     crul,
     blosc,
     vcr (>= 0.6.0),
-    pbapply,
-    parallel,
-    future,
-    future.apply,
     bench,
     bit64,
     withr
 Config/testthat/parallel: false
 Config/testthat/edition: 3
+Config/rextendr/version: 0.4.2
+SystemRequirements: Cargo (Rust's package manager), rustc >= 1.91,
+    OpenSSL (libssl-dev on Debian/Ubuntu, openssl-devel on Fedora/RHEL)

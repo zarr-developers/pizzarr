@@ -1,4 +1,11 @@
-utils::globalVariables("volcano")
+utils::globalVariables(c(
+  "volcano",
+  # zarrs functions — called inside is_zarrs_available() guards,
+  # defined in extendr-wrappers.R (r-universe) or absent (CRAN)
+  "zarrs_create_array", "zarrs_runtime_info",
+  "zarrs_set_nthreads", "zarrs_set_codec_concurrent_target",
+  "zarrs_set_http_batch_range_requests"
+))
 
 #' pizzarr demo data
 #' @details
@@ -316,17 +323,6 @@ get_list_product <- function(dim_indexer_iterables) {
     partial_results <- get_list_product_aux(dim_indexer_iterables, i, partial_results)
   }
   return(partial_results)
-}
-
-#' @keywords internal
-is_truthy_parallel_option <- function(val) {
-  if(is.na(val)) return(FALSE)
-
-  if(inherits(val, "cluster")) return(TRUE)
-
-  if(val == "future") return(TRUE)
-
-  return(as.logical(as.integer(val)))
 }
 
 #' Check if the bit64 package is available

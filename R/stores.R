@@ -142,6 +142,15 @@ Store <- R6::R6Class("Store",
       return(private$zmetadata)
     },
     #' @description
+    #' Return a store identifier for zarrs dispatch.
+    #'
+    #' Subclasses override this to return a filesystem path or URL.
+    #' Returns `NULL` by default (signals: use R-native path).
+    #' @return A character string or `NULL`.
+    get_store_identifier = function() {
+      NULL
+    },
+    #' @description
     #' Print a human-readable summary of the store.
     #' @param ... Ignored.
     #' @return `self` (invisibly).
@@ -188,12 +197,12 @@ DirectoryStore <- R6::R6Class("DirectoryStore",
     get_item = function(key) {
       fp <- file.path(self$root, key)
       if(!file.exists(fp)) {
-        stop("KeyError:", key)
+        stop("KeyError: ", key)
       }
       fp_size <- file.info(fp)$size
       fp_pointer <- file(fp, "rb")
+      on.exit(close(fp_pointer), add = TRUE)
       fp_data <- readBin(fp_pointer, what = "raw", n = fp_size)
-      close(fp_pointer)
       return(fp_data)
     },
     #' @description
@@ -205,8 +214,8 @@ DirectoryStore <- R6::R6Class("DirectoryStore",
       fp <- file.path(self$root, key)
       dir.create(dirname(fp), recursive = TRUE, showWarnings = FALSE)
       fp_pointer <- file(fp, "wb")
+      on.exit(close(fp_pointer), add = TRUE)
       writeBin(value, fp_pointer)
-      close(fp_pointer)
     },
     #' @description
     #' Determine whether the store contains an item.
@@ -242,16 +251,16 @@ DirectoryStore <- R6::R6Class("DirectoryStore",
     },
     #' @description
     #' List the store directory.
-    #' @param key Character key.
+    #' @param path Character path.
     #' @return `character()` vector of entries.
-    listdir = function(key=NA) {
-      if(is_na(key)) {
+    listdir = function(path=NA) {
+      if(is_na(path)) {
         dir_path <- self$root
       } else {
-        dir_path <- file.path(self$root, key)
+        dir_path <- file.path(self$root, path)
       }
       if(!dir.exists(dir_path)) {
-        stop("KeyError:", key)
+        stop("KeyError: ", path)
       }
       dir_list <- sort(list.files(dir_path, full.names = FALSE, all.files = TRUE, include.dirs = TRUE))
       dir_list <- dir_list[!dir_list %in% c(".", "..")]
@@ -259,6 +268,12 @@ DirectoryStore <- R6::R6Class("DirectoryStore",
     },
     #' @description
     #' Print a human-readable summary of the store.
+    #' @description
+    #' Return the absolute filesystem path for zarrs dispatch.
+    #' @return A character string.
+    get_store_identifier = function() {
+      normalizePath(self$root, mustWork = FALSE)
+    },
     #' @param ... Ignored.
     #' @return `self` (invisibly).
     print = function(...) {
@@ -303,10 +318,12 @@ MemoryStore <- R6::R6Class("MemoryStore",
      get_parent = function(item) {
        parent <- self$root
        segments <- strsplit(item, "/")[[1]]
-       for(k in segments[1:length(segments)-1]) {
-         parent <- parent[[k]]
-         if(!is.list(parent)) {
-           stop("KeyError:", item)
+       if (length(segments) > 1) {
+         for(k in segments[1:(length(segments)-1)]) {
+           parent <- parent[[k]]
+           if(!is.list(parent)) {
+             stop("KeyError: ", item)
+           }
          }
        }
        return(list(parent = parent, key = segments[length(segments)]))
@@ -326,7 +343,7 @@ MemoryStore <- R6::R6Class("MemoryStore",
        if(key %in% names(parent)) {
          value <- parent[[key]]
        } else {
-         stop("KeyError:", item)
+         stop("KeyError: ", item)
        }
        return(value)
      },
@@ -342,11 +359,11 @@ MemoryStore <- R6::R6Class("MemoryStore",
            k <- segments[i]
            if(i == 1 && k %in% names(self$root)) {
              if(!is.list(self$root[[k]])) {
-               stop("KeyError:", item)
+               stop("KeyError: ", item)
              }
            } else if(i > 1 && k %in% names(self$root[[segments[1:(i-1)]]])) {
              if(!is.list(self$root[[segments[1:i]]])) {
-               stop("KeyError:", item)
+               stop("KeyError: ", item)
              }
            } else {
              self$root[[segments[1:i]]] <- obj_list()
@@ -377,12 +394,12 @@ MemoryStore <- R6::R6Class("MemoryStore",
      },
      #' @description
      #' List the store directory.
-     #' @param key Character key.
+     #' @param path Character path.
      #' @return `character()` vector of entries.
-     listdir = function(key=NA) {
-      item <- self$get_item(key)
+     listdir = function(path=NA) {
+      item <- self$get_item(path)
       if(!is.list(item)) {
-        stop("KeyError:", key)
+        stop("KeyError: ", path)
       }
       return(sort(names(item)))
      },
@@ -433,15 +450,6 @@ item_to_key <- function(item) {
 #' @description
 #' Store class that uses HTTP requests.
 #' Read-only. Depends on the `crul` package.
-#' @details For parallel operation, set the "pizzarr.parallel_backend" option
-#' to one of:
-#' * `"future"` if a future plan has been set up
-#' * `integer` if you would like a one-time use cluster created per call
-#' * `cluster` object created with `parallel::make_cluster()` if you want to reuse a cluster
-#' 
-#' Set the option "pizzarr.progress_bar" to TRUE to get a progress bar for long running reads.
-#' 
-#' For more, see `vignette("parallel").`
 #' @format [R6::R6Class] inheriting from [Store].
 #' @family Store classes
 #' @rdname HttpStore
@@ -465,65 +473,15 @@ HttpStore <- R6::R6Class("HttpStore",
       path <- paste(private$base_path, key, sep="/")
 
       ret <- try_from_zmeta(key, self)
-      
-      if(!is.null(ret)) return(ret)
-      
-      parallel_option <- getOption("pizzarr.parallel_backend", NA)
-      parallel_option <- parse_parallel_option(parallel_option)
-      is_parallel <- is_truthy_parallel_option(parallel_option)
 
-      parallel_get <- function(path) {
-        # For some reason, the crul::HttpClient fails in parallel settings
-        # This alternative
-        # with HttpRequest and AsyncVaried seems to work.
-        # Reference: https://docs.ropensci.org/crul/articles/async.html
-        req <- crul::HttpRequest$new(
-          url = private$domain,
-          opts = private$options,
-          headers = private$headers
-        )
-        req$get(path = path)
-        res <- crul::AsyncVaried$new(req)
-        res$request()
-        return(unclass(res$responses())[[1]])
-      }
-      
-      # Despite getOption above, when running in parallel, options may not be passed to workers as expected.
-      # For this reason, if the `private$client$get` fails, which is known to not work in parallel,
-      # then we first guess that the failure is due to running in a worker (despite is_parallel being false).
-      # Reference: https://github.com/zarr-developers/pizzarr/issues/128
-      
-      if(is_parallel) {
-        
-        return(parallel_get(path))
-        
-      } else {
-        
-        ret <- tryCatch(private$client$get(path = path),
-                        error = function(e) {
-                          
-                          # if the error involves a bad handle
-                          if(inherits(e, "simpleError") &&
-                             !is.null(e$message) &&
-                             grepl("handle", e$message)) {
-                            
-                            warning("http request issue, are we running in parallel? \n",
-                                    "set parallel options in environment variables or .Rprofile \n",
-                                    "trying fallback method")
-                            
-                            tryCatch(parallel_get(path), 
-                                     error = function(e2) {
-                                       warning("Can't procede, web request failed. Error was:", e2)
-                                       NULL
-                                     })
-                          } else {
-                            warning("Can't procede, web request failed. Error was:", e)
-                            NULL
-                          }
-                        })
-        
-        return(ret)
-      }
+      if(!is.null(ret)) return(ret)
+
+      tryCatch(private$client$get(path = path),
+               error = function(e) {
+                 warning("Can't proceed, web request failed for '", key,
+                         "'. Error was: ", conditionMessage(e))
+                 NULL
+               })
     },
     memoize_make_request = function() {
       if(private$cache_enabled) {
@@ -655,10 +613,112 @@ HttpStore <- R6::R6Class("HttpStore",
     },
     #' @description
     #' Print a human-readable summary of the store.
+    #' @description
+    #' Return the store URL for zarrs dispatch.
+    #' @return A character string.
+    get_store_identifier = function() {
+      private$url
+    },
     #' @param ... Ignored.
     #' @return `self` (invisibly).
     print = function(...) {
       cat(paste0("<HttpStore> ", private$url, "\n"))
+      invisible(self)
+    }
+  )
+)
+
+#' S3 Store for Zarr (zarrs backend)
+#' @title S3Store Class
+#' @docType class
+#' @description
+#' Thin store wrapper for S3 URLs. All I/O is delegated to the zarrs Rust
+#' backend via `object_store`. Requires the `s3` compiled feature
+#' (r-universe tier).
+#'
+#' @format [R6::R6Class]
+#' @family Store classes
+#' @rdname S3Store
+#' @export
+S3Store <- R6::R6Class("S3Store",
+  inherit = Store,
+  private = list(
+    url = NULL
+  ),
+  public = list(
+    #' @description
+    #' Create an `S3Store`.
+    #' @param url Character. S3 URL (e.g., `"s3://bucket/prefix"`).
+    initialize = function(url) {
+      super$initialize()
+      if (!grepl("^s3://", url)) {
+        stop("S3Store requires an s3:// URL, got: ", url)
+      }
+      private$url <- url
+      private$writeable <- FALSE
+      private$erasable <- FALSE
+      private$listable <- FALSE
+    },
+    #' @description
+    #' Return the S3 URL for zarrs dispatch.
+    #' @return A character string.
+    get_store_identifier = function() {
+      private$url
+    },
+    #' @description
+    #' Print a human-readable summary of the store.
+    #' @param ... Ignored.
+    #' @return `self` (invisibly).
+    print = function(...) {
+      cat(paste0("<S3Store> ", private$url, "\n"))
+      invisible(self)
+    }
+  )
+)
+
+#' GCS Store for Zarr (zarrs backend)
+#' @title GcsStore Class
+#' @docType class
+#' @description
+#' Thin store wrapper for Google Cloud Storage URLs. All I/O is delegated
+#' to the zarrs Rust backend via `object_store`. Requires the `gcs`
+#' compiled feature (r-universe tier).
+#'
+#' @format [R6::R6Class]
+#' @family Store classes
+#' @rdname GcsStore
+#' @export
+GcsStore <- R6::R6Class("GcsStore",
+  inherit = Store,
+  private = list(
+    url = NULL
+  ),
+  public = list(
+    #' @description
+    #' Create a `GcsStore`.
+    #' @param url Character. GCS URL (e.g., `"gs://bucket/prefix"`).
+    initialize = function(url) {
+      super$initialize()
+      if (!grepl("^gs://", url)) {
+        stop("GcsStore requires a gs:// URL, got: ", url)
+      }
+      private$url <- url
+      private$writeable <- FALSE
+      private$erasable <- FALSE
+      private$listable <- FALSE
+    },
+    #' @description
+    #' Return the GCS URL for zarrs dispatch.
+    #' @return A character string.
+    get_store_identifier = function() {
+      private$url
+    },
+    #' @description
+    #' Print a human-readable summary of the store.
+    #' @param ... Ignored.
+    #' @return `self` (invisibly).
+    print = function(...) {
+      cat(paste0("<GcsStore> ", private$url, "\n"))
       invisible(self)
     }
   )

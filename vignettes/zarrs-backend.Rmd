@@ -1,0 +1,570 @@
+---
+title: "zarrs Backend"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{zarrs Backend}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+sample_dir <- tools::R_user_dir("pizzarr")
+clean <- !dir.exists(sample_dir)
+```
+
+pizzarr ships in two tiers. The CRAN build is pure R --- no Rust compilation,
+no system dependencies. It handles local and HTTP Zarr stores with sequential
+chunk I/O via `lapply`. The r-universe build compiles in the
+[zarrs](https://github.com/zarrs/zarrs) Rust crate via
+[extendr](https://extendr.github.io/rextendr/), adding parallel decompression,
+cloud-native store backends (S3, GCS), and codecs beyond what R packages provide.
+
+The split exists because CRAN's macOS build machines ship a Rust toolchain
+(rustc 1.84) that is too old for zarrs, which requires rustc >= 1.91.
+r-universe builds against the latest stable toolchain, so it can compile zarrs
+and distribute pre-built binaries. End users on either tier install with
+`install.packages()` --- no Rust toolchain needed.
+
+## Checking availability
+
+```{r}
+library(pizzarr)
+
+has_zarrs <- pizzarr:::.pizzarr_env$zarrs_available
+```
+
+`pizzarr_compiled_features()` lists the feature flags compiled into the zarrs
+backend. On the CRAN tier it returns `character(0)` with a message; on the
+r-universe tier it returns the compiled capabilities:
+
+```{r}
+pizzarr_compiled_features()
+```
+
+The internal flag `.pizzarr_env$zarrs_available` is a logical scalar set once
+at package load. Dispatch logic throughout pizzarr checks this flag to decide
+whether to call into Rust or fall through to the R-native path:
+
+```{r}
+pizzarr:::.pizzarr_env$zarrs_available
+```
+
+## Upgrading to the zarrs tier
+
+`pizzarr_upgrade()` prints the r-universe install command when zarrs is not
+compiled in, or confirms that the backend is already present:
+
+```{r}
+pizzarr_upgrade()
+```
+
+The startup message that CRAN users see on `library(pizzarr)` can be silenced
+with `options(pizzarr.suggest_runiverse = FALSE)`.
+
+## Probing store metadata
+
+The examples below require the zarrs backend. When this vignette is built
+without it, the code chunks are not evaluated.
+
+`zarrs_node_exists()` opens a filesystem store via the Rust backend, probes
+for V2 and V3 metadata keys at a given path, and returns a list with three
+fields: `exists` (logical), `node_type` (character), and `zarr_format`
+(integer or NULL). The store handle is cached on the Rust side --- subsequent
+calls to the same store path reuse it without re-opening.
+
+### V2 store
+
+```{r, eval=has_zarrs}
+v2_root <- pizzarr_sample("fixtures/v2/data.zarr")
+
+# Root group
+zarrs_node_exists(v2_root, "")
+```
+
+```{r, eval=has_zarrs}
+# An array within the store
+zarrs_node_exists(v2_root, "1d.contiguous.lz4.i2")
+```
+
+```{r, eval=has_zarrs}
+# A path that does not exist
+zarrs_node_exists(v2_root, "does_not_exist")
+```
+
+### V3 store
+
+V2 and V3 detection is automatic. zarrs probes for `zarr.json` first (V3),
+then falls back to `.zarray` / `.zgroup` (V2):
+
+```{r, eval=has_zarrs}
+v3_root <- pizzarr_sample("fixtures/v3/data.zarr")
+
+zarrs_node_exists(v3_root, "")
+```
+
+## Store cache management
+
+The Rust backend holds open store handles in a process-global cache keyed by
+normalized path. `zarrs_close_store()` removes a handle from the cache and
+returns `TRUE`. A second call to the same path returns `FALSE` --- it was
+already removed:
+
+```{r, eval=has_zarrs}
+zarrs_close_store(v2_root)
+zarrs_close_store(v2_root)
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(v3_root)
+```
+
+## Array metadata
+
+`zarrs_open_array_metadata()` opens a zarrs array and returns its metadata as a
+named list. The store handle is cached, so repeated calls to the same store are
+fast. The returned list contains `shape`, `chunks`, `dtype`, `r_type`,
+`fill_value_json`, `zarr_format`, and `order`.
+
+### V2 array
+
+```{r, eval=has_zarrs}
+v2_root <- pizzarr_sample("fixtures/v2/data.zarr")
+zarrs_open_array_metadata(v2_root, "1d.contiguous.raw.i2")
+```
+
+### V3 array
+
+V3 arrays work the same way. The `zarr_format` field distinguishes V2 from V3:
+
+```{r, eval=has_zarrs}
+v3_root <- pizzarr_sample("fixtures/v3/data.zarr")
+zarrs_open_array_metadata(v3_root, "1d.contiguous.gzip.i2")
+```
+
+### Data type classification
+
+The `r_type` field maps zarrs data types to R-compatible type families. zarrs
+numeric types are classified as `"double"`, `"integer"`, or `"logical"` based on
+what R can represent natively:
+
+- **double**: float64 (zero-cost), float32 (widened), uint32/int64/uint64 (widened, precision risk > 2^53)
+- **integer**: int32 (zero-cost), int8/int16/uint8/uint16 (widened)
+- **logical**: bool
+
+Unsupported types (strings, complex) report `"unsupported"` and fall back to the
+R-native code path.
+
+```{r, eval=has_zarrs}
+zarrs_close_store(v2_root)
+zarrs_close_store(v3_root)
+```
+
+## Runtime info and tuning
+
+`zarrs_runtime_info()` reports the current zarrs configuration --- the codec
+concurrency target, thread pool size, how many store handles are cached, and
+which features were compiled in:
+
+```{r, eval=has_zarrs}
+zarrs_runtime_info()
+```
+
+### pizzarr_config()
+
+`pizzarr_config()` is the main interface for viewing and changing concurrency
+settings. Called with no arguments it returns the current state; with arguments
+it sets the specified values:
+
+```{r, eval=has_zarrs}
+# View current settings
+pizzarr_config()
+
+# Set codec concurrency to 2 parallel operations per read/write
+pizzarr_config(concurrent_target = 2L)
+zarrs_runtime_info()$codec_concurrent_target
+```
+
+Three settings are available:
+
+- **nthreads** --- rayon thread pool size. Set-once per R session (the thread
+  pool can only be initialised once). For reliable session-level control, set
+  the `PIZZARR_NTHREADS` environment variable before starting R.
+- **concurrent_target** --- how many codec operations zarrs runs in parallel
+  within a single read or write call. Can be changed at any time.
+- **http_batch_range_requests** --- whether HTTP stores use multipart range
+  requests (default TRUE). Set to FALSE for servers with incomplete multipart
+  support. Takes effect on the next store open.
+
+All three settings can also be configured via environment variables
+(`PIZZARR_NTHREADS`, `PIZZARR_CONCURRENT_TARGET`,
+`PIZZARR_HTTP_BATCH_RANGE_REQUESTS`) or R options (`pizzarr.nthreads`, etc.),
+which are read at package load time. Environment variables persist across
+sessions without needing `.Rprofile` edits.
+
+The lower-level `zarrs_set_codec_concurrent_target()` function is still
+available for direct use:
+
+```{r, eval=has_zarrs}
+zarrs_set_codec_concurrent_target(2L)
+zarrs_runtime_info()$codec_concurrent_target
+```
+
+## Reading data via zarrs
+
+When the zarrs backend is available and the selection is a contiguous slice
+(step == 1), `ZarrArray$get_item()` dispatches reads to zarrs automatically.
+zarrs handles chunk identification, parallel decompression, and codec execution
+internally, bypassing pizzarr's R-native chunk loop. Scalar integer selections
+(e.g., selecting a single row of a matrix) are also eligible --- they become
+length-1 ranges on the Rust side. Unsupported selections (step > 1 slices,
+fancy indexing, MemoryStore) fall through to the R-native path transparently.
+
+### Basic read
+
+```{r, eval=has_zarrs}
+d <- tempfile("zarrs_vignette_")
+z <- zarr_create(store = d, shape = c(100L, 50L), chunks = c(10L, 10L),
+                 dtype = "<f8")
+z$set_item("...", array(as.double(seq_len(5000)), dim = c(100, 50)))
+
+# Re-open and read a subset --- zarrs handles the chunk I/O
+z2 <- zarr_open(store = d)
+result <- z2$get_item(list(slice(1L, 10L), slice(1L, 5L)))
+dim(result$data)
+```
+
+### Direct zarrs_get_subset call
+
+For lower-level access, `zarrs_get_subset()` reads a contiguous subset
+directly via the Rust backend. Ranges are 0-based with exclusive stop, matching
+zarrs conventions:
+
+```{r, eval=has_zarrs}
+result <- zarrs_get_subset(d, "", list(c(0L, 10L), c(0L, 5L)), NULL)
+str(result)
+```
+
+### Concurrency control
+
+The optional `concurrent_target` parameter (or the `pizzarr.concurrent_target`
+R option) controls how many parallel codec operations zarrs uses within a single
+read call. Setting it to `1L` disables parallel decompression:
+
+```{r, eval=has_zarrs}
+result <- zarrs_get_subset(d, "", list(c(0L, 10L), c(0L, 5L)), 1L)
+length(result$data)
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(d)
+unlink(d, recursive = TRUE)
+```
+
+## Creating arrays via zarrs
+
+When the zarrs backend is available and the store is a writable filesystem path,
+`zarr_create()` dispatches array creation to zarrs instead of building metadata
+JSON in R. zarrs validates the metadata structure, writes it to the store, and
+the array is ready for data. The dispatch is transparent --- the same
+`zarr_create()` call works on both tiers, and unsupported configurations
+(MemoryStore, object dtypes, custom filters) fall through to the R-native path.
+
+### Transparent dispatch
+
+The `zarr_create()` examples earlier in this vignette already use this path when
+zarrs is available. The zarrs backend handles V2 and V3 formats, all 11 numeric
+data types, and four codec presets:
+
+```{r, eval=has_zarrs}
+# V3 array with gzip compression
+d <- tempfile("zarrs_create_vignette_")
+z <- zarr_create(store = d, shape = c(20L, 10L), chunks = c(10L, 10L),
+                 dtype = "<f8", zarr_format = 3L)
+z
+```
+
+```{r, eval=has_zarrs}
+# Confirm V3 metadata was written
+file.exists(file.path(d, "zarr.json"))
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(d)
+unlink(d, recursive = TRUE)
+```
+
+### Direct zarrs_create_array call
+
+`zarrs_create_array()` provides lower-level access to the Rust creation path.
+It accepts V3-style data type names (`"float64"`, `"int32"`, `"bool"`, etc.)
+and a codec preset string (`"none"`, `"gzip"`, `"blosc"`, or `"zstd"`).
+The return value is the same metadata list as `zarrs_open_array_metadata()`:
+
+```{r, eval=has_zarrs}
+d <- tempfile("zarrs_create_direct_")
+dir.create(d)
+
+meta <- zarrs_create_array(
+  store_url = d,
+  array_path = "",
+  shape = c(100L, 50L),
+  chunks = c(10L, 10L),
+  dtype = "float64",
+  codec_preset = "gzip",
+  fill_value = 0.0,
+  attributes_json = "{}",
+  zarr_format = 3L
+)
+str(meta)
+```
+
+The array is immediately usable for reads and writes:
+
+```{r, eval=has_zarrs}
+zarrs_set_subset(d, "", list(c(0L, 10L), c(0L, 5L)),
+                 as.double(1:50), NULL)
+result <- zarrs_get_subset(d, "", list(c(0L, 10L), c(0L, 5L)), NULL)
+head(result$data)
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(d)
+unlink(d, recursive = TRUE)
+```
+
+### Codec presets
+
+The zarrs creation path supports four named codec presets. Custom codec
+configurations fall through to the R-native path.
+
+| Preset | V2 compressor | V3 codec chain | Notes |
+|--------|--------------|----------------|-------|
+| `"none"` | null | bytes only | No compression |
+| `"gzip"` | gzip, level 1 | bytes + gzip(1) | Fast, reasonable ratio |
+| `"blosc"` | blosc, lz4, clevel 5 | bytes + blosc(lz4, 5) | Requires `blosc` feature |
+| `"zstd"` | --- | bytes + zstd(3) | V3 only; requires `zstd` feature |
+
+One difference from the R-native path: zarrs uses the `"gzip"` compressor id
+for V2 arrays, while zarr-python uses `"zlib"`. Both produce gzip-compatible
+output, and zarrs reads either id when opening existing arrays.
+
+## Writing data via zarrs
+
+The write path mirrors the read path. When the zarrs backend is available and
+the selection qualifies (contiguous slices, filesystem-backed store),
+`ZarrArray$set_item()` dispatches writes to zarrs instead of iterating over
+chunks in R. zarrs encodes the data, splits it across the affected chunks, and
+writes them to disk --- using its internal thread pool for parallel compression
+when multiple chunks are involved.
+
+Data type narrowing happens on the Rust side. R doubles narrow to the array's
+stored type (float32, int64, uint32, etc.) and R integers narrow to smaller
+integer types (int16, int8, uint8, uint16) with range checking. An out-of-range
+value produces an error rather than silent truncation.
+
+### Basic write
+
+```{r, eval=has_zarrs}
+d <- tempfile("zarrs_write_vignette_")
+z <- zarr_create(store = d, shape = c(20L, 10L), chunks = c(10L, 10L),
+                 dtype = "<f8")
+
+# set_item dispatches to zarrs when eligible
+z$set_item("...", array(as.double(1:200), dim = c(20, 10)))
+
+# Read back to confirm
+z2 <- zarr_open(store = d)
+result <- z2$get_item(list(slice(1L, 5L), slice(1L, 3L)))
+result$data
+```
+
+### Partial overwrite
+
+Writing to a subset of an existing array works the same way. zarrs reads the
+affected chunks, merges the new data, and writes them back:
+
+```{r, eval=has_zarrs}
+# Overwrite rows 3-7, columns 1-2
+z$set_item(list(slice(3L, 7L), slice(1L, 2L)),
+           array(rep(-1.0, 10), dim = c(5, 2)))
+
+result <- z2$get_item(list(slice(1L, 10L), slice(1L, 3L)))
+result$data
+```
+
+### Direct zarrs_set_subset call
+
+`zarrs_set_subset()` provides lower-level access to the Rust write path.
+Data is a flat vector in R's native F-order (column-major) --- the Rust
+backend handles the F-to-C order conversion internally. The function returns
+`TRUE` on success:
+
+```{r, eval=has_zarrs}
+# Write 10 values to the first row (0-based range [0, 1) x [0, 10))
+zarrs_set_subset(d, "", list(c(0L, 1L), c(0L, 10L)),
+                   as.double(101:110), NULL)
+
+result <- zarrs_get_subset(d, "", list(c(0L, 1L), c(0L, 10L)), NULL)
+result$data
+```
+
+```{r, eval=has_zarrs}
+zarrs_close_store(d)
+unlink(d, recursive = TRUE)
+```
+
+## HTTP reads via zarrs
+
+When the `http_sync` feature is compiled in, the zarrs backend can read
+directly from HTTP/HTTPS Zarr stores using the
+[zarrs_http](https://github.com/zarrs/zarrs_http) crate. This bypasses
+pizzarr's R-native `crul`-based chunk loop, giving parallel chunk decode
+on remote data.
+
+HTTP stores are read-only in zarrs --- write dispatch (`set_item`) falls
+through to the R-native path automatically.
+
+### Transparent dispatch
+
+The zarrs fast path activates automatically when an `HttpStore`-backed
+array is read with a contiguous selection. No code changes are needed
+compared to the R-native path:
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+url <- "https://raw.githubusercontent.com/DOI-USGS/rnz/main/inst/extdata/bcsd.zarr"
+
+z <- zarr_open(store = HttpStore$new(url))
+
+# zarrs handles the HTTP reads + parallel decompression
+pr <- z$get_item("pr")
+pr
+```
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+# Read a subset --- zarrs fetches only the chunks that overlap
+result <- pr$get_item(list(slice(1L, 3L), slice(1L, 5L), slice(1L, 5L)))
+dim(result$data)
+```
+
+### Direct zarrs_get_subset from HTTP
+
+`zarrs_get_subset()` also works with HTTP URLs. The store handle is cached
+on the Rust side, so repeated reads to the same URL reuse the connection:
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+meta <- zarrs_open_array_metadata(url, "pr")
+str(meta[c("shape", "dtype", "zarr_format")])
+```
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+# Read a single element (first along each dimension)
+ranges <- lapply(seq_along(meta$shape), function(i) c(0L, 1L))
+result <- zarrs_get_subset(url, "pr", ranges, NULL)
+result$data
+```
+
+```{r, eval=has_zarrs && ("http_sync" %in% pizzarr_compiled_features())}
+zarrs_close_store(url)
+```
+
+### Feature detection
+
+Check whether HTTP support is compiled in with `pizzarr_compiled_features()`.
+When `"http_sync"` is present, zarrs can open `http://` and `https://` URLs.
+When it is absent, HTTP reads fall through to the R-native `crul`-based path:
+
+```{r, eval=has_zarrs}
+"http_sync" %in% pizzarr_compiled_features()
+```
+
+## S3 reads via zarrs
+
+When the `s3` feature is compiled in, the zarrs backend can read from Amazon S3
+buckets using the [object_store](https://docs.rs/object_store/) crate with an
+async-to-sync adapter. Public buckets work without credentials (unsigned
+requests). Authenticated access uses standard AWS environment variables
+(`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`).
+
+S3 stores are currently read-only via zarrs --- write operations fall through to
+the R-native path.
+
+```{r, eval=has_zarrs && ("s3" %in% pizzarr_compiled_features())}
+# OME-Zarr bonsai dataset on AWS Open Data (V2, zstd, uint8)
+s3_url <- "s3://ome-zarr-scivis/v0.4/64x0/bonsai.ome.zarr"
+
+# Read array metadata
+meta <- zarrs_open_array_metadata(s3_url, "scale0/bonsai")
+str(meta[c("shape", "dtype", "zarr_format")])
+```
+
+```{r, eval=has_zarrs && ("s3" %in% pizzarr_compiled_features())}
+# Read a small subset (first 4x4x4 corner)
+result <- zarrs_get_subset(s3_url, "scale0/bonsai",
+                           list(c(0L, 4L), c(0L, 4L), c(0L, 4L)), NULL)
+str(result)
+```
+
+```{r, eval=has_zarrs && ("s3" %in% pizzarr_compiled_features())}
+zarrs_close_store(s3_url)
+```
+
+### GCS and other cloud stores
+
+GCS data hosted on Google Cloud Storage is publicly accessible via HTTPS
+endpoints. The zarrs HTTP backend reads these directly:
+
+```{r, eval=has_zarrs && ("blosc" %in% pizzarr_compiled_features())}
+# Pangeo ECCO ocean basins (V2, blosc/lz4, float32)
+gcs_url <- "https://storage.googleapis.com/pangeo-data/ECCO_basins.zarr"
+
+meta <- zarrs_open_array_metadata(gcs_url, "basin_mask")
+cat("Shape:", paste(meta$shape, collapse = " x "), "\n")
+cat("Dtype:", meta$dtype, "\n")
+```
+
+```{r, eval=has_zarrs && ("blosc" %in% pizzarr_compiled_features())}
+# Read a single basin mask slice
+result <- zarrs_get_subset(gcs_url, "basin_mask",
+                           list(c(0L, 1L), c(0L, 90L), c(0L, 90L)), NULL)
+cat("Slice dimensions:", paste(result$shape, collapse = " x "), "\n")
+```
+
+```{r, eval=has_zarrs && ("blosc" %in% pizzarr_compiled_features())}
+zarrs_close_store(gcs_url)
+```
+
+Authenticated GCS access via `gs://` URLs requires the `gcs` compiled feature
+and GCP credentials (environment variables or application default credentials).
+The `S3Store` and `GcsStore` R6 classes provide URL wrappers for high-level
+use with `zarr_open()`:
+
+```r
+# S3 (requires s3 feature)
+z <- zarr_open(store = S3Store$new("s3://bucket/path/to/store.zarr"))
+
+# GCS (requires gcs feature + credentials)
+z <- zarr_open(store = GcsStore$new("gs://bucket/path/to/store.zarr"))
+```
+
+## C/F order handling
+
+zarrs stores data in C-order (row-major), while R uses F-order (column-major).
+The Rust backend handles this conversion transparently:
+
+- **Reads:** `zarrs_get_subset()` returns data in F-order, ready for
+  `array(data, dim = shape)` with no `aperm()` needed.
+- **Writes:** `zarrs_set_subset()` accepts F-order data and converts to C-order
+  internally before writing to the store.
+
+The transpose uses cache-blocked tiling for 2D arrays and output-order
+iteration with incremental index tracking for higher dimensions, matching or
+exceeding the performance of R's C-level `aperm()`.
+
+```{r, include=FALSE}
+if (clean) unlink(sample_dir, recursive = TRUE)
+```

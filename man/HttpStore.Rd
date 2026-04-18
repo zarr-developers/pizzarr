@@ -11,23 +11,12 @@
 Store class that uses HTTP requests.
 Read-only. Depends on the \code{crul} package.
 }
-\details{
-For parallel operation, set the "pizzarr.parallel_backend" option
-to one of:
-\itemize{
-\item \code{"future"} if a future plan has been set up
-\item \code{integer} if you would like a one-time use cluster created per call
-\item \code{cluster} object created with \code{parallel::make_cluster()} if you want to reuse a cluster
-}
-
-Set the option "pizzarr.progress_bar" to TRUE to get a progress bar for long running reads.
-
-For more, see \verb{vignette("parallel").}
-}
 \seealso{
 Other Store classes: 
 \code{\link{DirectoryStore}},
+\code{\link{GcsStore}},
 \code{\link{MemoryStore}},
+\code{\link{S3Store}},
 \code{\link{Store}}
 }
 \concept{Store classes}
@@ -43,6 +32,7 @@ Other Store classes:
 \item \href{#method-HttpStore-listdir}{\code{HttpStore$listdir()}}
 \item \href{#method-HttpStore-get_cache_time_seconds}{\code{HttpStore$get_cache_time_seconds()}}
 \item \href{#method-HttpStore-set_cache_time_seconds}{\code{HttpStore$set_cache_time_seconds()}}
+\item \href{#method-HttpStore-get_store_identifier}{\code{HttpStore$get_store_identifier()}}
 \item \href{#method-HttpStore-print}{\code{HttpStore$print()}}
 \item \href{#method-HttpStore-clone}{\code{HttpStore$clone()}}
 }
@@ -177,10 +167,25 @@ Set cache time of http requests.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HttpStore-get_store_identifier"></a>}}
+\if{latex}{\out{\hypertarget{method-HttpStore-get_store_identifier}{}}}
+\subsection{Method \code{get_store_identifier()}}{
+Print a human-readable summary of the store.
+
+
+Return the store URL for zarrs dispatch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HttpStore$get_store_identifier()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A character string.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-print"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-print}{}}}
 \subsection{Method \code{print()}}{
-Print a human-readable summary of the store.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HttpStore$print(...)}\if{html}{\out{</div>}}
 }

@@ -287,7 +287,7 @@ BasicIndexer <- R6::R6Class("BasicIndexer",
       selection <- normalize_list_selection(selection, shape)
       
       # Setup per-dimension indexers
-      dim_indexers <- list()
+      dim_indexers <- vector("list", length(selection))
       for(i in seq_along(selection)) {
         dim_sel <- selection[[i]]
         dim_len <- shape[i]
@@ -298,17 +298,16 @@ BasicIndexer <- R6::R6Class("BasicIndexer",
         }
 
         if(is_integer(dim_sel)) {
-          dim_indexer <- IntDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
+          dim_indexers[[i]] <- IntDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
         } else if(is_slice(dim_sel)) {
-          dim_indexer <- SliceDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
+          dim_indexers[[i]] <- SliceDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
         } else {
           stop('Unsupported selection item for basic indexing, expected integer or slice')
         }
-        dim_indexers <- append(dim_indexers, dim_indexer)
       }
       self$shape <- list()
       for(d in dim_indexers) {
-        if(class(d)[[1]] == "SliceDimIndexer") {
+        if(inherits(d, "SliceDimIndexer")) {
           self$shape <- append(self$shape, d$num_items)
         }
       }
@@ -391,18 +390,18 @@ OrthogonalIndexer <- R6::R6Class("OrthogonalIndexer",
                                 selection <- normalize_list_selection(selection, shape)
                                 
                                 # Setup per-dimension indexers
-                                dim_indexers <- list()
+                                dim_indexers <- vector("list", length(selection))
                                 for(i in seq_along(selection)) {
                                   dim_sel <- selection[[i]]
                                   dim_len <- shape[i]
                                   dim_chunk_len <- chunks[i]
-                                  
+
                                   if(is.null(dim_sel)) {
                                     dim_sel <- zb_slice(NA)
                                   }
-                                  
+
                                   if(is_integer(dim_sel)) {
-                                    dim_indexer <- IntDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
+                                    dim_indexers[[i]] <- IntDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
                                   } else if(is_slice(dim_sel)) {
                                     if(!is.na(dim_sel$step) && dim_sel$step < 0) {
                                       # Convert negative-step slice to integer vector
@@ -410,25 +409,24 @@ OrthogonalIndexer <- R6::R6Class("OrthogonalIndexer",
                                       n <- si[4]
                                       if(n > 0) {
                                         dim_sel <- seq(from = si[1], by = si[3], length.out = n)
-                                        dim_indexer <- IntArrayDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
+                                        dim_indexers[[i]] <- IntArrayDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
                                       } else {
-                                        dim_indexer <- IntArrayDimIndexer$new(integer(0), dim_len, dim_chunk_len)
+                                        dim_indexers[[i]] <- IntArrayDimIndexer$new(integer(0), dim_len, dim_chunk_len)
                                       }
                                     } else {
-                                      dim_indexer <- SliceDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
+                                      dim_indexers[[i]] <- SliceDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
                                     }
                                   } else if(is_bool_vec(dim_sel)) {
-                                    dim_indexer <- BoolArrayDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
+                                    dim_indexers[[i]] <- BoolArrayDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
                                   } else if(is_integer_vec(dim_sel)) {
-                                    dim_indexer <- IntArrayDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
+                                    dim_indexers[[i]] <- IntArrayDimIndexer$new(dim_sel, dim_len, dim_chunk_len)
                                   } else {
                                     stop('Unsupported selection item for basic indexing, expected integer, slice, vector of integer or boolean')
                                   }
-                                  dim_indexers <- append(dim_indexers, dim_indexer)
                                 }
                                 self$shape <- list()
                                 for(d in dim_indexers) {
-                                  if(class(d)[[1]] != "IntDimIndexer") {
+                                  if(!inherits(d, "IntDimIndexer")) {
                                     self$shape <- append(self$shape, d$num_items)
                                   }
                                 }

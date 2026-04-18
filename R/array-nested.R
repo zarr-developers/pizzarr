@@ -22,22 +22,21 @@ zero_based_to_one_based <- function(selection, shape) {
       sel_stop <- sel$stop # Do not subtract one, since R indexing is inclusive.
       sel_step <- sel$step
       if(is.na(sel_step)) sel_step <- 1
-      # TODO: convert these warnings to errors once we know internals do indexing correctly
       if(sel_start < 1) {
         sel_start <- 1
-        message("IndexError: NestedArray$get() received slice with start index out of bounds - too low")
+        warning("IndexError: slice start index out of bounds (too low), clamped to 1")
       }
       if(sel_start > shape[i]) {
         sel_start <- shape[i]
-        message("IndexError: NestedArray$get() received slice with start index out of bounds - too high")
+        warning("IndexError: slice start index out of bounds (too high), clamped to ", shape[i])
       }
       if(sel_stop < 1) {
         sel_stop <- 1
-        message("IndexError: NestedArray$get() received slice with stop index out of bounds - too low")
+        warning("IndexError: slice stop index out of bounds (too low), clamped to 1")
       }
       if(sel_stop > shape[i]) {
         sel_stop <- shape[i]
-        message("IndexError: NestedArray$get() received slice with stop index out of bounds - too high")
+        warning("IndexError: slice stop index out of bounds (too high), clamped to ", shape[i])
       }
       selection_list <- append(selection_list, list(seq(from = sel_start, 
                                                         to = sel_stop, 
@@ -265,7 +264,7 @@ NestedArray <- R6::R6Class("NestedArray",
 
       if("NestedArray" %in% class(value)) {
         value_data <- value$data
-      } else if(is_scalar(value) | is.array(value)) {
+      } else if(is_scalar(value) || is.array(value)) {
         value_data <- value
       } else {
         message(value)
@@ -274,24 +273,7 @@ NestedArray <- R6::R6Class("NestedArray",
 
       # Only set values if the array is not meant to be empty.
       if(sum(length(value_data)) > 0 || sum(dim(value_data)) > 0) {
-        # Cannot figure out how to dynamically set values in an array
-        # of arbitrary dimensions.
-        # Tried: abind::afill <- but it doesn't seem to work with arbitrary dims or do.call
-        if(length(selection_list) == 1) {
-          self$data[selection_list[[1]]] <- value_data
-        } else if(length(selection_list) == 2) {
-          self$data[selection_list[[1]], selection_list[[2]]] <- value_data
-        } else if(length(selection_list) == 3) {
-          self$data[selection_list[[1]], selection_list[[2]], selection_list[[3]]] <- value_data
-        } else if(length(selection_list) == 4) {
-          self$data[selection_list[[1]], selection_list[[2]], selection_list[[3]], selection_list[[4]]] <- value_data
-        } else if(length(selection_list) == 5) {
-          self$data[selection_list[[1]], selection_list[[2]], selection_list[[3]], selection_list[[4]], selection_list[[5]]] <- value_data
-        } else if(length(selection_list) == 6) {
-          self$data[selection_list[[1]], selection_list[[2]], selection_list[[3]], selection_list[[4]], selection_list[[5]], selection_list[[6]]] <- value_data
-        } else {
-          stop("NestedArray$set() can only handle up to 6D arrays at the moment. Please make a feature request if you need to handle more dims.")
-        }
+        self$data <- do.call("[<-", c(list(self$data), selection_list, list(value = value_data)))
       }
     },
     #' @description
