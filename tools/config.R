@@ -1,6 +1,40 @@
 # Note: Any variables prefixed with `.` are used for text
 # replacement in the Makevars.in and Makevars.win.in
 
+# ---- WebR/Wasm short-circuit -------------------------------------
+# The r-universe Wasm tier ships pizzarr as pure R: the zarrs Rust
+# backend does not compile on wasm32 (reqwest::blocking, tokio,
+# rayon, object_store are incompatible). Skip msrv.R + Rust build
+# entirely and install a stub Makevars that only builds the no-op
+# C entrypoint. is_zarrs_available() handles the runtime dispatch.
+webr_target <- "wasm32-unknown-emscripten"
+is_wasm <- identical(R.version$platform, webr_target)
+
+if (is_wasm) {
+  message("Building for WebR: pure-R tier (skipping Rust compilation).")
+
+  copy_template <- function(src, dst) {
+    if (!file.exists(src)) stop("Expected template not found: ", src)
+    if (file.exists(dst)) {
+      message("Cleaning previous `", dst, "`.")
+      invisible(file.remove(dst))
+    }
+    con <- file(dst, open = "wb")
+    writeLines(readLines(src), con, sep = "\n")
+    close(con)
+    message("Wrote `", dst, "`.")
+  }
+
+  # Replace the Rust-calling entrypoint with a no-op so that the .so
+  # only exposes a stub R_init_pizzarr. (R auto-compiles every src/*.c,
+  # so the stub lives in tools/ and is copied in on wasm only.)
+  copy_template("tools/entrypoint-wasm.c", "src/entrypoint.c")
+  copy_template("src/Makevars.wasm", "src/Makevars")
+
+  message("`tools/config.R` has finished.")
+  quit(save = "no", status = 0)
+}
+
 # check the packages MSRV first
 source("tools/msrv.R")
 

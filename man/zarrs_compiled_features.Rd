@@ -9,5 +9,5 @@ zarrs_compiled_features()
 \description{
 Called once at \code{.onLoad} to populate \code{.pizzarr_env$zarrs_available}.
 The feature list is determined at compile time via \verb{cfg!} checks.
-Also installs a no-op panic hook on first call (see \code{\link{init_panic_hook}}).
+Also installs a no-op panic hook on first call.
 }

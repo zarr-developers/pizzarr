@@ -1,0 +1,5 @@
+# WebR/Wasm build: pure-R tier, no Rust compilation.
+# tools/config.R has overwritten src/entrypoint.c with a no-op stub;
+# link that lone object to satisfy `useDynLib`. The pure-R code path
+# is used at runtime (is_zarrs_available() returns FALSE).
+OBJECTS = entrypoint.o
