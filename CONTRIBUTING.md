@@ -83,7 +83,7 @@ The resulting `.tar.gz` passes `R CMD check` without a Rust toolchain.
 ### r-universe tier (zarrs backend)
 
 The r-universe build compiles the [zarrs](https://github.com/zarrs/zarrs)
-Rust crate via [extendr](https://extendr.github.io/rextendr/). You need
+Rust crate via [extendr](https://cran.r-project.org/package=rextendr). You need
 rustc >= 1.91 with the GNU target on Windows:
 
 ``` bash

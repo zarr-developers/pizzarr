@@ -21,7 +21,7 @@ pizzarr ships in two tiers. The CRAN build is pure R --- no Rust compilation,
 no system dependencies. It handles local and HTTP Zarr stores with sequential
 chunk I/O via `lapply`. The r-universe build compiles in the
 [zarrs](https://github.com/zarrs/zarrs) Rust crate via
-[extendr](https://extendr.github.io/rextendr/), adding parallel decompression,
+[extendr](https://cran.r-project.org/package=rextendr), adding parallel decompression,
 cloud-native store backends (S3, GCS), and codecs beyond what R packages provide.
 
 The split exists because CRAN's macOS build machines ship a Rust toolchain

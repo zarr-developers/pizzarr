@@ -30,7 +30,7 @@ pizzarr ships in two tiers — same version, different builds. The CRAN build
 is pure R and needs nothing beyond base R dependencies. The
 [r-universe](https://zarr-developers.r-universe.dev/pizzarr) build links in
 the [zarrs](https://github.com/zarrs/zarrs) Rust crate via
-[extendr](https://extendr.github.io/rextendr/), adding parallel decompression
+[extendr](https://cran.r-project.org/package=rextendr), adding parallel decompression
 and additional codec support.
 
 ### CRAN (pure R)
