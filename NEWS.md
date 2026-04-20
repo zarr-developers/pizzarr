@@ -1,4 +1,4 @@
-# pizzarr 0.2.0-pre
+# pizzarr 0.2.0
 
 ## Two-tier distribution
 
