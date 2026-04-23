@@ -98,9 +98,7 @@ init_array_metadata <- function(
     # obtain filters config
     filters_config <- list()
     if(!is_na(filters)) {
-        for(f in filters) {
-            append(filters_config, list(f$get_config()))
-        }
+        filters_config <- lapply(filters, \(f) f$get_config())
     }
 
     # Append object codec config to filters (validation already done above)
@@ -111,6 +109,26 @@ init_array_metadata <- function(
     # use null to indicate no filters
     if (length(filters_config) == 0) {
         filters_config <- NA
+    }
+
+    # --- zarrs create fast path ---
+    if (can_use_zarrs_create(store, dtype)) {
+        preset <- compressor_to_preset(compressor, compressor_config)
+        if (!is.na(preset)) {
+            store_id <- store$get_store_identifier()
+            v3_dtype <- v2_dtype_to_v3_dtype(dtype$dtype)$data_type
+            result <- tryCatch(
+                zarrs_create_array(
+                    store_id, normalize_storage_path(path),
+                    as.integer(shape), as.integer(chunks),
+                    v3_dtype, preset, fill_value,
+                    "{}", zarr_format
+                ),
+                error = function(e) NULL
+            )
+            if (!is.null(result)) return(invisible(NULL))
+            # zarrs failed — fall through to R-native path
+        }
     }
 
     # initialize metadata

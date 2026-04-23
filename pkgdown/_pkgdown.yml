@@ -1,4 +1,4 @@
-url: https://zarr-developers.github.io/pizzarr/
+url: https://zarr.dev/pizzarr/
 
 template:
   bootstrap: 5
@@ -38,6 +38,8 @@ reference:
   - DirectoryStore
   - MemoryStore
   - HttpStore
+  - S3Store
+  - GcsStore
 - title: "Compressors and filters"
   desc: >
     Codec classes for compressing and decompressing chunk data. Each codec
@@ -70,6 +72,7 @@ reference:
   - zarr_create_zeros
   - zarr_create_array
   - zarr_create_group
+  - pizzarr_config
   - zarr_open
   - zarr_open_group
   - zarr_open_array
@@ -91,6 +94,25 @@ reference:
   - zarr_volcano
   - pizzarr_option_defaults
   - Dtype
+- title: "zarrs backend"
+  desc: >
+    Functions for the optional zarrs Rust backend, providing parallel
+    chunk I/O and additional codec support. Available when the package
+    is installed from r-universe with Rust compilation.
+- contents:
+  - pizzarr_compiled_features
+  - pizzarr_upgrade
+  - zarrs_close_store
+  - zarrs_compiled_features
+  - zarrs_create_array
+  - zarrs_get_subset
+  - zarrs_node_exists
+  - zarrs_open_array_metadata
+  - zarrs_runtime_info
+  - zarrs_set_codec_concurrent_target
+  - zarrs_set_http_batch_range_requests
+  - zarrs_set_nthreads
+  - zarrs_set_subset
 
 
 articles:
@@ -102,9 +124,9 @@ articles:
       - ome-ngff
       - remote-ome-ngff
       - remote-anndata
-      - parallel
       - v3-read
       - v3-interop
+      - zarrs-backend
   - title: Troubleshooting
     navbar: Troubleshooting
     contents:

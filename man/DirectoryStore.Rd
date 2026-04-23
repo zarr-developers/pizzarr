@@ -15,8 +15,10 @@ DirectoryStore for Zarr
 }
 \seealso{
 Other Store classes: 
+\code{\link{GcsStore}},
 \code{\link{HttpStore}},
 \code{\link{MemoryStore}},
+\code{\link{S3Store}},
 \code{\link{Store}}
 }
 \concept{Store classes}
@@ -41,6 +43,7 @@ Other Store classes:
 \item \href{#method-DirectoryStore-delete_item}{\code{DirectoryStore$delete_item()}}
 \item \href{#method-DirectoryStore-rmdir}{\code{DirectoryStore$rmdir()}}
 \item \href{#method-DirectoryStore-listdir}{\code{DirectoryStore$listdir()}}
+\item \href{#method-DirectoryStore-get_store_identifier}{\code{DirectoryStore$get_store_identifier()}}
 \item \href{#method-DirectoryStore-print}{\code{DirectoryStore$print()}}
 \item \href{#method-DirectoryStore-clone}{\code{DirectoryStore$clone()}}
 }
@@ -186,13 +189,13 @@ Remove a path within a Store.
 \subsection{Method \code{listdir()}}{
 List the store directory.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$listdir(key = NA)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$listdir(path = NA)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{key}}{Character key.}
+\item{\code{path}}{Character path.}
 }
 \if{html}{\out{</div>}}
 }
@@ -201,10 +204,25 @@ List the store directory.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DirectoryStore-get_store_identifier"></a>}}
+\if{latex}{\out{\hypertarget{method-DirectoryStore-get_store_identifier}{}}}
+\subsection{Method \code{get_store_identifier()}}{
+Print a human-readable summary of the store.
+
+
+Return the absolute filesystem path for zarrs dispatch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$get_store_identifier()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A character string.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-print"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-print}{}}}
 \subsection{Method \code{print()}}{
-Print a human-readable summary of the store.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$print(...)}\if{html}{\out{</div>}}
 }

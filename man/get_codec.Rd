@@ -15,3 +15,4 @@ The instance of the codec.
 \description{
 Get a codec instance from the registry.
 }
+\keyword{internal}

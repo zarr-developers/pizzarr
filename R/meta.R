@@ -133,21 +133,23 @@ encode_fill_value_v3 <- function(fill_value) {
 
 try_fromJSON <- function(json, warn_message = "Error parsing json was",
                          simplifyVector = FALSE) {
-  out <- tryCatch({
-    jsonlite::fromJSON(json, simplifyVector)
-  }, error = \(e) {
-    if(grepl("NaN", e)) {
-      tryCatch({
-        jsonlite::fromJSON(gsub("NaN", "null", json), simplifyVector)
-      }, error = \(e) {
+  tryCatch(
+    jsonlite::fromJSON(json, simplifyVector),
+    error = \(e) {
+      # Bare (unquoted) NaN is invalid JSON but appears in some V2 metadata.
+      # Only replace unquoted NaN — quoted "NaN" is valid JSON (V3 fill_value).
+      if (grepl("(?<!\")NaN(?!\")", json, perl = TRUE)) {
+        tryCatch(
+          jsonlite::fromJSON(gsub("(?<!\")NaN(?!\")", "null", json, perl = TRUE),
+                             simplifyVector),
+          error = \(e2) { warning("\n\n", warn_message, "\n\n", e2); NULL }
+        )
+      } else {
         warning("\n\n", warn_message, "\n\n", e)
         NULL
-      })
-    } else {
-      warning("\n\n", warn_message, "\n\n", e)
-      NULL
+      }
     }
-  })
+  )
 }
 
 #' @title Zarr V3 Metadata Codec

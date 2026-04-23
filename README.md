@@ -8,17 +8,98 @@
 [![logs](https://cranlogs.r-pkg.org/badges/pizzarr)](https://cran.r-project.org/package=pizzarr)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/pizzarr)](https://CRAN.R-project.org/package=pizzarr)
+[![r-universe](https://zarr-developers.r-universe.dev/badges/pizzarr)](https://zarr-developers.r-universe.dev/pizzarr)
 
 A Zarr implementation for R.
 
 ## Installation
 
-Installation requires R 4.1.0 or greater.
+pizzarr ships in two tiers — same version, different builds. The CRAN
+build is pure R and needs nothing beyond base R dependencies. The
+[r-universe](https://zarr-developers.r-universe.dev/pizzarr) build links
+in the [zarrs](https://github.com/zarrs/zarrs) Rust crate via
+[extendr](https://cran.r-project.org/package=rextendr), adding parallel
+decompression and additional codec support.
+
+### CRAN (pure R)
 
 ``` r
-install.packages("devtools")
-devtools::install_github("zarr-developers/pizzarr")
+install.packages("pizzarr")
 ```
+
+### r-universe (zarrs backend)
+
+``` r
+install.packages("pizzarr",
+                 repos = c("https://zarr-developers.r-universe.dev",
+                            "https://cloud.r-project.org"))
+```
+
+Both sources serve the same release version. The r-universe build
+distributes pre-compiled binaries for Windows and macOS — no Rust
+toolchain needed.
+
+The r-universe binaries compile the zarrs backend with local
+filesystem I/O, synchronous HTTP reads, gzip/zstd/blosc codecs,
+sharding, and S3/GCS cloud store support via `object_store`. The
+build system enables these features automatically when `NOT_CRAN` is
+set (which r-universe does). To compile with a different feature set,
+set `PIZZARR_FEATURES` explicitly (see below).
+
+`pizzarr_compiled_features()` lists what the zarrs backend provides,
+and `pizzarr_upgrade()` prints the install command when zarrs is not
+compiled in. `pizzarr_config()` controls concurrency settings (thread
+pool size, codec concurrency, HTTP range request batching). See
+`vignette("zarrs-backend")` for details.
+
+### Building from source (zarrs backend)
+
+If you need to compile the zarrs backend yourself — either because no
+binary is available for your platform, or because you are developing
+the Rust side — you need rustc \>= 1.91. On Windows, add the GNU
+target:
+
+``` bash
+rustup target add x86_64-pc-windows-gnu
+```
+
+The build system uses two environment variables to control compilation:
+
+- **`DEBUG`** — set to any non-empty value for a debug build. This
+  enables Cargo's incremental compilation, so subsequent rebuilds are
+  fast (seconds instead of minutes). The resulting library is slower at
+  runtime because it skips link-time optimization and does not strip
+  symbols. Use this during active development on the Rust code.
+- **`PIZZARR_FEATURES`** — a comma-separated list of extra Cargo
+  features. When `NOT_CRAN` is set and `PIZZARR_FEATURES` is empty,
+  the build defaults to `s3,gcs` (S3 and GCS cloud store support via
+  `object_store` and `tokio`). Set this explicitly to override — e.g.,
+  `PIZZARR_FEATURES=none` for default features only, or
+  `PIZZARR_FEATURES=s3` for S3 without GCS.
+
+A release build (no `DEBUG`) uses LTO, single codegen unit, and symbol
+stripping — fast at runtime but takes several minutes to compile from
+scratch.
+
+``` bash
+# Development: fast rebuilds, slower runtime, S3/GCS included
+DEBUG=1 R CMD INSTALL .
+
+# Production: slow first build, fast runtime, S3/GCS included
+NOT_CRAN=true R CMD INSTALL .
+
+# Production with default features only (no cloud stores)
+R CMD INSTALL .
+```
+
+`NOT_CRAN` is set automatically when `DEBUG` is present. For builds
+without vendored crates (the normal case for local development),
+`NOT_CRAN` prevents the build system from attempting offline
+compilation.
+
+Development happens on the `develop` branch. See
+[CONTRIBUTING.md](https://github.com/zarr-developers/pizzarr/blob/main/CONTRIBUTING.md)
+for the branching and release model.
 
 ## Usage
 
@@ -172,7 +253,37 @@ framework, which validates that Zarr implementations can correctly read
 standard test arrays (V2 and V3 formats, multiple dtypes). These tests
 run automatically in CI on every push and pull request to `main`.
 
+## Performance
+
+The zarrs backend (r-universe install only) handles chunk I/O and codec execution in Rust, bypassing
+R's single-threaded chunk loop entirely. For compressed data — the common
+case with real Zarr stores — this translates to 6–8x throughput over pure-R.
+
+The table below compares pizzarr's two tiers against zarr-python/xarray on
+a 500×500×100 float64 array (~200 MB uncompressed) with 100×100×50 chunks.
+All numbers are best-of-three throughput in MB/s, measured on Windows
+(pizzarr 0.2.0-dev, zarr-python 3.1.5, April 2026).
+
+| Scenario | pizzarr zarrs | pizzarr R-native | xarray |
+|---|---|---|---|
+| read_all (gzip) | 253 MB/s | 39 MB/s | 545 MB/s |
+| read_all (none) | 247 MB/s | 39 MB/s | 1811 MB/s |
+| read_subset (gzip) | **200 MB/s** | 38 MB/s | 138 MB/s |
+| read_subset (none) | 229 MB/s | 38 MB/s | 704 MB/s |
+| write_all (gzip) | 97 MB/s | 12 MB/s | 143 MB/s |
+| write_all (none) | 286 MB/s | 144 MB/s | 477 MB/s |
+
+xarray leads on bulk operations because numpy can transpose array memory
+layout via stride views (zero copy) — R's `array()` always copies. The
+gap narrows with compression since decompression dominates, and zarrs wins
+on cross-chunk subset reads (200 vs 138 MB/s gzip) because it decodes
+only the chunks that overlap the selection.
+
+Reproduce with `Rscript inst/extdata/benchmark-zarrs-vs-xarray.R` (requires
+Python with `zarr>=3` and `xarray` for the xarray column).
+
 ## Contributing
 
-See [CONTRIBUTING.md](https://github.com/zarr-developers/pizzarr/blob/main/CONTRIBUTING.md) for development setup, testing,
-and documentation build instructions.
+See
+[CONTRIBUTING.md](https://github.com/zarr-developers/pizzarr/blob/main/CONTRIBUTING.md)
+for development setup, testing, and documentation build instructions.

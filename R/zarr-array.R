@@ -139,7 +139,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
       }
       private$fill_value <- meta$fill_value
       private$order <- meta$order
-      if("dimension_separator" %in% names(meta) && !is.na(meta$dimension_separator) && !is.null(meta$dimension_separator)) {
+      if(!is.null(meta$dimension_separator) && !is.na(meta$dimension_separator)) {
         private$dimension_separator <- meta$dimension_separator
       } else {
         # V2 stores don't carry dimension separators; "." is the spec default.
@@ -155,10 +155,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
         private$filters <- NA
         object_codec <- NA
       } else {
-        private$filters <- list()
-        for(config in meta$filters) {
-          private$filters <- append(private$filters, get_codec(config))
-        }
+        private$filters <- lapply(meta$filters, get_codec)
         if(length(private$filters) == 1) {
           object_codec <- private$filters[[1]]
         }
@@ -445,8 +442,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
           # From array().
           return(NestedArray$new(chunk_inner, shape = private$chunks, dtype = private$dtype, order = private$order))
         } else {
-          print(cond$message)
-          stop("rethrow")
+          stop(cond)
         }
       })      
 
@@ -498,23 +494,42 @@ ZarrArray <- R6::R6Class("ZarrArray",
         return(out)
       }
 
-      ps <- get_parallel_settings(parallel_option = getOption("pizzarr.parallel_backend", NA))
-      if(ps$close) on.exit(try(parallel::stopCluster(ps$cl), silent = TRUE))
+      # --- zarrs fast path ---
+      if (can_use_zarrs(indexer, private$store)) {
+        ranges <- selection_to_ranges(indexer)
+        store_id <- private$store$get_store_identifier()
+        ct <- getOption("pizzarr.concurrent_target", NULL)
+        result <- tryCatch(
+          zarrs_get_subset(store_id, private$path, ranges, ct),
+          error = function(e) NULL
+        )
+        if (!is.null(result)) {
+          # zarrs returns flat F-order data (transposed in Rust).
+          # Reshape directly into R array with correct dims.
+          zarrs_shape <- vapply(ranges, function(r) r[2L] - r[1L], integer(1))
+          arr <- array(result$data, dim = zarrs_shape)
+          # Squeeze scalar dims (IntDimIndexer) to match out_shape.
+          # Only apply when out_shape has fewer dims (length-1 dims dropped).
+          os <- unlist(out_shape)
+          if (length(os) > 0 && !identical(zarrs_shape, os)) {
+            dim(arr) <- os
+          }
+          out$data <- arr
+          return(out)
+        }
+        # zarrs failed — fall through to R-native path
+      }
 
+      # --- R-native path ---
       parts <- indexer$iter()
-      part1_results <- ps$apply_func(parts, function(proj) {
-        private$chunk_getitem_part1(proj$chunk_coords, proj$chunk_sel, out, proj$out_sel, drop_axes = indexer$drop_axes)
-      }, cl = ps$cl)
-
-      for(i in seq_along(parts)) {
-        proj <- parts[[i]]
-        part1_result <- part1_results[[i]]
-        private$chunk_getitem_part2(part1_result, proj$chunk_coords, proj$chunk_sel, out, proj$out_sel, drop_axes = indexer$drop_axes)
+      for(proj in parts) {
+        private$chunk_getitem(proj$chunk_coords, proj$chunk_sel, out,
+                              proj$out_sel, drop_axes = indexer$drop_axes)
       }
 
       # Return scalar instead of zero-dimensional array.
       if(length(out$shape) == 0) {
-        return(out$data[0])
+        return(out$data[1])
       }
       return(out)
 
@@ -622,22 +637,35 @@ ZarrArray <- R6::R6Class("ZarrArray",
           stop("UnsupportedOperation(object dtype requires object_codec in filters for set_item)")
         }
 
-        par_opt <- NA
-        
-        if(getOption("pizzarr.parallel_write_enabled", FALSE)) {
-          par_opt <- getOption("pizzarr.parallel_backend", NA)
+        # --- zarrs write fast path ---
+        if (can_use_zarrs_write(indexer, private$store)) {
+          ranges <- selection_to_ranges(indexer)
+          store_id <- private$store$get_store_identifier()
+          ct <- getOption("pizzarr.concurrent_target", NULL)
+          # Extract flat data from value
+          if (inherits(value, "NestedArray")) {
+            write_data <- as.vector(value$data)
+          } else if (is_scalar(value)) {
+            write_data <- value
+          } else {
+            write_data <- as.vector(value)
+          }
+          # Rust handles F→C transpose internally; just flatten.
+          # Shape is passed via ranges so Rust knows the dimensions.
+          result <- tryCatch(
+            zarrs_set_subset(store_id, private$path, ranges, write_data, ct),
+            error = function(e) NULL
+          )
+          if (isTRUE(result)) return(invisible(NULL))
+          # zarrs failed — fall through to R-native path
         }
-        
-        ps <- get_parallel_settings(parallel_option = par_opt)
-        if(ps$close) on.exit(try(parallel::stopCluster(ps$cl), silent = TRUE))
 
         parts <- indexer$iter()
-        ps$apply_func(parts, function(proj) {
+        for(proj in parts) {
           chunk_value <- private$get_chunk_value(proj, indexer, value, selection_shape)
           private$chunk_setitem(proj$chunk_coords, proj$chunk_sel, chunk_value)
-          NULL
-        }, cl = ps$cl)
-        
+        }
+
         return()
       }
     },
@@ -671,71 +699,13 @@ ZarrArray <- R6::R6Class("ZarrArray",
       # TODO
     },
     # method_description
-    # For parallel usage
-    chunk_getitem_part1 = function(chunk_coords, chunk_selection, out, out_selection, drop_axes = NA, fields = NA) {
-      if(length(chunk_coords) != length(private$chunks)) {
-        stop("Inconsistent shapes: chunkCoordsLength: ${chunkCoords.length}, cDataShapeLength: ${this.chunkDataShape.length}")
-      }
-      c_key <- private$chunk_key(chunk_coords)
-
-      result <- tryCatch({
-        c_data <- self$get_chunk_store()$get_item(c_key)
-        decoded_chunk <- private$decode_chunk(c_data)
-        chunk_nested_arr <- NestedArray$new(decoded_chunk, shape=private$chunks, dtype=private$dtype, order = private$order)
-        return(list(
-          status = "success",
-          value = chunk_nested_arr
-        ))
-      }, error = function(cond) {
-        return(list(status = "error", value = cond))
-      })
-      return(result)
-    },
-    # method_description
-    # For parallel usage
-    chunk_getitem_part2 = function(part1_result, chunk_coords, chunk_selection, out, out_selection, drop_axes = NA, fields = NA) {
-      c_key <- private$chunk_key(chunk_coords)
-
-      if(part1_result$status == "success") {
-        chunk_nested_arr <- part1_result$value
-
-        if(is_contiguous_selection(out_selection) && is_total_slice(chunk_selection, private$chunks) && is.null(private$filters)) {
-          out$set(out_selection, chunk_nested_arr)
-          return(TRUE)
-        }
-
-        # Decode chunk
-        chunk <- chunk_nested_arr
-        tmp <- chunk$get(chunk_selection)
-
-        if(!is_na(drop_axes)) {
-          stop("Drop axes is not supported yet")
-        }
-        out$set(out_selection, tmp)
-      } else {
-        # There was an error - this corresponds to the Catch statement in the non-parallel version.
-        cond <- part1_result$value
-        if(is_key_error(cond)) {
-          # fill with scalar if cKey doesn't exist in store
-          # NaN is a valid fill value; is.na(NaN)==TRUE so check is.nan first
-          if ((is.numeric(private$fill_value) && is.nan(private$fill_value)) ||
-              !is_na(private$fill_value)) {
-            out$set(out_selection, as_scalar(private$fill_value))
-          }
-        } else {
-          print(cond$message)
-          stop("Different type of error - rethrow")
-        }
-      }
-    },
-    # method_description
-    # For non-parallel usage
     chunk_getitem = function(chunk_coords, chunk_selection, out, out_selection, drop_axes = NA, fields = NA) {
       # TODO
       # Reference: https://github.com/gzuidhof/zarr.js/blob/15e3a3f00eb19f0133018fb65f002311ea53bb7c/src/core/index.ts#L380
 
       if(length(chunk_coords) != length(private$chunks)) {
-        stop("Inconsistent shapes: chunkCoordsLength: ${chunkCoords.length}, cDataShapeLength: ${this.chunkDataShape.length}")
+        stop("Inconsistent shapes: chunk_coords length ", length(chunk_coords),
+             " != chunks length ", length(private$chunks))
       }
       c_key <- private$chunk_key(chunk_coords)
 
@@ -765,8 +735,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
             out$set(out_selection, as_scalar(private$fill_value))
           }
         } else {
-          print(cond$message)
-          stop("Different type of error - rethrow")
+          stop(cond)
         }
       })
     },
@@ -782,9 +751,6 @@ ZarrArray <- R6::R6Class("ZarrArray",
       
       # Obtain key for chunk storage
       chunk_key <- private$chunk_key(chunk_coords)
-
-      dtype_constr = private$dtype$get_typed_array_ctr()
-      chunk_size <- compute_size(private$chunks)
 
       if (is_total_slice(chunk_selection, private$chunks)) {
         # Totally replace chunk
@@ -841,11 +807,12 @@ ZarrArray <- R6::R6Class("ZarrArray",
         }, error = function(cond) {
           if (is_key_error(cond)) {
             # Chunk is not initialized
+            dtype_constr <- private$dtype$get_typed_array_ctr()
+            chunk_size <- compute_size(private$chunks)
             chunk_data <- dtype_constr(chunk_size)
             # NaN is a valid fill value; is.na(NaN)==TRUE so check is.nan first
-            if (is.numeric(private$fill_value) && is.nan(private$fill_value)) {
-              chunk_data <- chunk_fill(chunk_data, private$fill_value)
-            } else if (!is_na(private$fill_value)) {
+            if ((is.numeric(private$fill_value) && is.nan(private$fill_value)) ||
+                !is_na(private$fill_value)) {
               chunk_data <- chunk_fill(chunk_data, private$fill_value)
             }
             # From base R array.
@@ -856,9 +823,7 @@ ZarrArray <- R6::R6Class("ZarrArray",
               order = private$order
             ))
           } else {
-            print(cond$message)
-            # // Different type of error - rethrow
-            stop("throw error;")
+            stop(cond)
           }
         })
         
@@ -1567,98 +1532,4 @@ ZarrArray <- R6::R6Class("ZarrArray",
 #' @export
 as.array.ZarrArray = function(x, ...) {
   x$as.array()
-}
-
-#' get parallel settings
-#' @keywords internal
-#' @description
-#' given information about user preferences and environment conditions, returns a function
-#' and cluster object.
-#' @param on_windows Logical indicating if windows restrictions should apply.
-#' @param parallel_option Integer, or "future" to control how parallelization occurs.
-#' @param progress Logical to control whether `pbapply` is used such that progress is printed.
-#' @return list containing the function to use in parallel operations, a cluster object to be used 
-#' in parallel operations, and whether or not the cluster object needs to be closed.
-#' 
-get_parallel_settings <- function(on_windows = (.Platform$OS.type == "windows"),
-                                  parallel_option = getOption("pizzarr.parallel_backend", NA),
-                                  progress = getOption("pizzarr.progress_bar", FALSE)) {
-
-  cl <- parse_parallel_option(parallel_option)
-  is_parallel <- is_truthy_parallel_option(cl)
-  
-  # fall back on lapply
-  apply_func <- function(X, FUN, ..., cl = NULL) {
-    lapply(X, FUN, ...)
-  }
-  
-  # triggers closing a temporary cluster
-  close <- FALSE
-  
-  if(is_parallel) {
-    
-    # check for pbapply
-    if(progress & !requireNamespace("pbapply", quietly = TRUE)) {
-      # NOTEST: only reachable when pbapply is not installed
-      progress <- FALSE
-      warning("progress bar operations requires the 'pbapply' package.")
-    }
-    
-    # NOTEST: covr instruments function bodies, making body() comparison fail;
-    # get_parallel_settings test uses skip_on_covr(). Covered by testthat only.
-    if(isTRUE(cl == "future")) {
-
-      if(!requireNamespace("future.apply", quietly = TRUE)) {
-        # NOTEST: only reachable when future.apply is not installed
-        warning("cluster options is 'future' but future.apply not available.")
-
-      } else { # we can use future
-        if(progress) {
-          apply_func <- function(X, FUN, ..., cl = NULL) {
-            pbapply::pblapply(X, FUN, ...,
-                              future.globals = FALSE,
-                              future.packages = "blosc",
-                              future.seed = TRUE, cl = cl)
-          }
-        } else {
-          apply_func <- function(X, FUN, ..., cl = NULL) {
-            future.apply::future_lapply(X, FUN, ...,
-                                        future.globals = FALSE,
-                                        future.packages = "blosc",
-                                        future.seed=TRUE)
-          }
-        } }
-    } else {
-
-      if(!requireNamespace("parallel", quietly = TRUE)) {
-        # NOTEST: only reachable when parallel is not installed (it's a base pkg)
-        warning("Parallel operations require the 'parallel' or 'future' package.")
-      } else {
-        if(is.integer(cl) & on_windows) {
-          # See #105
-          cl <- parallel::makeCluster(cl)
-          close <- TRUE
-        }
-
-        if(progress) {
-          apply_func <- function(X, FUN, ..., cl = NULL) {
-            pbapply::pblapply(X, FUN, ..., cl = cl)
-          }
-        } else if(!is.logical(cl)) {
-          if(on_windows) {
-            apply_func <- function(X, FUN, ..., cl = NULL) {
-              parallel::parLapply(cl, X, FUN, ...)
-            }
-          } else {
-            apply_func <- function(X, FUN, ..., cl = NULL) {
-              parallel::mclapply(X, FUN, ..., mc.cores = cl)
-            }
-          }
-        }
-        if(is.logical(cl)) cl <- NULL
-      }
-    }
-  }
-  
-  list(apply_func = apply_func, cl = cl, close = close)
 }
