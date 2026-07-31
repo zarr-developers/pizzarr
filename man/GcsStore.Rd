@@ -8,14 +8,59 @@
 \link[R6:R6Class]{R6::R6Class}
 }
 \description{
-Thin store wrapper for Google Cloud Storage URLs. All I/O is delegated
-to the zarrs Rust backend via \code{object_store}. Requires the \code{gcs}
-compiled feature (r-universe tier).
+Marks a \verb{gs://} URL for the zarrs Rust backend. All I/O is delegated to
+\code{object_store}, so this class requires the \code{gcs} compiled feature
+(r-universe tier).
 }
 \details{
-GCS Store for Zarr (zarrs backend)
+\code{GcsStore} is a dispatch marker, not a full store: it carries a URL and
+implements no key-level I/O of its own. Reads go through
+\code{\link[=zarrs_open_array_metadata]{zarrs_open_array_metadata()}} and \code{\link[=zarrs_get_subset]{zarrs_get_subset()}}, which take the
+\verb{gs://} URL directly. Calling \code{get_item()}, \code{contains_item()} or
+\code{listdir()} on this object raises an error pointing at those functions and
+at \link{HttpStore}.
+
+Configuration mirrors \link{S3Store}, with \code{GOOGLE_} variables:
+
+\describe{
+\item{\code{GOOGLE_SKIP_SIGNATURE}}{Set to \code{"true"} for anonymous access to a
+public bucket. Unlike S3, GCS does not infer this from the absence of
+credentials — without it, a world-readable bucket still fails.}
+\item{\code{GOOGLE_APPLICATION_CREDENTIALS}, \code{GOOGLE_SERVICE_ACCOUNT},
+\code{GOOGLE_SERVICE_ACCOUNT_KEY}}{Credentials. The GCE metadata server is
+used when none are set.}
+\item{\code{GOOGLE_BASE_URL}}{Alternate endpoint, e.g. a local
+\code{fake-gcs-server} instance.}
+}
+
+Public GCS data is also reachable over HTTPS at
+\verb{https://storage.googleapis.com/bucket/path} using \link{HttpStore}, which needs
+no configuration and works on both distribution tiers.
+
+Store handles are cached by URL on the Rust side, so changing credentials
+has no effect on an already-open store until you call \code{\link[=zarrs_close_store]{zarrs_close_store()}}.
+
+Writes to GCS are not supported.
+}
+\examples{
+\dontrun{
+# Public bucket, no credentials. Requires the gcs feature.
+Sys.setenv(GOOGLE_SKIP_SIGNATURE = "true")
+
+url <- "gs://pangeo-data/ECCO_basins.zarr"
+zarrs_open_array_metadata(url, "basin_mask")
+zarrs_close_store(url)
+
+# Public GCS data needs no credentials over HTTPS:
+z <- zarr_open(HttpStore$new(
+  "https://storage.googleapis.com/pangeo-data/ECCO_basins.zarr"
+))
+}
 }
 \seealso{
+\link{HttpStore} for public GCS data over HTTPS, which works on both
+distribution tiers. \code{vignette("remote-stores")} for worked examples.
+
 Other Store classes: 
 \code{\link{DirectoryStore}},
 \code{\link{HttpStore}},
@@ -24,6 +69,7 @@ Other Store classes:
 \code{\link{Store}}
 }
 \concept{Store classes}
+\keyword{internal}
 \section{Super class}{
 \code{\link[pizzarr:Store]{pizzarr::Store}} -> \code{GcsStore}
 }
@@ -31,6 +77,10 @@ Other Store classes:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-GcsStore-new}{\code{GcsStore$new()}}
+\item \href{#method-GcsStore-get_item}{\code{GcsStore$get_item()}}
+\item \href{#method-GcsStore-set_item}{\code{GcsStore$set_item()}}
+\item \href{#method-GcsStore-contains_item}{\code{GcsStore$contains_item()}}
+\item \href{#method-GcsStore-listdir}{\code{GcsStore$listdir()}}
 \item \href{#method-GcsStore-get_store_identifier}{\code{GcsStore$get_store_identifier()}}
 \item \href{#method-GcsStore-print}{\code{GcsStore$print()}}
 \item \href{#method-GcsStore-clone}{\code{GcsStore$clone()}}
@@ -40,18 +90,14 @@ Other Store classes:
 <details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>pizzarr::Store$close()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="contains_item"><a href='../../pizzarr/html/Store.html#method-Store-contains_item'><code>pizzarr::Store$contains_item()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="delete_item"><a href='../../pizzarr/html/Store.html#method-Store-delete_item'><code>pizzarr::Store$delete_item()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>pizzarr::Store$get_consolidated_metadata()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_item"><a href='../../pizzarr/html/Store.html#method-Store-get_item'><code>pizzarr::Store$get_item()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>pizzarr::Store$is_erasable()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>pizzarr::Store$is_listable()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>pizzarr::Store$is_readable()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>pizzarr::Store$is_writeable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="listdir"><a href='../../pizzarr/html/Store.html#method-Store-listdir'><code>pizzarr::Store$listdir()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>pizzarr::Store$rename()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rmdir"><a href='../../pizzarr/html/Store.html#method-Store-rmdir'><code>pizzarr::Store$rmdir()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="set_item"><a href='../../pizzarr/html/Store.html#method-Store-set_item'><code>pizzarr::Store$set_item()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -70,6 +116,88 @@ Create a \code{GcsStore}.
 \item{\code{url}}{Character. GCS URL (e.g., \code{"gs://bucket/prefix"}).}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GcsStore-get_item"></a>}}
+\if{latex}{\out{\hypertarget{method-GcsStore-get_item}{}}}
+\subsection{Method \code{get_item()}}{
+Not implemented. Raises an error naming the supported read paths.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GcsStore$get_item(key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{The item key.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Never returns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GcsStore-set_item"></a>}}
+\if{latex}{\out{\hypertarget{method-GcsStore-set_item}{}}}
+\subsection{Method \code{set_item()}}{
+Not implemented. Writes to GCS are not supported.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GcsStore$set_item(key, value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{The item key.}
+
+\item{\code{value}}{The item value as a vector of type raw.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Never returns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GcsStore-contains_item"></a>}}
+\if{latex}{\out{\hypertarget{method-GcsStore-contains_item}{}}}
+\subsection{Method \code{contains_item()}}{
+Not implemented. Raises an error naming the supported read paths.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GcsStore$contains_item(key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{The item key.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Never returns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GcsStore-listdir"></a>}}
+\if{latex}{\out{\hypertarget{method-GcsStore-listdir}{}}}
+\subsection{Method \code{listdir()}}{
+Not implemented. Raises an error naming the supported read paths.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GcsStore$listdir(path = NA)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{character path.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Never returns.
 }
 }
 \if{html}{\out{<hr>}}

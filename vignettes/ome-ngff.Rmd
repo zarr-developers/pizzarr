@@ -1,44 +1,131 @@
 ---
-title: "Local OME-NGFF Demo"
+title: "OME-NGFF Images"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Local OME-NGFF Demo}
+  %\VignetteIndexEntry{OME-NGFF Images}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-### Demo
-
-```r
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
 library(pizzarr)
 
-# The path to the root of the OME-NGFF Zarr store.
+sample_dir <- tools::R_user_dir("pizzarr")
+clean <- !dir.exists(sample_dir)
+
+has_blosc <- requireNamespace("blosc", quietly = TRUE)
+
+idr_url <- "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0062A/6001240.zarr"
+online <- tryCatch({
+  con <- url(paste0(idr_url, "/.zattrs"))
+  on.exit(try(close(con), silent = TRUE))
+  length(readLines(con, warn = FALSE)) > 0
+}, error = function(e) FALSE, warning = function(w) FALSE)
+```
+
+[OME-NGFF](https://ngff.openmicroscopy.org/) is a convention for storing
+bioimaging data in Zarr. A microscopy image is often far too large to open at
+full resolution, so an OME-NGFF store holds the same image several times over at
+decreasing resolutions — an image pyramid — and records the arrangement in group
+attributes. Reading one means consulting those attributes to pick a resolution,
+then reading the array it points to.
+
+The convention is independent of where the store lives. This vignette reads a
+local store and a remote one with the same code; only the store object differs.
+See `vignette("remote-stores")` for connection details.
+
+## The multiscales attribute
+
+The root group carries a `multiscales` attribute describing the pyramid. Each
+entry in its `datasets` list names a path within the store, ordered from highest
+resolution to lowest:
+
+```{r, eval = has_blosc}
 root <- pizzarr_sample("dog.ome.zarr")
 
-# Open the OME-NGFF as a DirectoryStore.
-store <- DirectoryStore$new(root)
-g <- zarr_open_group(store)
+g <- zarr_open_group(DirectoryStore$new(root))
 
-# Using the OME metadata, get the path to the first resolution of the image pyramid.
 attrs <- g$get_attrs()$to_list()
-resolution_paths <- attrs$multiscales[[1]]$datasets[[1]]$path
-first_resolution <- resolution_paths[[1]]
+names(attrs)
+```
 
-# Load the 3-dimensional array of RGB pixels (as a ZarrArray instance).
+```{r, eval = has_blosc}
+vapply(attrs$multiscales[[1]]$datasets, function(d) d$path, character(1))
+```
+
+Those paths are the arrays. Taking the first gives full resolution:
+
+```{r, eval = has_blosc}
+first_resolution <- attrs$multiscales[[1]]$datasets[[1]]$path
+
 zarr_arr <- g$get_item(first_resolution)
+zarr_arr$get_shape()
+```
 
-print(zarr_arr$get_shape())
-# [1]   3 500 750
+Three channels of 500 by 750 pixels — RGB. Reading it all and plotting takes
+the array into the channel-last order `rasterImage()` expects:
 
-# Load the 3-dimensional array of RGB pixels (as a NestedArray instance).
-nested_arr <- zarr_arr$get_item("...")
+```{r, eval = has_blosc, fig.alt = "Photograph of a dog, decoded from a local OME-NGFF Zarr store."}
+arr <- zarr_arr$get_item("...")$data
 
-# Extract the NestedArray contents as a base R array.
-arr <- nested_arr$data
-
-# Plot the RGB image using base R rasterImage().
 dm <- dim(arr)
 plot.new()
 plot.window(c(0, dm[3]), c(0, dm[2]), asp = 1)
 rasterImage(aperm(arr, c(2, 3, 1)) / 255, 0, 0, dm[3], dm[2])
+```
+
+## The same code against a remote store
+
+A published OME-NGFF image behaves identically — swap `DirectoryStore` for
+`HttpStore` and nothing else changes. This one comes from the EMBL-EBI
+[Image Data Resource](https://idr.openmicroscopy.org/), which serves its Zarr
+over an S3-compatible endpoint:
+
+```{r, eval = has_blosc && online}
+g <- zarr_open_group(HttpStore$new(idr_url))
+
+attrs <- g$get_attrs()$to_list()
+first_resolution <- attrs$multiscales[[1]]$datasets[[1]]$path
+
+zarr_arr <- g$get_item(first_resolution)
+zarr_arr$get_shape()
+```
+
+This image has four dimensions — two channels, 236 Z-planes, then 275 by 271
+pixels. Reading all of it would pull far more than the illustration needs, so
+take a single Z-plane. Only the chunks overlapping the selection are fetched:
+
+```{r, eval = has_blosc && online}
+z_index <- 118
+
+nested_arr <- zarr_arr$get_item(list(
+  slice(1, 2), slice(z_index, z_index), slice(NA, NA), slice(NA, NA)
+))
+
+nested_arr$shape
+```
+
+The two channels are not red and green as such — they are separate stains.
+Mapping them onto two colour channels gives a quick look:
+
+```{r, eval = has_blosc && online, fig.alt = "Two-channel fluorescence microscopy Z-plane rendered as a red and green composite."}
+arr <- nested_arr$data
+
+rg_arr <- aperm(arr, c(2, 4, 3, 1))[1, , , ]
+rgb_arr <- array(0, dim = c(271, 275, 3))
+rgb_arr[, , 1] <- rg_arr[, , 1]
+rgb_arr[, , 2] <- rg_arr[, , 2]
+
+plot.new()
+plot.window(c(0, 271), c(0, 275), asp = 1)
+rasterImage(rgb_arr / max(rgb_arr), 0, 0, 271, 275)
+```
+
+```{r, include = FALSE}
+if (clean) unlink(sample_dir, recursive = TRUE)
 ```

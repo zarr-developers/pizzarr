@@ -252,6 +252,12 @@ normalize_store_arg <- function(store, storage_options=NA, mode=NA) {
     if(grepl("^https?://", store)) {
       return(HttpStore$new(store))
     }
+    if(grepl("^s3://", store)) {
+      return(S3Store$new(store))
+    }
+    if(grepl("^gs://", store)) {
+      return(GcsStore$new(store))
+    }
     if(grepl("://", store, fixed=TRUE) || grepl("::", store, fixed=TRUE)) {
       # TODO: return FSStore
     }

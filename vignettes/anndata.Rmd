@@ -1,0 +1,101 @@
+---
+title: "AnnData Stores"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{AnnData Stores}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+library(pizzarr)
+
+has_blosc <- requireNamespace("blosc", quietly = TRUE)
+
+root <- paste0("https://data-1.vitessce.io/0.0.33/main/",
+               "human-lymph-node-10x-visium/human_lymph_node_10x_visium.h5ad.zarr")
+
+online <- tryCatch({
+  con <- url(paste0(root, "/.zgroup"))
+  on.exit(try(close(con), silent = TRUE))
+  length(readLines(con, warn = FALSE)) > 0
+}, error = function(e) FALSE, warning = function(w) FALSE)
+```
+
+[AnnData](https://anndata.readthedocs.io/) is the convention single-cell and
+spatial biology tools use to keep a measurement matrix together with its
+annotations. Written to Zarr, it becomes a group hierarchy with fixed member
+names: `X` holds the main matrix, `obs` describes the observations (cells or
+spots), `var` describes the variables (genes), and `obsm` holds alternative
+per-observation representations such as embeddings.
+
+Reading one is a matter of knowing those names. The example here is a 10x
+Visium human lymph node section published by
+[Vitessce](http://vitessce.io/), read over HTTPS — see
+`vignette("remote-stores")` for connection details.
+
+## Opening the store
+
+This store publishes no consolidated metadata, so pizzarr cannot list what it
+contains — an HTTP server offers no equivalent of `ls`. That is the normal case
+for AnnData stores, and it is workable only because the member names are
+fixed by the convention: you address `obs`, `obsm`, and `X` by name rather than
+discovering them.
+
+```{r, eval = has_blosc && online, message = FALSE}
+g <- zarr_open_group(HttpStore$new(root))
+```
+
+## Observation annotations
+
+`obs` is a group, not an array. Which of its members holds the observation
+identifiers is recorded in its `_index` attribute rather than fixed by name,
+so the lookup goes through the attributes:
+
+```{r, eval = has_blosc && online}
+obs_attrs <- g$get_item("obs")$get_attrs()$to_list()
+index_colname <- obs_attrs[["_index"]]
+index_colname
+```
+
+```{r, eval = has_blosc && online}
+index_arr <- g$get_item(paste0("obs/", index_colname))$get_item("...")$data
+
+length(index_arr)
+head(index_arr, 3)
+```
+
+Those are barcodes identifying the 3861 spots on the slide. Cluster assignments
+live alongside them under the same group:
+
+```{r, eval = has_blosc && online}
+cluster_arr <- g$get_item("obs/clusters")$get_item("...")$data
+
+table(cluster_arr)
+```
+
+## Embeddings
+
+`obsm` holds per-observation matrices — one row per spot, as many columns as the
+representation needs. A UMAP embedding is two columns:
+
+```{r, eval = has_blosc && online}
+umap_arr <- g$get_item("obsm/X_umap")$get_item("...")$data
+
+dim(umap_arr)
+```
+
+Plotting the embedding coloured by cluster gives the standard view of this kind
+of dataset:
+
+```{r, eval = has_blosc && online, fig.alt = "UMAP embedding of 3861 Visium spots, coloured by cluster assignment."}
+plot(umap_arr[, 1], umap_arr[, 2],
+     col = as.integer(as.factor(cluster_arr)),
+     pch = 19, cex = 0.4,
+     xlab = "UMAP 1", ylab = "UMAP 2")
+```

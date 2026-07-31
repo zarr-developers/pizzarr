@@ -16,8 +16,12 @@ zarr_open_group(
 )
 }
 \arguments{
-\item{store}{: Store
-A mapping that supports string keys and bytes-like values.}
+\item{store}{A \link{Store} object, or a character string that is coerced to one:
+an \verb{http://} or \verb{https://} URL becomes an \link{HttpStore}, an \verb{s3://} URL
+becomes an \link{S3Store}, a \verb{gs://} URL becomes a \link{GcsStore}, and anything
+else is treated as a filesystem path and becomes a \link{DirectoryStore}.
+\code{NA} creates a \link{MemoryStore}. Remote stores open read-only.
+See \code{vignette("remote-stores")}.}
 
 \item{mode}{: \code{'r', 'r+', 'a', 'w', 'w-'}, optional
 Persistence mode: 'r' means read only (must exist); 'r+' means
@@ -40,9 +44,10 @@ Path under which array is stored.}
 Separate storage for chunks. If not provided, \code{store} will be used
 for storage of both chunks and metadata.}
 
-\item{storage_options}{: dict
-If using an fsspec URL to create the store, these will be passed to
-the backend implementation. Ignored otherwise.}
+\item{storage_options}{Accepted for compatibility with the zarr-python
+signature but \strong{currently ignored}. pizzarr configures remote stores
+with environment variables rather than a per-call options list; see
+\link{S3Store} and \code{vignette("remote-stores")}.}
 
 \item{zarr_format}{: int, optional
 Zarr format version. Use \code{2L} (default) for Zarr V2 or \code{3L}
