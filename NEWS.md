@@ -1,5 +1,15 @@
 # pizzarr 0.2.1
 
+## Cloud storage
+
+* New `zarrs_get_key()` reads a single key from any store the zarrs backend
+  can open, returning raw bytes or `NULL` when the key is absent. Cloud
+  stores delegate all I/O to `object_store` and expose no key-level read, so
+  consolidated metadata (`.zmetadata`) was unreachable from R for an `s3://`
+  or `gs://` URL. Reading that one key is enough to enumerate a store's
+  arrays and recover their dimension names and attributes, which is what
+  group-level inquiry over `s3://` needs.
+
 ## Cloud storage fixes
 
 * S3 requests were always sent unsigned, so configured AWS credentials were

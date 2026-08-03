@@ -46,6 +46,45 @@ test_that("zarrs reads subset from S3 store", {
   zarrs_close_store(url)
 })
 
+test_that("zarrs_get_key reads consolidated metadata from an S3 store", {
+  skip_if(!.pizzarr_env$zarrs_available, "zarrs backend not available")
+  skip_if(!("s3" %in% pizzarr_compiled_features()), "s3 feature not compiled")
+  skip_on_cran()
+  skip_if_offline()
+
+  # USGS gridMET on an Open Storage Network pod: public, alternate endpoint,
+  # and consolidated. S3Store has no key-level I/O of its own, so this is the
+  # only route to `.zmetadata` for an s3:// URL.
+  url <- "s3://mdmf/gdp/gridMET.zarr"
+
+  zarrs_close_store(url)
+  withr::defer(zarrs_close_store(url))
+
+  withr::with_envvar(c(AWS_ENDPOINT = "https://usgs.osn.mghpcc.org"), {
+    raw_meta <- zarrs_get_key(url, ".zmetadata")
+
+    expect_type(raw_meta, "raw")
+
+    meta <- try_fromJSON(rawToChar(raw_meta), simplifyVector = FALSE)
+    expect_equal(meta$zarr_consolidated_format, 1)
+
+    # the blob carries both .zarray and .zattrs for every array, which is
+    # what makes group-level inquiry possible over s3://
+    expect_true("lat/.zarray" %in% names(meta$metadata))
+    expect_equal(meta$metadata[["lat/.zattrs"]][["_ARRAY_DIMENSIONS"]][[1]],
+                 "lat")
+
+    # absent keys are NULL rather than an error
+    expect_null(zarrs_get_key(url, ".does-not-exist"))
+  })
+})
+
+test_that("zarrs_get_key rejects an invalid store key", {
+  skip_if(!.pizzarr_env$zarrs_available, "zarrs backend not available")
+
+  expect_error(zarrs_get_key(tempdir(), "//not//a//key//"))
+})
+
 test_that("S3Store class works", {
   s3 <- S3Store$new("s3://bucket/prefix")
   expect_equal(s3$get_store_identifier(), "s3://bucket/prefix")

@@ -37,6 +37,31 @@ zarrs_compiled_features <- function() .Call(wrap__zarrs_compiled_features)
 #' @export
 zarrs_node_exists <- function(store_url, path) .Call(wrap__zarrs_node_exists, store_url, path)
 
+#' Read a single key from a store as raw bytes.
+#'
+#' Open (or reuse) the store at `store_url` and fetch `key` verbatim.
+#' Returns a raw vector, or `NULL` when the key is absent. This is the
+#' key-level read that cloud stores otherwise lack: `S3Store` and
+#' `GcsStore` delegate all I/O to `object_store`, so consolidated
+#' metadata (`.zmetadata`) is unreachable from R without it.
+#'
+#' Bytes are returned unparsed. Callers decode as needed --- metadata
+#' keys are UTF-8 JSON, chunk keys are compressed binary.
+#'
+#' # Arguments
+#'
+#' * `store_url` - Filesystem path or URL to the store root.
+#' * `key` - Key within the store (e.g. `".zmetadata"` or `"lat/.zattrs"`).
+#'
+#' # Errors
+#'
+#' Returns an R error if `key` is not a valid store key, if the store
+#' cannot be opened, or if a storage I/O error occurs.
+#' @param store_url Filesystem path or URL to the store root.
+#' @param key Key within the store (e.g. `".zmetadata"` or `"lat/.zattrs"`).
+#' @export
+zarrs_get_key <- function(store_url, key) .Call(wrap__zarrs_get_key, store_url, key)
+
 #' Close (remove) a cached store handle.
 #'
 #' Returns `TRUE` if the store was in the cache and was removed,
