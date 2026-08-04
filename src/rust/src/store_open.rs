@@ -185,6 +185,32 @@ fn wrap_object_store(
     }
 }
 
+/// Environment variables that indicate a usable S3 credential source.
+#[cfg(feature = "s3")]
+const S3_CREDENTIAL_VARS: [&str; 5] = [
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SESSION_TOKEN",
+    "AWS_PROFILE",
+    "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI",
+    "AWS_WEB_IDENTITY_TOKEN_FILE",
+];
+
+/// Whether to send unsigned (anonymous) S3 requests.
+///
+/// An explicit `AWS_SKIP_SIGNATURE` wins. Otherwise signing is skipped only
+/// when no credential source is present, so public buckets work without
+/// configuration while configured credentials are actually used.
+#[cfg(feature = "s3")]
+fn skip_s3_signature() -> bool {
+    if let Some(v) = std::env::var_os("AWS_SKIP_SIGNATURE") {
+        let v = v.to_string_lossy();
+        return v.eq_ignore_ascii_case("true") || v == "1";
+    }
+    !S3_CREDENTIAL_VARS
+        .iter()
+        .any(|k| std::env::var_os(k).is_some_and(|v| !v.is_empty()))
+}
+
 /// Open an S3 store via object_store + async-to-sync adapter.
 #[allow(unused_variables)]
 fn open_s3_store(url: &str) -> Result<StorageEntry, PizzarrError> {
@@ -193,12 +219,14 @@ fn open_s3_store(url: &str) -> Result<StorageEntry, PizzarrError> {
         use object_store::aws::AmazonS3Builder;
 
         let (bucket_url, prefix) = split_bucket_prefix(url);
-        // S3 anonymous access: skip_signature(true). GCS has no equivalent;
-        // for public GCS data without credentials, use the HTTPS endpoint
-        // (https://storage.googleapis.com/bucket/path) instead of gs://.
+        // Anonymous access when no credentials are configured. GCS does not
+        // infer this and needs an explicit GOOGLE_SKIP_SIGNATURE=true, which
+        // `from_env` picks up in `open_gcs_store`.
+        // Alternate endpoints (MinIO, Ceph, Open Storage Network) come from
+        // AWS_ENDPOINT via from_env().
         let store = AmazonS3Builder::from_env()
             .with_url(&bucket_url)
-            .with_skip_signature(true)
+            .with_skip_signature(skip_s3_signature())
             .build()
             .map_err(|e| PizzarrError::StoreOpen {
                 url: url.to_string(),
@@ -264,5 +292,82 @@ mod tests {
             url_to_path("file:///C:/Users/data").unwrap(),
             "C:/Users/data"
         );
+    }
+
+    #[cfg(feature = "s3")]
+    mod s3_signature {
+        use crate::store_open::{skip_s3_signature, S3_CREDENTIAL_VARS};
+        use std::sync::Mutex;
+
+        /// Serializes tests that mutate the process environment.
+        static ENV_LOCK: Mutex<()> = Mutex::new(());
+
+        /// Run `f` with the S3 signing environment cleared, restoring it after.
+        fn with_clean_env(f: impl FnOnce()) {
+            let _guard = ENV_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+            let saved: Vec<_> = S3_CREDENTIAL_VARS
+                .iter()
+                .chain(["AWS_SKIP_SIGNATURE"].iter())
+                .map(|k| (*k, std::env::var_os(k)))
+                .collect();
+            for (k, _) in &saved {
+                std::env::remove_var(k);
+            }
+            f();
+            for (k, v) in saved {
+                match v {
+                    Some(v) => std::env::set_var(k, v),
+                    None => std::env::remove_var(k),
+                }
+            }
+        }
+
+        #[test]
+        fn skips_signing_without_credentials() {
+            with_clean_env(|| assert!(skip_s3_signature()));
+        }
+
+        #[test]
+        fn signs_when_access_key_present() {
+            with_clean_env(|| {
+                std::env::set_var("AWS_ACCESS_KEY_ID", "AKIAEXAMPLE");
+                assert!(!skip_s3_signature());
+            });
+        }
+
+        #[test]
+        fn signs_when_profile_present() {
+            with_clean_env(|| {
+                std::env::set_var("AWS_PROFILE", "default");
+                assert!(!skip_s3_signature());
+            });
+        }
+
+        #[test]
+        fn ignores_empty_credential_vars() {
+            with_clean_env(|| {
+                std::env::set_var("AWS_ACCESS_KEY_ID", "");
+                assert!(skip_s3_signature());
+            });
+        }
+
+        #[test]
+        fn explicit_skip_signature_wins() {
+            with_clean_env(|| {
+                std::env::set_var("AWS_ACCESS_KEY_ID", "AKIAEXAMPLE");
+                std::env::set_var("AWS_SKIP_SIGNATURE", "true");
+                assert!(skip_s3_signature());
+                std::env::set_var("AWS_SKIP_SIGNATURE", "1");
+                assert!(skip_s3_signature());
+            });
+        }
+
+        #[test]
+        fn explicit_skip_signature_false_forces_signing() {
+            with_clean_env(|| {
+                std::env::set_var("AWS_SKIP_SIGNATURE", "false");
+                assert!(!skip_s3_signature());
+            });
+        }
     }
 }

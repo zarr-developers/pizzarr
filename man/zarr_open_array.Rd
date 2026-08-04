@@ -31,9 +31,10 @@ zarr_open_array(
 \item{store}{: Store
 A mapping that supports string keys and bytes-like values.}
 
-\item{storage_options}{: dict
-If using an fsspec URL to create the store, these will be passed to
-the backend implementation. Ignored otherwise.}
+\item{storage_options}{Accepted for compatibility with the zarr-python
+signature but \strong{currently ignored}. pizzarr configures remote stores
+with environment variables rather than a per-call options list; see
+\link{S3Store} and \code{vignette("remote-stores")}.}
 
 \item{mode}{: \code{'r', 'r+', 'a', 'w', 'w-'}, optional
 Persistence mode: 'r' means read only (must exist); 'r+' means
