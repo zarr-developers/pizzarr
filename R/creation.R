@@ -505,9 +505,10 @@ zarr_create_group <- function(
 #' Open a group using file-mode-like semantics.
 #' @inheritParams zarr_open
 #' @inheritParams zarr_create
-#' @param storage_options : dict
-#'     If using an fsspec URL to create the store, these will be passed to
-#'     the backend implementation. Ignored otherwise.
+#' @param storage_options Accepted for compatibility with the zarr-python
+#'     signature but **currently ignored**. pizzarr configures remote stores
+#'     with environment variables rather than a per-call options list; see
+#'     [S3Store] and `vignette("remote-stores")`.
 #' @returns ZarrGroup
 #' @export
 zarr_open_group <- function(
@@ -717,6 +718,12 @@ zarr_save_array <- function(store, arr, ...) {
 
 #' Convenience function to open a group or array using file-mode-like semantics.
 #' @inheritParams init_array
+#' @param store A [Store] object, or a character string that is coerced to one:
+#'   an `http://` or `https://` URL becomes an [HttpStore], an `s3://` URL
+#'   becomes an [S3Store], a `gs://` URL becomes a [GcsStore], and anything
+#'   else is treated as a filesystem path and becomes a [DirectoryStore].
+#'   `NA` creates a [MemoryStore]. Remote stores open read-only.
+#'   See `vignette("remote-stores")`.
 #' @param mode : \code{'r', 'r+', 'a', 'w', 'w-'}, optional
 #'     Persistence mode: 'r' means read only (must exist); 'r+' means
 #'     read/write (must exist); 'a' means read/write (create if doesn't
@@ -733,7 +740,7 @@ zarr_open <- function(store = NA, mode = NA, path = NA, ...) {
     
     if(is_na(mode)) {
         mode <- "a"
-        if(inherits(store, "HttpStore"))
+        if(inherits(store, c("HttpStore", "S3Store", "GcsStore")))
           mode <- "r"
     }
 

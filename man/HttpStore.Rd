@@ -11,7 +11,35 @@
 Store class that uses HTTP requests.
 Read-only. Depends on the \code{crul} package.
 }
+\details{
+This is also the way to read an \strong{S3-compatible bucket over plain HTTPS}.
+Most public object stores — MinIO, Ceph, Open Storage Network pods,
+Cloudflare R2, and Google Cloud Storage — expose their objects at a URL,
+so an \verb{s3://bucket/key} address with endpoint \verb{https://host} becomes:
+
+\preformatted{https://host/bucket/key}
+
+Unlike \link{S3Store} and \link{GcsStore}, \code{HttpStore} works on both distribution
+tiers: it falls back to the R-native \code{crul} code path when the zarrs
+backend is not compiled in, and uses parallel chunk decode when it is.
+It needs no credentials and no environment configuration.
+
+When the store publishes consolidated metadata (a \code{.zmetadata} key),
+\code{listdir()} reports its members; without it, HTTP stores cannot be listed
+and you must address arrays by name.
+}
+\examples{
+\dontrun{
+# USGS gridMET on an Open Storage Network pod, addressed over HTTPS.
+store <- HttpStore$new("https://usgs.osn.mghpcc.org/mdmf/gdp/gridMET.zarr")
+g <- zarr_open(store)
+store$listdir()
+}
+}
 \seealso{
+\link{S3Store} for \verb{s3://} URLs via the zarrs backend.
+\code{vignette("remote-stores")} for worked examples.
+
 Other Store classes: 
 \code{\link{DirectoryStore}},
 \code{\link{GcsStore}},
@@ -126,9 +154,16 @@ A boolean value.
 \subsection{Method \code{listdir()}}{
 Fetches .zmetadata from the store evaluates its names
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$listdir()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{HttpStore$listdir(path = NA)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{character path to list within, or \code{NA} for the store root.}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
 Character vector of unique keys that do not start with a \code{.}.
 }

@@ -66,7 +66,17 @@ vcr::use_cassette("http_listdir", {
     expect_equal(vars,
                  c("latitude", "longitude", "pr", "tas", "time"))
 
+    # listdir() accepts the path argument the base Store class defines.
+    expect_equal(z$listdir(NA), vars)
+
+    # An array contains only dot-prefixed metadata keys, which are filtered.
+    expect_equal(z$listdir("pr"), character(0))
+
     g <- pizzarr::zarr_open_group(z)
+
+    # Member counting goes through listdir(path); it used to error and
+    # silently report zero for every HTTP-backed group.
+    expect_output(print(g), "No\\. members : 5")
 
     expect_equal(length(names(g$get_attrs()$to_list())), 30)
 

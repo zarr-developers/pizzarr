@@ -32,7 +32,10 @@ reference:
   desc: >
     Backend storage classes that control where array data is persisted.
     Use DirectoryStore for local files, MemoryStore for ephemeral in-memory
-    data, or HttpStore for read-only access to remote Zarr stores.
+    data, or HttpStore for read-only access to remote Zarr stores over HTTPS.
+    S3Store and GcsStore mark s3:// and gs:// URLs for the zarrs backend on
+    the r-universe tier. See the Remote and Cloud Stores article for
+    credentials and alternate endpoints.
 - contents:
   - Store
   - DirectoryStore
@@ -119,11 +122,12 @@ articles:
   - title: Tutorials
     navbar: Tutorials
     contents:
+      - pizzarr
       - basics
       - zarr-operations
+      - remote-stores
       - ome-ngff
-      - remote-ome-ngff
-      - remote-anndata
+      - anndata
       - v3-read
       - v3-interop
       - zarrs-backend

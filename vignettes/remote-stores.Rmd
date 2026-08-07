@@ -1,0 +1,303 @@
+---
+title: "Remote and Cloud Stores"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Remote and Cloud Stores}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+library(pizzarr)
+
+has_zarrs <- pizzarr:::.pizzarr_env$zarrs_available
+has_s3 <- has_zarrs && ("s3" %in% pizzarr_compiled_features())
+has_gcs <- has_zarrs && ("gcs" %in% pizzarr_compiled_features())
+has_blosc <- requireNamespace("blosc", quietly = TRUE)
+
+# Each gate probes the service its chunks actually use. Reaching one host says
+# nothing about the other, and a gate that opens on the wrong probe fails the
+# vignette build rather than skipping it.
+reachable <- function(probe_url) {
+  tryCatch({
+    con <- url(probe_url)
+    on.exit(try(close(con), silent = TRUE))
+    length(readLines(con, warn = FALSE)) > 0
+  }, error = function(e) FALSE, warning = function(w) FALSE)
+}
+
+# This vignette sets AWS_ENDPOINT below. Environment variables are
+# process-global, and vignettes can share an R session, so stash the incoming
+# value and restore it at the end rather than leaking the OSN endpoint into
+# whatever builds next.
+old_aws_endpoint <- Sys.getenv("AWS_ENDPOINT", unset = NA)
+
+# Every chunk below that touches the network is also gated on reachability,
+# so the vignette builds offline.
+online <- reachable("https://usgs.osn.mghpcc.org/mdmf/gdp/gridMET.zarr/.zgroup")
+
+# The GCS section reads a different service, so it gets its own probe against
+# the same bucket over HTTPS.
+gcs_online <- reachable(
+  "https://storage.googleapis.com/pangeo-data/ECCO_basins.zarr/.zgroup"
+)
+```
+
+Zarr was designed for data that sits in object storage or on a local
+disk. This vignette covers
+how pizzarr reaches them — over HTTPS, and over the S3 API, including
+S3-compatible services that are not Amazon.
+
+The worked example throughout is
+[gridMET](https://www.climatologylab.org/gridmet.html), a daily gridded
+meteorology dataset for the continental United States, republished by the USGS
+on an [Open Storage Network](https://www.openstoragenetwork.org/) pod. Its
+catalog entry advertises two addresses for the same data:
+
+```
+s3://mdmf/gdp/gridMET.zarr/    endpoint https://usgs.osn.mghpcc.org/
+```
+
+That pairing — a bucket URL plus a non-Amazon endpoint — is a case that requires
+extra documentation, so it is illustrated in this vignette.
+
+## Coming from xarray or fsspec
+
+In Python you would hand that catalog entry to `xarray` and let `fsspec` sort out
+the connection:
+
+```python
+import xarray as xr
+
+ds = xr.open_dataset(
+    "s3://mdmf/gdp/gridMET.zarr/",
+    engine="zarr",
+    backend_kwargs={"storage_options": {
+        "anon": True,
+        "client_kwargs": {"endpoint_url": "https://usgs.osn.mghpcc.org/"},
+    }},
+)
+```
+
+However, pizzarr has no `storage_options` argument. Connection settings come from
+environment variables that the Rust `object_store` client reads when it first
+opens a store. The reason is mechanical rather than principled: store handles are
+cached by URL on the Rust side and shared across calls, so there is no per-call
+place to pass options. The translation is:
+
+| fsspec / xarray | pizzarr |
+|---|---|
+| `"anon": True` | the default — unsigned unless credentials are set |
+| `"client_kwargs": {"endpoint_url": "https://host"}` | `AWS_ENDPOINT=https://host` |
+| `"key"`, `"secret"` | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` |
+| `"token"` | `AWS_SESSION_TOKEN` |
+| `"client_kwargs": {"region_name": "us-west-2"}` | `AWS_REGION=us-west-2` |
+| `"use_ssl": False` | `AWS_ALLOW_HTTP=true` |
+| `"config_kwargs": {"s3": {"addressing_style": "path"}}` | `AWS_VIRTUAL_HOSTED_STYLE_REQUEST=false` |
+| `gcsfs` `"token"` | `GOOGLE_APPLICATION_CREDENTIALS` |
+| `gcsfs` `"token": "anon"` | `GOOGLE_SKIP_SIGNATURE=true` |
+| `gcsfs` `"endpoint_url"` | `GOOGLE_BASE_URL` |
+
+Set them with `Sys.setenv()` for the session, or in `.Renviron` to persist them.
+Because the handle is cached, changing a variable after a store is open does
+nothing until you call `zarrs_close_store()` on that URL.
+
+## Two routes to the same data
+
+An S3 bucket read anonymously is, underneath, an HTTPS server that returns
+objects at predictable paths. pizzarr can take either view of it, and which one
+you want depends less on the data than on which build you installed (CRAN or r-universe).
+
+The HTTPS route addresses objects directly. That is, an `s3://bucket/key` address served
+by endpoint `https://host` is reachable at `https://host/bucket/key`, so gridMET
+becomes:
+
+```
+https://usgs.osn.mghpcc.org/mdmf/gdp/gridMET.zarr
+```
+
+This https route works on both distribution tiers — the pure-R CRAN build and the
+r-universe build with the zarrs backend. It needs no credentials and no
+configuration, and it is the only route the CRAN build has, so it is the one to
+reach for unless something stops you.
+
+The S3 route uses the `s3://` URL and the real S3 API by way of `object_store`.
+It requires the r-universe build with the `s3` feature compiled in, and it is
+what you need for buckets that are not anonymously readable over plain HTTPS,
+or that require signed requests. Check what you have:
+
+```{r}
+pizzarr_compiled_features()
+```
+
+## Reading over HTTPS
+
+`HttpStore` takes the URL, and `zarr_open()` gives back a group:
+
+```{r, eval = online}
+url <- "https://usgs.osn.mghpcc.org/mdmf/gdp/gridMET.zarr"
+
+store <- HttpStore$new(url)
+g <- zarr_open(store)
+g
+```
+
+HTTP servers generally cannot be listed the way a directory can, so a remote
+store is only browsable if it publishes consolidated metadata — a `.zmetadata`
+key holding every array's metadata in one document. gridMET does, and `listdir()`
+reports its contents:
+
+```{r, eval = online}
+store$listdir()
+```
+
+Without consolidated metadata you have to know the array names in advance. This
+is why so many published Zarr stores are consolidated, and why the flag appears
+in the gridMET catalog entry alongside the connection settings.
+
+gridMET's arrays are Blosc-compressed, which the pure-R build handles only if the
+`blosc` package is installed. The chunks below need it:
+
+```{r, eval = online && has_blosc}
+lat <- g$get_item("lat")
+lat
+
+lat$get_item(list(slice(1, 5)))$data
+```
+
+Reaching the data variables is the same call. Their shape is worth a look before
+reading anything:
+
+```{r, eval = online && has_blosc}
+tmmx <- g$get_item("max_air_temperature")
+tmmx
+```
+
+That is 17369 days by 585 rows by 1386 columns, in chunks of 2190 by 150 by 150.
+A chunk is the smallest unit the store will return, so asking for a single value
+still transfers the roughly 98 MB block that contains it — compressed in flight,
+but decompressed in full. Slicing a remote array cheaply means slicing along
+chunk boundaries and keeping the request small in the dimensions that are chunked
+finely.
+
+## Reading over the S3 API
+
+The `s3://` route needs the endpoint, and nothing else for a public bucket:
+
+```{r, eval = has_s3 && online}
+Sys.setenv(AWS_ENDPOINT = "https://usgs.osn.mghpcc.org")
+
+s3_url <- "s3://mdmf/gdp/gridMET.zarr"
+
+zarrs_open_array_metadata(s3_url, "lat")
+```
+
+Reads go through `zarrs_get_subset()`, which takes zero-based, stop-exclusive
+ranges — one per dimension — and returns the data along with its shape:
+
+```{r, eval = has_s3 && online}
+zarrs_get_subset(s3_url, "lat", list(c(0L, 5L)), NULL)
+```
+
+Blosc decompression happens in Rust here, so this path does not need the `blosc`
+R package. When you are done with a store, drop its cached handle:
+
+```{r, eval = has_s3 && online}
+zarrs_close_store(s3_url)
+```
+
+`S3Store` and `GcsStore` exist to mark a URL as cloud-backed so that dispatch
+picks the right backend. They are not full stores — they carry a URL and nothing
+else, so calling `get_item()` or `listdir()` on one raises an error naming
+`zarrs_get_subset()`, `HttpStore`, and this vignette. The functions above are the
+working entry point for `s3://` data.
+
+## Alternate endpoints
+
+The endpoint variable is the whole trick for MinIO, Ceph, Wasabi, Cloudflare R2,
+and Open Storage Network pods. A self-hosted MinIO over plain HTTP with
+path-style addressing needs three settings:
+
+```r
+Sys.setenv(
+  AWS_ENDPOINT = "http://localhost:9000",
+  AWS_ALLOW_HTTP = "true",
+  AWS_VIRTUAL_HOSTED_STYLE_REQUEST = "false",
+  AWS_ACCESS_KEY_ID = "minioadmin",
+  AWS_SECRET_ACCESS_KEY = "minioadmin"
+)
+
+zarrs_get_subset("s3://my-bucket/data.zarr", "temperature",
+                 list(c(0L, 10L)), NULL)
+```
+
+Most managed services need only `AWS_ENDPOINT`; region is often unnecessary
+outside AWS itself. Requests are signed as soon as any credential variable is
+present and unsigned when none are, which is what makes public buckets work with
+no setup. `AWS_SKIP_SIGNATURE` overrides that decision in either direction — set
+it to `"true"` to force anonymous access when stale credentials are lying around
+in your environment, or `"false"` to insist on signing.
+
+## Google Cloud Storage
+
+GCS works the same way, with `GOOGLE_` variables in place of `AWS_` ones, and it
+needs the `gcs` feature compiled in. The one difference that matters: GCS does
+not infer anonymous access from the absence of credentials the way S3 does. A
+`gs://` read against a world-readable bucket still tries to authenticate — via
+`GOOGLE_APPLICATION_CREDENTIALS`, `GOOGLE_SERVICE_ACCOUNT`, or the GCE metadata
+server — and fails if none are available. Ask for anonymous access explicitly:
+
+```{r, eval = has_gcs && gcs_online}
+Sys.setenv(GOOGLE_SKIP_SIGNATURE = "true")
+
+gs_url <- "gs://pangeo-data/ECCO_basins.zarr"
+
+zarrs_open_array_metadata(gs_url, "basin_mask")$shape
+```
+
+```{r, include = FALSE}
+if (has_gcs && gcs_online) {
+  try(zarrs_close_store("gs://pangeo-data/ECCO_basins.zarr"), silent = TRUE)
+}
+Sys.unsetenv("GOOGLE_SKIP_SIGNATURE")
+```
+
+`GOOGLE_BASE_URL` overrides the endpoint, which is what you want for a local
+emulator such as [fake-gcs-server](https://github.com/fsouza/fake-gcs-server).
+
+The same data is also reachable over plain HTTPS at
+`https://storage.googleapis.com/bucket/path`, which needs no configuration and
+works on the CRAN tier as well:
+
+```r
+z <- zarr_open(HttpStore$new(
+  "https://storage.googleapis.com/pangeo-data/ECCO_basins.zarr"
+))
+```
+
+## What is not supported
+
+Cloud stores are read-only. Writes to `s3://` and `gs://` fall back to the
+R-native path, which has no cloud implementation, so they fail — build locally
+and upload with another tool. Azure (`az://`) is not implemented at all.
+Requester-pays buckets have no way to signal the requester, and there is no
+per-store credential object: configuration is process-global, so two buckets
+needing different credentials in one session have to be read in sequence with
+`zarrs_close_store()` and an environment change between them.
+
+```{r, include = FALSE}
+if (online) try(zarrs_close_store("https://usgs.osn.mghpcc.org/mdmf/gdp/gridMET.zarr"),
+                silent = TRUE)
+
+# Restore the endpoint setting; see the note at the top of this vignette.
+if (is.na(old_aws_endpoint)) {
+  Sys.unsetenv("AWS_ENDPOINT")
+} else {
+  Sys.setenv(AWS_ENDPOINT = old_aws_endpoint)
+}
+```

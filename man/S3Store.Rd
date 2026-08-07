@@ -8,14 +8,59 @@
 \link[R6:R6Class]{R6::R6Class}
 }
 \description{
-Thin store wrapper for S3 URLs. All I/O is delegated to the zarrs Rust
-backend via \code{object_store}. Requires the \code{s3} compiled feature
+Marks an \verb{s3://} URL for the zarrs Rust backend. All I/O is delegated to
+\code{object_store}, so this class requires the \code{s3} compiled feature
 (r-universe tier).
 }
 \details{
-S3 Store for Zarr (zarrs backend)
+\code{S3Store} is a dispatch marker, not a full store: it carries a URL and
+implements no key-level I/O of its own. Reads go through
+\code{\link[=zarrs_open_array_metadata]{zarrs_open_array_metadata()}} and \code{\link[=zarrs_get_subset]{zarrs_get_subset()}}, which take the
+\verb{s3://} URL directly. Calling \code{get_item()}, \code{contains_item()} or
+\code{listdir()} on this object raises an error pointing at those functions and
+at \link{HttpStore}.
+
+The S3 client is configured with environment variables, read by
+\code{object_store} when the store is first opened. These mirror the
+\code{storage_options} that \code{fsspec} and \code{xarray} users pass in Python:
+
+\describe{
+\item{\code{AWS_ENDPOINT}}{Alternate endpoint, e.g. MinIO, Ceph, or an
+Open Storage Network pod. Equivalent to fsspec
+\code{client_kwargs = list(endpoint_url = ...)}.}
+\item{\code{AWS_ACCESS_KEY_ID}, \code{AWS_SECRET_ACCESS_KEY}, \code{AWS_SESSION_TOKEN}}{
+Credentials. When none are set, requests are unsigned, so public
+buckets work with no configuration (fsspec \code{anon = TRUE}).}
+\item{\code{AWS_REGION}}{Region. Often unnecessary for non-AWS endpoints.}
+\item{\code{AWS_ALLOW_HTTP}}{Set to \code{"true"} to permit plain-HTTP endpoints.}
+\item{\code{AWS_VIRTUAL_HOSTED_STYLE_REQUEST}}{Set to \code{"false"} for
+path-style addressing.}
+\item{\code{AWS_SKIP_SIGNATURE}}{Force anonymous (\code{"true"}) or signed
+(\code{"false"}) requests regardless of the credentials present.}
+}
+
+Store handles are cached by URL on the Rust side, so changing any of these
+variables has no effect on an already-open store until you call
+\code{\link[=zarrs_close_store]{zarrs_close_store()}}.
+
+Writes to S3 are not supported.
+}
+\examples{
+\dontrun{
+# Public bucket on an Open Storage Network pod (USGS gridMET).
+Sys.setenv(AWS_ENDPOINT = "https://usgs.osn.mghpcc.org")
+
+url <- "s3://mdmf/gdp/gridMET.zarr"
+zarrs_open_array_metadata(url, "lat")
+zarrs_get_subset(url, "lat", list(c(0L, 5L)), NULL)
+zarrs_close_store(url)
+}
 }
 \seealso{
+\link{HttpStore} for reading an S3-compatible endpoint over plain
+HTTPS, which works on both distribution tiers.
+\code{vignette("remote-stores")} for worked examples.
+
 Other Store classes: 
 \code{\link{DirectoryStore}},
 \code{\link{GcsStore}},
@@ -24,6 +69,7 @@ Other Store classes:
 \code{\link{Store}}
 }
 \concept{Store classes}
+\keyword{internal}
 \section{Super class}{
 \code{\link[pizzarr:Store]{pizzarr::Store}} -> \code{S3Store}
 }
@@ -31,6 +77,10 @@ Other Store classes:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-S3Store-new}{\code{S3Store$new()}}
+\item \href{#method-S3Store-get_item}{\code{S3Store$get_item()}}
+\item \href{#method-S3Store-set_item}{\code{S3Store$set_item()}}
+\item \href{#method-S3Store-contains_item}{\code{S3Store$contains_item()}}
+\item \href{#method-S3Store-listdir}{\code{S3Store$listdir()}}
 \item \href{#method-S3Store-get_store_identifier}{\code{S3Store$get_store_identifier()}}
 \item \href{#method-S3Store-print}{\code{S3Store$print()}}
 \item \href{#method-S3Store-clone}{\code{S3Store$clone()}}
@@ -40,18 +90,14 @@ Other Store classes:
 <details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>pizzarr::Store$close()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="contains_item"><a href='../../pizzarr/html/Store.html#method-Store-contains_item'><code>pizzarr::Store$contains_item()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="delete_item"><a href='../../pizzarr/html/Store.html#method-Store-delete_item'><code>pizzarr::Store$delete_item()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>pizzarr::Store$get_consolidated_metadata()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_item"><a href='../../pizzarr/html/Store.html#method-Store-get_item'><code>pizzarr::Store$get_item()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>pizzarr::Store$is_erasable()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>pizzarr::Store$is_listable()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>pizzarr::Store$is_readable()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>pizzarr::Store$is_writeable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="listdir"><a href='../../pizzarr/html/Store.html#method-Store-listdir'><code>pizzarr::Store$listdir()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>pizzarr::Store$rename()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rmdir"><a href='../../pizzarr/html/Store.html#method-Store-rmdir'><code>pizzarr::Store$rmdir()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="set_item"><a href='../../pizzarr/html/Store.html#method-Store-set_item'><code>pizzarr::Store$set_item()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -70,6 +116,88 @@ Create an \code{S3Store}.
 \item{\code{url}}{Character. S3 URL (e.g., \code{"s3://bucket/prefix"}).}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-S3Store-get_item"></a>}}
+\if{latex}{\out{\hypertarget{method-S3Store-get_item}{}}}
+\subsection{Method \code{get_item()}}{
+Not implemented. Raises an error naming the supported read paths.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{S3Store$get_item(key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{The item key.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Never returns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-S3Store-set_item"></a>}}
+\if{latex}{\out{\hypertarget{method-S3Store-set_item}{}}}
+\subsection{Method \code{set_item()}}{
+Not implemented. Writes to S3 are not supported.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{S3Store$set_item(key, value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{The item key.}
+
+\item{\code{value}}{The item value as a vector of type raw.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Never returns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-S3Store-contains_item"></a>}}
+\if{latex}{\out{\hypertarget{method-S3Store-contains_item}{}}}
+\subsection{Method \code{contains_item()}}{
+Not implemented. Raises an error naming the supported read paths.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{S3Store$contains_item(key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{The item key.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Never returns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-S3Store-listdir"></a>}}
+\if{latex}{\out{\hypertarget{method-S3Store-listdir}{}}}
+\subsection{Method \code{listdir()}}{
+Not implemented. Raises an error naming the supported read paths.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{S3Store$listdir(path = NA)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{character path.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Never returns.
 }
 }
 \if{html}{\out{<hr>}}
