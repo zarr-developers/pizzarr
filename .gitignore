@@ -18,6 +18,7 @@ pkgdown/favicon/
 .claude
 .venv
 CLAUDE.md
+AGENTS.md
 TODO.md
 cran-comments.md
 /.quarto/
