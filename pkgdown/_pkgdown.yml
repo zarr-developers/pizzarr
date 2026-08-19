@@ -3,9 +3,6 @@ url: https://zarr.dev/pizzarr/
 template:
   bootstrap: 5
   bootswatch: darkly
-  bslib:
-    base_font: {google: "Inter"}
-    primary: "#7c83ff"
 
 authors:
   David Blodgett:
