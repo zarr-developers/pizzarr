@@ -7,8 +7,12 @@
 zarr_open(store = NA, mode = NA, path = NA, ...)
 }
 \arguments{
-\item{store}{: Store
-A mapping that supports string keys and bytes-like values.}
+\item{store}{A \link{Store} object, or a character string that is coerced to one:
+an \verb{http://} or \verb{https://} URL becomes an \link{HttpStore}, an \verb{s3://} URL
+becomes an \link{S3Store}, a \verb{gs://} URL becomes a \link{GcsStore}, and anything
+else is treated as a filesystem path and becomes a \link{DirectoryStore}.
+\code{NA} creates a \link{MemoryStore}. Remote stores open read-only.
+See \code{vignette("remote-stores")}.}
 
 \item{mode}{: \code{'r', 'r+', 'a', 'w', 'w-'}, optional
 Persistence mode: 'r' means read only (must exist); 'r+' means

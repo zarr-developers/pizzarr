@@ -1,4 +1,0 @@
-/* Force dark code block backgrounds (bslib can override Darkly defaults) */
-pre, pre code, .sourceCode {
-  background-color: #B8B8B8 !important;
-}

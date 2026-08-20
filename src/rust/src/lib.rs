@@ -173,6 +173,46 @@ fn zarrs_node_exists(store_url: &str, path: &str) -> extendr_api::Result<List> {
     Ok(list!(exists = false, node_type = "none", zarr_format = ()))
 }
 
+/// Read a single key from a store as raw bytes.
+///
+/// Open (or reuse) the store at `store_url` and fetch `key` verbatim.
+/// Returns a raw vector, or `NULL` when the key is absent. This is the
+/// key-level read that cloud stores otherwise lack: `S3Store` and
+/// `GcsStore` delegate all I/O to `object_store`, so consolidated
+/// metadata (`.zmetadata`) is unreachable from R without it.
+///
+/// Bytes are returned unparsed. Callers decode as needed --- metadata
+/// keys are UTF-8 JSON, chunk keys are compressed binary.
+///
+/// # Arguments
+///
+/// * `store_url` - Filesystem path or URL to the store root.
+/// * `key` - Key within the store (e.g. `".zmetadata"` or `"lat/.zattrs"`).
+///
+/// # Errors
+///
+/// Returns an R error if `key` is not a valid store key, if the store
+/// cannot be opened, or if a storage I/O error occurs.
+/// @param store_url Filesystem path or URL to the store root.
+/// @param key Key within the store (e.g. `".zmetadata"` or `"lat/.zattrs"`).
+/// @export
+#[extendr]
+fn zarrs_get_key(store_url: &str, key: &str) -> extendr_api::Result<Robj> {
+    let store = store_open::open_store(store_url)?;
+
+    let store_key =
+        zarrs_storage::StoreKey::new(key).map_err(|e| error::PizzarrError::ArrayOpen {
+            url: store_url.to_string(),
+            path: key.to_string(),
+            reason: e.to_string(),
+        })?;
+
+    match store_get(&store, &store_key, store_url, key)? {
+        Some(bytes) => Ok(Raw::from_bytes(&bytes).into()),
+        None => Ok(().into()),
+    }
+}
+
 /// Close (remove) a cached store handle.
 ///
 /// Returns `TRUE` if the store was in the cache and was removed,
@@ -353,6 +393,7 @@ extendr_module! {
     mod pizzarr;
     fn zarrs_compiled_features;
     fn zarrs_node_exists;
+    fn zarrs_get_key;
     fn zarrs_close_store;
     fn zarrs_open_array_metadata;
     fn zarrs_runtime_info;

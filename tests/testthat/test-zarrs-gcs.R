@@ -35,27 +35,45 @@ test_that("zarrs reads blosc-compressed GCS data via HTTPS", {
   zarrs_close_store(url)
 })
 
-test_that("zarrs reads from gs:// with credentials", {
+test_that("zarrs reads from a public gs:// bucket anonymously", {
   skip_if(!.pizzarr_env$zarrs_available, "zarrs backend not available")
   skip_if(!("gcs" %in% pizzarr_compiled_features()), "gcs feature not compiled")
   skip_on_cran()
   skip_if_offline()
-  # gs:// requires GCP credentials (env vars or application default)
-  skip_if(!nzchar(Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS")) &&
-          !nzchar(Sys.getenv("GOOGLE_SERVICE_ACCOUNT")),
-          "no GCP credentials configured")
 
   url <- "gs://pangeo-data/ECCO_basins.zarr"
 
-  meta <- zarrs_open_array_metadata(url, "basin_mask")
-  expect_equal(meta$zarr_format, 2L)
+  zarrs_close_store(url)
+  withr::defer(zarrs_close_store(url))
 
-  ndim <- length(meta$shape)
-  ranges <- lapply(seq_len(ndim), function(i) c(0L, 1L))
-  result <- zarrs_get_subset(url, "basin_mask", ranges, NULL)
-  expect_true(length(result$data) == 1)
+  # GCS does not infer anonymous access from absent credentials the way S3
+  # does; it has to be asked for.
+  withr::with_envvar(c(GOOGLE_SKIP_SIGNATURE = "true"), {
+    meta <- zarrs_open_array_metadata(url, "basin_mask")
+    expect_equal(meta$zarr_format, 2L)
+
+    ranges <- lapply(seq_along(meta$shape), function(i) c(0L, 1L))
+    result <- zarrs_get_subset(url, "basin_mask", ranges, NULL)
+    expect_length(result$data, 1)
+  })
+})
+
+test_that("gs:// without GOOGLE_SKIP_SIGNATURE needs credentials", {
+  skip_if(!.pizzarr_env$zarrs_available, "zarrs backend not available")
+  skip_if(!("gcs" %in% pizzarr_compiled_features()), "gcs feature not compiled")
+  skip_on_cran()
+  skip_if_offline()
+  skip_if(nzchar(Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS")) ||
+          nzchar(Sys.getenv("GOOGLE_SERVICE_ACCOUNT")),
+          "GCP credentials are configured")
+
+  url <- "gs://pangeo-data/ECCO_basins.zarr"
 
   zarrs_close_store(url)
+  withr::defer(zarrs_close_store(url))
+
+  withr::with_envvar(c(GOOGLE_SKIP_SIGNATURE = NA),
+                     expect_error(zarrs_open_array_metadata(url, "basin_mask")))
 })
 
 test_that("GcsStore class works", {

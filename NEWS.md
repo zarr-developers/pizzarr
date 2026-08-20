@@ -1,4 +1,64 @@
-# pizzarr 0.2.0-pre
+# pizzarr 0.2.1
+
+## Cloud storage
+
+* New `zarrs_get_key()` reads a single key from any store the zarrs backend
+  can open, returning raw bytes or `NULL` when the key is absent. Cloud
+  stores delegate all I/O to `object_store` and expose no key-level read, so
+  consolidated metadata (`.zmetadata`) was unreachable from R for an `s3://`
+  or `gs://` URL. Reading that one key is enough to enumerate a store's
+  arrays and recover their dimension names and attributes, which is what
+  group-level inquiry over `s3://` needs.
+
+## Cloud storage fixes
+
+* S3 requests were always sent unsigned, so configured AWS credentials were
+  ignored and private buckets returned 403. Signing is now decided from the
+  environment: requests are unsigned when no credential source is present, so
+  public buckets still work without configuration, and signed as soon as
+  `AWS_ACCESS_KEY_ID`, `AWS_SESSION_TOKEN`, `AWS_PROFILE`, or another
+  credential variable is set. `AWS_SKIP_SIGNATURE` forces either behaviour.
+* `zarr_open()` on an `s3://` or `gs://` string fell through to
+  `DirectoryStore`, which tried to create a directory named after the URL.
+  These URLs now resolve to `S3Store` and `GcsStore`, and cloud stores default
+  to read mode.
+* `S3Store` and `GcsStore` inherited no-op `get_item()`, `contains_item()`, and
+  `listdir()` methods that silently returned `NULL`. They now raise an error
+  naming the supported read paths.
+* `HttpStore$listdir()` took no arguments, so the `path` argument every other
+  store accepts raised an error that callers swallowed --- `ZarrGroup`'s print
+  method reported `No. members : 0` for every HTTP-backed group. It now accepts
+  `path` and lists within it.
+
+## Documentation
+
+* New `vignettes/remote-stores.Rmd` covering remote and cloud access: the
+  mapping from `fsspec`/`xarray` `storage_options` to pizzarr's environment
+  variables, the HTTPS and `s3://` routes, alternate endpoints such as MinIO,
+  Ceph, and Open Storage Network pods, and the current limits.
+* Alternate S3 endpoints are configured with `AWS_ENDPOINT`; `AWS_ALLOW_HTTP`
+  and `AWS_VIRTUAL_HOSTED_STYLE_REQUEST` cover plain-HTTP and path-style
+  addressing. This worked before but was undocumented.
+* Anonymous access to public GCS buckets over `gs://` is documented, and now
+  tested. It needs `GOOGLE_SKIP_SIGNATURE=true`, since GCS does not infer
+  anonymous access from absent credentials the way S3 does.
+* `S3Store`, `GcsStore`, and `HttpStore` gained detailed documentation of
+  credentials, endpoints, and which distribution tier each requires.
+* `zarr_open()`'s `store` argument now documents every accepted form: a path,
+  an `http(s)://` URL, an `s3://` or `gs://` URL, or a `Store` object.
+* `zarr_open_group()`'s `storage_options` argument is documented as ignored
+  rather than as an `fsspec` passthrough.
+* Vignettes reorganized around data conventions rather than transport, now that
+  connection details have their own article. `remote-ome-ngff.Rmd` merged into
+  `ome-ngff.Rmd`, which covers the OME-NGFF multiscales convention against both
+  a local and a remote store; `remote-anndata.Rmd` renamed `anndata.Rmd`.
+* The OME-NGFF and AnnData vignettes now evaluate their code at build time
+  instead of showing static listings, so the examples are checked. Both require
+  the `blosc` package and network access, and degrade to unevaluated when either
+  is missing.
+* README gained a "Remote and cloud data" section.
+
+# pizzarr 0.2.0
 
 ## Two-tier distribution
 
@@ -33,11 +93,9 @@
   for parallel chunk decode on remote data. R-native `crul`-based path remains
   as fallback.
 * S3 reads via `object_store` crate. New `S3Store` R6 class for `s3://` URLs.
-  Public buckets work without credentials (unsigned requests). Authenticated
-  access uses standard AWS environment variables.
-* GCS reads via `object_store` crate. New `GcsStore` R6 class for `gs://` URLs
-  (requires credentials). Public GCS data accessible via HTTPS endpoint without
-  credentials.
+  Public buckets work without credentials (unsigned requests).
+* GCS reads via `object_store` crate. New `GcsStore` R6 class for `gs://` URLs.
+  Public GCS data accessible via HTTPS endpoint without credentials.
 * Process-global store handle cache with explicit lifecycle management via
   `zarrs_close_store()`.
 

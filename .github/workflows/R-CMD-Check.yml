@@ -54,6 +54,15 @@ jobs:
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
+      # CRAN's macOS binaries of qs2/stringfish are built against pre-6.x
+      # RcppParallel; RcppParallel 6.0.0 changed the bundled oneTBB ABI, so the
+      # stale binaries fail to dyn.load (missing tbb::task::note_affinity).
+      # Rebuilding from source links them against the installed RcppParallel.
+      - name: Rebuild RcppParallel dependents from source (macOS)
+        if: runner.os == 'macOS'
+        run: install.packages(c("stringfish", "qs2"), type = "source")
+        shell: Rscript {0}
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true

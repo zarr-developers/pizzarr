@@ -212,9 +212,9 @@ also documented as comments at the relevant call sites.
   format for serialization.
 - **`object_store` is bucket-level**: `with_url("s3://bucket/prefix")`
   sets the bucket only. Use `PrefixStore` for sub-bucket paths.
-- **S3 anonymous access**: `with_skip_signature(true)`. GCS has no
-  equivalent -- use the HTTPS endpoint for public data without
-  credentials.
+- **S3 anonymous access**: `with_skip_signature(...)`, decided from the
+  environment rather than hardcoded. GCS has an equivalent, but it must be
+  asked for explicitly: `GOOGLE_SKIP_SIGNATURE=true`.
 - **`blosc` feature on Windows**: requires `-lstdc++` and
   `-Wl,--allow-multiple-definition` (snappy/pthread conflicts).
 - **`zarrs/sharding` requires `zarrs/crc32c`**: sharding references
