@@ -80,13 +80,65 @@ awk '
 ' NAMESPACE > NAMESPACE.tmp
 mv NAMESPACE.tmp NAMESPACE
 
+# Rust-only topics: not exported and not documented on the CRAN tier.
+# This list drives both the Rd removal and the \link{} rewrite below, so the
+# two cannot drift apart. It is every export(zarrs_*) in NAMESPACE except
+# zarrs_compiled_features, which survives as the stub above.
+ZARRS_ONLY_TOPICS="zarrs_close_store zarrs_create_array zarrs_get_key
+zarrs_get_subset zarrs_node_exists zarrs_open_array_metadata
+zarrs_runtime_info zarrs_set_codec_concurrent_target
+zarrs_set_http_batch_range_requests zarrs_set_nthreads zarrs_set_subset"
+
 # Remove Rd pages for Rust-only functions.
-rm -f man/zarrs_close_store.Rd man/zarrs_create_array.Rd \
-      man/zarrs_get_subset.Rd man/zarrs_node_exists.Rd \
-      man/zarrs_open_array_metadata.Rd man/zarrs_runtime_info.Rd \
-      man/zarrs_set_codec_concurrent_target.Rd \
-      man/zarrs_set_http_batch_range_requests.Rd \
-      man/zarrs_set_nthreads.Rd man/zarrs_set_subset.Rd
+for topic in $ZARRS_ONLY_TOPICS; do
+  rm -f "man/${topic}.Rd"
+done
+
+# Surviving Rd pages still \link{} to the topics just removed, which fails
+# "checking Rd cross-references" with a missing-link WARNING. Unwrap those
+# links to their display text, leaving any surrounding \code{} intact:
+# \code{\link[=zarrs_get_subset]{zarrs_get_subset()}} -> \code{zarrs_get_subset()}
+# Match \link[=topic]{...} for any dropped topic, for the skip test below.
+DROPPED_LINK_RE="$(echo $ZARRS_ONLY_TOPICS | tr " " "|")"
+DROPPED_LINK_RE="\\link\[=($DROPPED_LINK_RE)\]"
+
+for rd in man/*.Rd; do
+  [ -f "$rd" ] || continue
+  # Skip files with no link to a dropped topic: most of man/ is untouched.
+  grep -Eq "$DROPPED_LINK_RE" "$rd" || continue
+  awk -v topics="$ZARRS_ONLY_TOPICS" '
+    BEGIN {
+      n = split(topics, t, /[ \t\n]+/)
+      for (i = 1; i <= n; i++) if (t[i] != "") drop[t[i]] = 1
+    }
+    {
+      line = $0; out = ""
+      while ((i = index(line, "\\link")) > 0) {
+        out = out substr(line, 1, i - 1)
+        rest = substr(line, i + 5)
+        if (substr(rest, 1, 2) == "[=") {
+          j = index(rest, "]{")
+          if (j == 0) { out = out "\\link"; line = rest; continue }
+          topic = substr(rest, 3, j - 3)
+          rest = substr(rest, j + 2)
+        } else if (substr(rest, 1, 1) == "{") {
+          topic = ""
+          rest = substr(rest, 2)
+        } else {
+          out = out "\\link"; line = rest; continue
+        }
+        k = index(rest, "}")
+        if (k == 0) { out = out "\\link"; line = rest; continue }
+        text = substr(rest, 1, k - 1)
+        if (topic == "") topic = text
+        out = out ((topic in drop) ? text : "\\link[=" topic "]{" text "}")
+        line = substr(rest, k + 1)
+      }
+      print out line
+    }
+  ' "$rd" > "$rd.tmp"
+  mv "$rd.tmp" "$rd"
+done
 
 # Include vignettes in the shipped tarball. They are .Rbuildignored on
 # the r-universe tier, so strip that line for the CRAN tier.
