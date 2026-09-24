@@ -14,7 +14,7 @@ Store class using directories and files on a standard file system.
 DirectoryStore for Zarr
 }
 \seealso{
-Other Store classes: 
+Other Store classes:
 \code{\link{GcsStore}},
 \code{\link{HttpStore}},
 \code{\link{MemoryStore}},
@@ -24,235 +24,252 @@ Other Store classes:
 \concept{Store classes}
 \keyword{internal}
 \section{Super class}{
-\code{\link[pizzarr:Store]{pizzarr::Store}} -> \code{DirectoryStore}
+\code{\link[pizzarr:Store]{Store}} -> \code{DirectoryStore}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{root}}{The path to the root of the store.}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{root}}{The path to the root of the store.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-DirectoryStore-new}{\code{DirectoryStore$new()}}
-\item \href{#method-DirectoryStore-get_item}{\code{DirectoryStore$get_item()}}
-\item \href{#method-DirectoryStore-set_item}{\code{DirectoryStore$set_item()}}
-\item \href{#method-DirectoryStore-contains_item}{\code{DirectoryStore$contains_item()}}
-\item \href{#method-DirectoryStore-delete_item}{\code{DirectoryStore$delete_item()}}
-\item \href{#method-DirectoryStore-rmdir}{\code{DirectoryStore$rmdir()}}
-\item \href{#method-DirectoryStore-listdir}{\code{DirectoryStore$listdir()}}
-\item \href{#method-DirectoryStore-get_store_identifier}{\code{DirectoryStore$get_store_identifier()}}
-\item \href{#method-DirectoryStore-print}{\code{DirectoryStore$print()}}
-\item \href{#method-DirectoryStore-clone}{\code{DirectoryStore$clone()}}
+  \itemize{
+    \item \href{#method-DirectoryStore-initialize}{\code{DirectoryStore$new()}}
+    \item \href{#method-DirectoryStore-get_item}{\code{DirectoryStore$get_item()}}
+    \item \href{#method-DirectoryStore-set_item}{\code{DirectoryStore$set_item()}}
+    \item \href{#method-DirectoryStore-contains_item}{\code{DirectoryStore$contains_item()}}
+    \item \href{#method-DirectoryStore-delete_item}{\code{DirectoryStore$delete_item()}}
+    \item \href{#method-DirectoryStore-rmdir}{\code{DirectoryStore$rmdir()}}
+    \item \href{#method-DirectoryStore-listdir}{\code{DirectoryStore$listdir()}}
+    \item \href{#method-DirectoryStore-get_store_identifier}{\code{DirectoryStore$get_store_identifier()}}
+    \item \href{#method-DirectoryStore-print}{\code{DirectoryStore$print()}}
+    \item \href{#method-DirectoryStore-clone}{\code{DirectoryStore$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>pizzarr::Store$close()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>pizzarr::Store$get_consolidated_metadata()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>pizzarr::Store$is_erasable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>pizzarr::Store$is_listable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>pizzarr::Store$is_readable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>pizzarr::Store$is_writeable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>pizzarr::Store$rename()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>Store$close()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>Store$get_consolidated_metadata()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>Store$is_erasable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>Store$is_listable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>Store$is_readable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>Store$is_writeable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>Store$rename()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-DirectoryStore-new"></a>}}
-\if{latex}{\out{\hypertarget{method-DirectoryStore-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new file system store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$new(root)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-DirectoryStore-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-DirectoryStore-initialize}{}}}
+\subsection{\code{DirectoryStore$new()}}{
+  Create a new file system store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$new(root)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{root}}{The path to the root of the store.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{DirectoryStore} object.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{root}}{The path to the root of the store.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{DirectoryStore} object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-get_item"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-get_item}{}}}
-\subsection{Method \code{get_item()}}{
-Get an item from the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$get_item(key)}\if{html}{\out{</div>}}
+\subsection{\code{DirectoryStore$get_item()}}{
+  Get an item from the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$get_item(key)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The item data in a vector of type raw.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The item data in a vector of type raw.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-set_item"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-set_item}{}}}
-\subsection{Method \code{set_item()}}{
-Set an item in the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$set_item(key, value)}\if{html}{\out{</div>}}
+\subsection{\code{DirectoryStore$set_item()}}{
+  Set an item in the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$set_item(key, value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+      \item{\code{value}}{The item value as a vector of type raw.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-
-\item{\code{value}}{The item value as a vector of type raw.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-contains_item"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-contains_item}{}}}
-\subsection{Method \code{contains_item()}}{
-Determine whether the store contains an item.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$contains_item(key)}\if{html}{\out{</div>}}
+\subsection{\code{DirectoryStore$contains_item()}}{
+  Determine whether the store contains an item.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$contains_item(key)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A boolean value.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A boolean value.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-delete_item"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-delete_item}{}}}
-\subsection{Method \code{delete_item()}}{
-Delete an item from the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$delete_item(key)}\if{html}{\out{</div>}}
+\subsection{\code{DirectoryStore$delete_item()}}{
+  Delete an item from the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$delete_item(key)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-rmdir"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-rmdir}{}}}
-\subsection{Method \code{rmdir()}}{
-Remove a path within a Store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$rmdir(path = NA)}\if{html}{\out{</div>}}
+\subsection{\code{DirectoryStore$rmdir()}}{
+  Remove a path within a Store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$rmdir(path = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Character path.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character path.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-listdir"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-listdir}{}}}
-\subsection{Method \code{listdir()}}{
-List the store directory.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$listdir(path = NA)}\if{html}{\out{</div>}}
+\subsection{\code{DirectoryStore$listdir()}}{
+  List the store directory.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$listdir(path = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Character path.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character()} vector of entries.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character path.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{character()} vector of entries.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-get_store_identifier"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-get_store_identifier}{}}}
-\subsection{Method \code{get_store_identifier()}}{
-Print a human-readable summary of the store.
+\subsection{\code{DirectoryStore$get_store_identifier()}}{
+  Print a human-readable summary of the store.
 
 
-Return the absolute filesystem path for zarrs dispatch.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$get_store_identifier()}\if{html}{\out{</div>}}
+  Return the absolute filesystem path for zarrs dispatch.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$get_store_identifier()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A character string.
+  }
 }
 
-\subsection{Returns}{
-A character string.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-print"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-print}{}}}
-\subsection{Method \code{print()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{DirectoryStore$print()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{self} (invisibly).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{self} (invisibly).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DirectoryStore-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-DirectoryStore-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DirectoryStore$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{DirectoryStore$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DirectoryStore$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

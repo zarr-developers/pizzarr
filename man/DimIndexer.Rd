@@ -14,7 +14,7 @@ indexer maps a selection on a single array dimension to a sequence of
 \link{BoolArrayDimIndexer}.
 }
 \seealso{
-Other Indexing classes: 
+Other Indexing classes:
 \code{\link{ChunkDimProjection}},
 \code{\link{ChunkProjection}},
 \code{\link{Indexer}}
@@ -22,48 +22,52 @@ Other Indexing classes:
 \concept{Indexing classes}
 \keyword{internal}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{num_items}}{(\code{integer(1)})\cr
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{num_items}}{(\code{integer(1)})\cr
 Number of items in the selection.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-DimIndexer-iter}{\code{DimIndexer$iter()}}
-\item \href{#method-DimIndexer-clone}{\code{DimIndexer$clone()}}
-}
+  \itemize{
+    \item \href{#method-DimIndexer-iter}{\code{DimIndexer$iter()}}
+    \item \href{#method-DimIndexer-clone}{\code{DimIndexer$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DimIndexer-iter"></a>}}
 \if{latex}{\out{\hypertarget{method-DimIndexer-iter}{}}}
-\subsection{Method \code{iter()}}{
-Iterate over \link{ChunkDimProjection} objects for this dimension.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DimIndexer$iter()}\if{html}{\out{</div>}}
+\subsection{\code{DimIndexer$iter()}}{
+  Iterate over \link{ChunkDimProjection} objects for this dimension.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DimIndexer$iter()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} of \link{ChunkDimProjection} objects.
+  }
 }
 
-\subsection{Returns}{
-\code{list()} of \link{ChunkDimProjection} objects.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DimIndexer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-DimIndexer-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DimIndexer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{DimIndexer$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DimIndexer$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

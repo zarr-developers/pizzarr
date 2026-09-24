@@ -14,7 +14,7 @@ Class representing a VLenUtf8 compressor
 Variable-length UTF-8 codec for Zarr
 }
 \seealso{
-Other Codec classes: 
+Other Codec classes:
 \code{\link{BloscCodec}},
 \code{\link{Bz2Codec}},
 \code{\link{Codec}},
@@ -26,93 +26,99 @@ Other Codec classes:
 }
 \concept{Codec classes}
 \section{Super class}{
-\code{\link[pizzarr:Codec]{pizzarr::Codec}} -> \code{VLenUtf8Codec}
+\code{\link[pizzarr:Codec]{Codec}} -> \code{VLenUtf8Codec}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-VLenUtf8Codec-encode}{\code{VLenUtf8Codec$encode()}}
-\item \href{#method-VLenUtf8Codec-decode}{\code{VLenUtf8Codec$decode()}}
-\item \href{#method-VLenUtf8Codec-get_config}{\code{VLenUtf8Codec$get_config()}}
-\item \href{#method-VLenUtf8Codec-clone}{\code{VLenUtf8Codec$clone()}}
-}
+  \itemize{
+    \item \href{#method-VLenUtf8Codec-encode}{\code{VLenUtf8Codec$encode()}}
+    \item \href{#method-VLenUtf8Codec-decode}{\code{VLenUtf8Codec$decode()}}
+    \item \href{#method-VLenUtf8Codec-get_config}{\code{VLenUtf8Codec$get_config()}}
+    \item \href{#method-VLenUtf8Codec-clone}{\code{VLenUtf8Codec$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VLenUtf8Codec-encode"></a>}}
 \if{latex}{\out{\hypertarget{method-VLenUtf8Codec-encode}{}}}
-\subsection{Method \code{encode()}}{
-Compress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{VLenUtf8Codec$encode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{character()})\cr
+\subsection{\code{VLenUtf8Codec$encode()}}{
+  Compress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{VLenUtf8Codec$encode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{character()})\cr
 The un-compressed data (character vector).}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VLenUtf8Codec-decode"></a>}}
 \if{latex}{\out{\hypertarget{method-VLenUtf8Codec-decode}{}}}
-\subsection{Method \code{decode()}}{
-Decompress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{VLenUtf8Codec$decode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{raw()})\cr
+\subsection{\code{VLenUtf8Codec$decode()}}{
+  Decompress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{VLenUtf8Codec$decode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{raw()})\cr
 The compressed data.}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Un-compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Un-compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VLenUtf8Codec-get_config"></a>}}
 \if{latex}{\out{\hypertarget{method-VLenUtf8Codec-get_config}{}}}
-\subsection{Method \code{get_config()}}{
-Get codec configuration as a list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{VLenUtf8Codec$get_config()}\if{html}{\out{</div>}}
+\subsection{\code{VLenUtf8Codec$get_config()}}{
+  Get codec configuration as a list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{VLenUtf8Codec$get_config()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list.
+  }
 }
 
-\subsection{Returns}{
-A named list.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VLenUtf8Codec-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-VLenUtf8Codec-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{VLenUtf8Codec$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{VLenUtf8Codec$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{VLenUtf8Codec$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

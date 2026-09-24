@@ -14,7 +14,7 @@ Class representing a bz2 compressor
 Bz2 compressor for Zarr
 }
 \seealso{
-Other Codec classes: 
+Other Codec classes:
 \code{\link{BloscCodec}},
 \code{\link{Codec}},
 \code{\link{GzipCodec}},
@@ -26,123 +26,130 @@ Other Codec classes:
 }
 \concept{Codec classes}
 \section{Super class}{
-\code{\link[pizzarr:Codec]{pizzarr::Codec}} -> \code{Bz2Codec}
+\code{\link[pizzarr:Codec]{Codec}} -> \code{Bz2Codec}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{level}}{The compression level.}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{level}}{The compression level.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Bz2Codec-new}{\code{Bz2Codec$new()}}
-\item \href{#method-Bz2Codec-encode}{\code{Bz2Codec$encode()}}
-\item \href{#method-Bz2Codec-decode}{\code{Bz2Codec$decode()}}
-\item \href{#method-Bz2Codec-get_config}{\code{Bz2Codec$get_config()}}
-\item \href{#method-Bz2Codec-clone}{\code{Bz2Codec$clone()}}
-}
+  \itemize{
+    \item \href{#method-Bz2Codec-initialize}{\code{Bz2Codec$new()}}
+    \item \href{#method-Bz2Codec-encode}{\code{Bz2Codec$encode()}}
+    \item \href{#method-Bz2Codec-decode}{\code{Bz2Codec$decode()}}
+    \item \href{#method-Bz2Codec-get_config}{\code{Bz2Codec$get_config()}}
+    \item \href{#method-Bz2Codec-clone}{\code{Bz2Codec$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Bz2Codec-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Bz2Codec-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Bz2 compressor.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bz2Codec$new(level = 6, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Bz2Codec-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Bz2Codec-initialize}{}}}
+\subsection{\code{Bz2Codec$new()}}{
+  Create a new Bz2 compressor.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Bz2Codec$new(level = 6, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{level}}{The compression level, between 1 and 22.}
+      \item{\code{...}}{Not used.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{Bz2Codec} object.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{level}}{The compression level, between 1 and 22.}
-
-\item{\code{...}}{Not used.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{Bz2Codec} object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Bz2Codec-encode"></a>}}
 \if{latex}{\out{\hypertarget{method-Bz2Codec-encode}{}}}
-\subsection{Method \code{encode()}}{
-Compress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bz2Codec$encode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{raw()})\cr
+\subsection{\code{Bz2Codec$encode()}}{
+  Compress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Bz2Codec$encode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{raw()})\cr
 The un-compressed data.}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Bz2Codec-decode"></a>}}
 \if{latex}{\out{\hypertarget{method-Bz2Codec-decode}{}}}
-\subsection{Method \code{decode()}}{
-Decompress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bz2Codec$decode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{raw()})\cr
+\subsection{\code{Bz2Codec$decode()}}{
+  Decompress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Bz2Codec$decode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{raw()})\cr
 The compressed data.}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Un-compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Un-compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Bz2Codec-get_config"></a>}}
 \if{latex}{\out{\hypertarget{method-Bz2Codec-get_config}{}}}
-\subsection{Method \code{get_config()}}{
-Get codec configuration as a list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bz2Codec$get_config()}\if{html}{\out{</div>}}
+\subsection{\code{Bz2Codec$get_config()}}{
+  Get codec configuration as a list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Bz2Codec$get_config()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list.
+  }
 }
 
-\subsection{Returns}{
-A named list.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Bz2Codec-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Bz2Codec-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bz2Codec$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Bz2Codec$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Bz2Codec$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

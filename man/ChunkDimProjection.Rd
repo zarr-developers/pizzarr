@@ -12,7 +12,7 @@ Used internally to track which items within a single chunk dimension
 correspond to which items in the target output array.
 }
 \seealso{
-Other Indexing classes: 
+Other Indexing classes:
 \code{\link{ChunkProjection}},
 \code{\link{DimIndexer}},
 \code{\link{Indexer}}
@@ -20,65 +20,67 @@ Other Indexing classes:
 \concept{Indexing classes}
 \keyword{internal}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{dim_chunk_index}}{(\code{integer(1)})\cr
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{dim_chunk_index}}{(\code{integer(1)})\cr
 Index of chunk.}
 
-\item{\code{dim_chunk_sel}}{(\code{integer()} | \code{list()})\cr
+    \item{\code{dim_chunk_sel}}{(\code{integer()} | \code{list()})\cr
 Selection of items from chunk array.}
 
-\item{\code{dim_out_sel}}{(\code{integer()} | \code{list()})\cr
+    \item{\code{dim_out_sel}}{(\code{integer()} | \code{list()})\cr
 Selection of items in target (output) array.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-ChunkDimProjection-new}{\code{ChunkDimProjection$new()}}
-\item \href{#method-ChunkDimProjection-clone}{\code{ChunkDimProjection$clone()}}
-}
+  \itemize{
+    \item \href{#method-ChunkDimProjection-initialize}{\code{ChunkDimProjection$new()}}
+    \item \href{#method-ChunkDimProjection-clone}{\code{ChunkDimProjection$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ChunkDimProjection-new"></a>}}
-\if{latex}{\out{\hypertarget{method-ChunkDimProjection-new}{}}}
-\subsection{Method \code{new()}}{
-Creates a new instance of this \link[R6:R6Class]{R6} class.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ChunkDimProjection$new(dim_chunk_index, dim_chunk_sel, dim_out_sel)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dim_chunk_index}}{(\code{integer(1)})\cr
+\if{html}{\out{<a id="method-ChunkDimProjection-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-ChunkDimProjection-initialize}{}}}
+\subsection{\code{ChunkDimProjection$new()}}{
+  Creates a new instance of this \link[R6:R6Class]{R6} class.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ChunkDimProjection$new(dim_chunk_index, dim_chunk_sel, dim_out_sel)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dim_chunk_index}}{(\code{integer(1)})\cr
 Index of chunk.}
-
-\item{\code{dim_chunk_sel}}{(\code{integer()} | \code{list()})\cr
+      \item{\code{dim_chunk_sel}}{(\code{integer()} | \code{list()})\cr
 Selection of items from chunk array.}
-
-\item{\code{dim_out_sel}}{(\code{integer()} | \code{list()})\cr
+      \item{\code{dim_out_sel}}{(\code{integer()} | \code{list()})\cr
 Selection of items in target (output) array.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ChunkDimProjection-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-ChunkDimProjection-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ChunkDimProjection$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{ChunkDimProjection$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ChunkDimProjection$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

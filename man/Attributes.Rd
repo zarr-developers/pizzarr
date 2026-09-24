@@ -14,222 +14,234 @@ Class providing access to user attributes on an array or group.
 The Zarr Attributes class.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{store}}{Attributes store, already initialized.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{store}}{Attributes store, already initialized.}
 
-\item{\code{key}}{The key under which the attributes will be stored.}
+    \item{\code{key}}{The key under which the attributes will be stored.}
 
-\item{\code{read_only}}{If True, attributes cannot be modified.}
+    \item{\code{read_only}}{If True, attributes cannot be modified.}
 
-\item{\code{cache}}{If True (default), attributes will be cached locally.}
+    \item{\code{cache}}{If True (default), attributes will be cached locally.}
 
-\item{\code{synchronizer}}{Only necessary if attributes may be modified from multiple threads or processes.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{synchronizer}}{Only necessary if attributes may be modified from multiple threads or processes.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Attributes-new}{\code{Attributes$new()}}
-\item \href{#method-Attributes-to_list}{\code{Attributes$to_list()}}
-\item \href{#method-Attributes-refresh}{\code{Attributes$refresh()}}
-\item \href{#method-Attributes-contains}{\code{Attributes$contains()}}
-\item \href{#method-Attributes-get_item}{\code{Attributes$get_item()}}
-\item \href{#method-Attributes-set_item}{\code{Attributes$set_item()}}
-\item \href{#method-Attributes-del_item}{\code{Attributes$del_item()}}
-\item \href{#method-Attributes-set_cached_v3_attrs}{\code{Attributes$set_cached_v3_attrs()}}
-\item \href{#method-Attributes-clone}{\code{Attributes$clone()}}
-}
+  \itemize{
+    \item \href{#method-Attributes-initialize}{\code{Attributes$new()}}
+    \item \href{#method-Attributes-to_list}{\code{Attributes$to_list()}}
+    \item \href{#method-Attributes-refresh}{\code{Attributes$refresh()}}
+    \item \href{#method-Attributes-contains}{\code{Attributes$contains()}}
+    \item \href{#method-Attributes-get_item}{\code{Attributes$get_item()}}
+    \item \href{#method-Attributes-set_item}{\code{Attributes$set_item()}}
+    \item \href{#method-Attributes-del_item}{\code{Attributes$del_item()}}
+    \item \href{#method-Attributes-set_cached_v3_attrs}{\code{Attributes$set_cached_v3_attrs()}}
+    \item \href{#method-Attributes-clone}{\code{Attributes$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Attributes-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Attributes-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Attributes instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Attributes$new(
+\if{html}{\out{<a id="method-Attributes-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Attributes-initialize}{}}}
+\subsection{\code{Attributes$new()}}{
+  Create a new Attributes instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Attributes$new(
   store,
   key = NA,
   read_only = FALSE,
   cache = TRUE,
   synchronizer = NA,
   zarr_format = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{store}}{(\link{Store})\cr
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{store}}{(\link{Store})\cr
 Attributes store, already initialized.}
-
-\item{\code{key}}{(\code{character(1)})\cr
+      \item{\code{key}}{(\code{character(1)})\cr
 Key to use for attributes (\code{.zattrs} is default).}
-
-\item{\code{read_only}}{(\code{logical(1)})\cr
+      \item{\code{read_only}}{(\code{logical(1)})\cr
 Whether the attributes are read-only.}
-
-\item{\code{cache}}{(\code{logical(1)})\cr
+      \item{\code{cache}}{(\code{logical(1)})\cr
 Whether to cache attributes.}
-
-\item{\code{synchronizer}}{(\code{ANY} or \code{NA})\cr
+      \item{\code{synchronizer}}{(\code{ANY} or \code{NA})\cr
 Synchronizer object.}
-
-\item{\code{zarr_format}}{(\code{integer(1)} or \code{NULL})\cr
+      \item{\code{zarr_format}}{(\code{integer(1)} or \code{NULL})\cr
 Zarr format version: \code{2L} for V2 (\code{.zattrs}), \code{3L} for V3 (zarr.json).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    An \code{Attributes} instance.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-An \code{Attributes} instance.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Attributes-to_list"></a>}}
 \if{latex}{\out{\hypertarget{method-Attributes-to_list}{}}}
-\subsection{Method \code{to_list()}}{
-convert attributes to list
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Attributes$to_list()}\if{html}{\out{</div>}}
+\subsection{\code{Attributes$to_list()}}{
+  convert attributes to list
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Attributes$to_list()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()}.
+  }
 }
 
-\subsection{Returns}{
-\code{list()}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Attributes-refresh"></a>}}
 \if{latex}{\out{\hypertarget{method-Attributes-refresh}{}}}
-\subsection{Method \code{refresh()}}{
-refresh attributes
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Attributes$refresh()}\if{html}{\out{</div>}}
+\subsection{\code{Attributes$refresh()}}{
+  refresh attributes
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Attributes$refresh()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Attributes-contains"></a>}}
 \if{latex}{\out{\hypertarget{method-Attributes-contains}{}}}
-\subsection{Method \code{contains()}}{
-check if object contains item
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Attributes$contains(x)}\if{html}{\out{</div>}}
+\subsection{\code{Attributes$contains()}}{
+  check if object contains item
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Attributes$contains(x)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Object to test.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{logical(1)}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{Object to test.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{logical(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Attributes-get_item"></a>}}
 \if{latex}{\out{\hypertarget{method-Attributes-get_item}{}}}
-\subsection{Method \code{get_item()}}{
-get attribute
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Attributes$get_item(item)}\if{html}{\out{</div>}}
+\subsection{\code{Attributes$get_item()}}{
+  get attribute
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Attributes$get_item(item)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{Character attribute name.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The attribute value.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{Character attribute name.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The attribute value.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Attributes-set_item"></a>}}
 \if{latex}{\out{\hypertarget{method-Attributes-set_item}{}}}
-\subsection{Method \code{set_item()}}{
-set attribute
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Attributes$set_item(item, value)}\if{html}{\out{</div>}}
+\subsection{\code{Attributes$set_item()}}{
+  set attribute
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Attributes$set_item(item, value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{Character attribute name.}
+      \item{\code{value}}{Value to add or update.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{Character attribute name.}
-
-\item{\code{value}}{Value to add or update.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Attributes-del_item"></a>}}
 \if{latex}{\out{\hypertarget{method-Attributes-del_item}{}}}
-\subsection{Method \code{del_item()}}{
-delete attribute
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Attributes$del_item(item)}\if{html}{\out{</div>}}
+\subsection{\code{Attributes$del_item()}}{
+  delete attribute
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Attributes$del_item(item)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{Character attribute name.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{Character attribute name.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Attributes-set_cached_v3_attrs"></a>}}
 \if{latex}{\out{\hypertarget{method-Attributes-set_cached_v3_attrs}{}}}
-\subsection{Method \code{set_cached_v3_attrs()}}{
-Set cached attributes from V3 embedded metadata.
+\subsection{\code{Attributes$set_cached_v3_attrs()}}{
+  Set cached attributes from V3 embedded metadata.
 In V3, attributes are part of zarr.json rather than a separate .zattrs file.
 This method pre-populates the cache so the normal .zattrs read path is skipped.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Attributes$set_cached_v3_attrs(attrs_list)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Attributes$set_cached_v3_attrs(attrs_list)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{attrs_list}}{A named list of attributes from V3 zarr.json.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (modifies cache in place).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{attrs_list}}{A named list of attributes from V3 zarr.json.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (modifies cache in place).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Attributes-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Attributes-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Attributes$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Attributes$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Attributes$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

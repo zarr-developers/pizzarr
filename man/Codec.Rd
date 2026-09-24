@@ -14,7 +14,7 @@ Abstract class representing a compressor.
 Abstract compressor for Zarr
 }
 \seealso{
-Other Codec classes: 
+Other Codec classes:
 \code{\link{BloscCodec}},
 \code{\link{Bz2Codec}},
 \code{\link{GzipCodec}},
@@ -27,89 +27,95 @@ Other Codec classes:
 \concept{Codec classes}
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Codec-encode}{\code{Codec$encode()}}
-\item \href{#method-Codec-decode}{\code{Codec$decode()}}
-\item \href{#method-Codec-get_config}{\code{Codec$get_config()}}
-\item \href{#method-Codec-clone}{\code{Codec$clone()}}
-}
+  \itemize{
+    \item \href{#method-Codec-encode}{\code{Codec$encode()}}
+    \item \href{#method-Codec-decode}{\code{Codec$decode()}}
+    \item \href{#method-Codec-get_config}{\code{Codec$get_config()}}
+    \item \href{#method-Codec-clone}{\code{Codec$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Codec-encode"></a>}}
 \if{latex}{\out{\hypertarget{method-Codec-encode}{}}}
-\subsection{Method \code{encode()}}{
-Compress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Codec$encode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{raw()})\cr
+\subsection{\code{Codec$encode()}}{
+  Compress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Codec$encode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{raw()})\cr
 The un-compressed data.}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Codec-decode"></a>}}
 \if{latex}{\out{\hypertarget{method-Codec-decode}{}}}
-\subsection{Method \code{decode()}}{
-Decompress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Codec$decode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{raw()})\cr
+\subsection{\code{Codec$decode()}}{
+  Decompress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Codec$decode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{raw()})\cr
 The compressed data.}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Un-compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Un-compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Codec-get_config"></a>}}
 \if{latex}{\out{\hypertarget{method-Codec-get_config}{}}}
-\subsection{Method \code{get_config()}}{
-Get codec configuration as a list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Codec$get_config()}\if{html}{\out{</div>}}
+\subsection{\code{Codec$get_config()}}{
+  Get codec configuration as a list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Codec$get_config()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list.
+  }
 }
 
-\subsection{Returns}{
-A named list.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Codec-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Codec-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Codec$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Codec$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Codec$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

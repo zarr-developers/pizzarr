@@ -18,7 +18,7 @@ zlib framing rather than gzip framing. This makes \code{GzipCodec} slower than
 Gzip compressor for Zarr
 }
 \seealso{
-Other Codec classes: 
+Other Codec classes:
 \code{\link{BloscCodec}},
 \code{\link{Bz2Codec}},
 \code{\link{Codec}},
@@ -30,123 +30,130 @@ Other Codec classes:
 }
 \concept{Codec classes}
 \section{Super class}{
-\code{\link[pizzarr:Codec]{pizzarr::Codec}} -> \code{GzipCodec}
+\code{\link[pizzarr:Codec]{Codec}} -> \code{GzipCodec}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{level}}{The compression level.}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{level}}{The compression level.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-GzipCodec-new}{\code{GzipCodec$new()}}
-\item \href{#method-GzipCodec-encode}{\code{GzipCodec$encode()}}
-\item \href{#method-GzipCodec-decode}{\code{GzipCodec$decode()}}
-\item \href{#method-GzipCodec-get_config}{\code{GzipCodec$get_config()}}
-\item \href{#method-GzipCodec-clone}{\code{GzipCodec$clone()}}
-}
+  \itemize{
+    \item \href{#method-GzipCodec-initialize}{\code{GzipCodec$new()}}
+    \item \href{#method-GzipCodec-encode}{\code{GzipCodec$encode()}}
+    \item \href{#method-GzipCodec-decode}{\code{GzipCodec$decode()}}
+    \item \href{#method-GzipCodec-get_config}{\code{GzipCodec$get_config()}}
+    \item \href{#method-GzipCodec-clone}{\code{GzipCodec$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-GzipCodec-new"></a>}}
-\if{latex}{\out{\hypertarget{method-GzipCodec-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Gzip compressor.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GzipCodec$new(level = 6, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-GzipCodec-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-GzipCodec-initialize}{}}}
+\subsection{\code{GzipCodec$new()}}{
+  Create a new Gzip compressor.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{GzipCodec$new(level = 6, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{level}}{The compression level, between 1 and 22.}
+      \item{\code{...}}{Not used.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{GzipCodec} object.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{level}}{The compression level, between 1 and 22.}
-
-\item{\code{...}}{Not used.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{GzipCodec} object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GzipCodec-encode"></a>}}
 \if{latex}{\out{\hypertarget{method-GzipCodec-encode}{}}}
-\subsection{Method \code{encode()}}{
-Compress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GzipCodec$encode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{raw()})\cr
+\subsection{\code{GzipCodec$encode()}}{
+  Compress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{GzipCodec$encode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{raw()})\cr
 The un-compressed data.}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GzipCodec-decode"></a>}}
 \if{latex}{\out{\hypertarget{method-GzipCodec-decode}{}}}
-\subsection{Method \code{decode()}}{
-Decompress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GzipCodec$decode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{raw()})\cr
+\subsection{\code{GzipCodec$decode()}}{
+  Decompress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{GzipCodec$decode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{raw()})\cr
 The compressed data.}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Un-compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Un-compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GzipCodec-get_config"></a>}}
 \if{latex}{\out{\hypertarget{method-GzipCodec-get_config}{}}}
-\subsection{Method \code{get_config()}}{
-Get codec configuration as a list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GzipCodec$get_config()}\if{html}{\out{</div>}}
+\subsection{\code{GzipCodec$get_config()}}{
+  Get codec configuration as a list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{GzipCodec$get_config()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list.
+  }
 }
 
-\subsection{Returns}{
-A named list.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GzipCodec-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-GzipCodec-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GzipCodec$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{GzipCodec$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{GzipCodec$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

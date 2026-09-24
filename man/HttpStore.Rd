@@ -40,7 +40,7 @@ store$listdir()
 \link{S3Store} for \verb{s3://} URLs via the zarrs backend.
 \code{vignette("remote-stores")} for worked examples.
 
-Other Store classes: 
+Other Store classes:
 \code{\link{DirectoryStore}},
 \code{\link{GcsStore}},
 \code{\link{MemoryStore}},
@@ -49,208 +49,222 @@ Other Store classes:
 }
 \concept{Store classes}
 \section{Super class}{
-\code{\link[pizzarr:Store]{pizzarr::Store}} -> \code{HttpStore}
+\code{\link[pizzarr:Store]{Store}} -> \code{HttpStore}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-HttpStore-new}{\code{HttpStore$new()}}
-\item \href{#method-HttpStore-get_item}{\code{HttpStore$get_item()}}
-\item \href{#method-HttpStore-contains_item}{\code{HttpStore$contains_item()}}
-\item \href{#method-HttpStore-listdir}{\code{HttpStore$listdir()}}
-\item \href{#method-HttpStore-get_cache_time_seconds}{\code{HttpStore$get_cache_time_seconds()}}
-\item \href{#method-HttpStore-set_cache_time_seconds}{\code{HttpStore$set_cache_time_seconds()}}
-\item \href{#method-HttpStore-get_store_identifier}{\code{HttpStore$get_store_identifier()}}
-\item \href{#method-HttpStore-print}{\code{HttpStore$print()}}
-\item \href{#method-HttpStore-clone}{\code{HttpStore$clone()}}
+  \itemize{
+    \item \href{#method-HttpStore-initialize}{\code{HttpStore$new()}}
+    \item \href{#method-HttpStore-get_item}{\code{HttpStore$get_item()}}
+    \item \href{#method-HttpStore-contains_item}{\code{HttpStore$contains_item()}}
+    \item \href{#method-HttpStore-listdir}{\code{HttpStore$listdir()}}
+    \item \href{#method-HttpStore-get_cache_time_seconds}{\code{HttpStore$get_cache_time_seconds()}}
+    \item \href{#method-HttpStore-set_cache_time_seconds}{\code{HttpStore$set_cache_time_seconds()}}
+    \item \href{#method-HttpStore-get_store_identifier}{\code{HttpStore$get_store_identifier()}}
+    \item \href{#method-HttpStore-print}{\code{HttpStore$print()}}
+    \item \href{#method-HttpStore-clone}{\code{HttpStore$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>pizzarr::Store$close()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="delete_item"><a href='../../pizzarr/html/Store.html#method-Store-delete_item'><code>pizzarr::Store$delete_item()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>pizzarr::Store$get_consolidated_metadata()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>pizzarr::Store$is_erasable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>pizzarr::Store$is_listable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>pizzarr::Store$is_readable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>pizzarr::Store$is_writeable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>pizzarr::Store$rename()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rmdir"><a href='../../pizzarr/html/Store.html#method-Store-rmdir'><code>pizzarr::Store$rmdir()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="set_item"><a href='../../pizzarr/html/Store.html#method-Store-set_item'><code>pizzarr::Store$set_item()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>Store$close()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="delete_item"><a href='../../pizzarr/html/Store.html#method-Store-delete_item'><code>Store$delete_item()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>Store$get_consolidated_metadata()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>Store$is_erasable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>Store$is_listable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>Store$is_readable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>Store$is_writeable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>Store$rename()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rmdir"><a href='../../pizzarr/html/Store.html#method-Store-rmdir'><code>Store$rmdir()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="set_item"><a href='../../pizzarr/html/Store.html#method-Store-set_item'><code>Store$set_item()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HttpStore-new"></a>}}
-\if{latex}{\out{\hypertarget{method-HttpStore-new}{}}}
-\subsection{Method \code{new()}}{
-Create a \code{HttpStore} object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$new(url, options = NA, headers = NA)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{url}}{(\code{character(1)})\cr
+\if{html}{\out{<a id="method-HttpStore-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-HttpStore-initialize}{}}}
+\subsection{\code{HttpStore$new()}}{
+  Create a \code{HttpStore} object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HttpStore$new(url, options = NA, headers = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{url}}{(\code{character(1)})\cr
 URL of the store.}
-
-\item{\code{options}}{(\code{list()} or \code{NA})\cr
+      \item{\code{options}}{(\code{list()} or \code{NA})\cr
 Options passed to crul.}
-
-\item{\code{headers}}{(\code{list()} or \code{NA})\cr
+      \item{\code{headers}}{(\code{list()} or \code{NA})\cr
 Headers passed to crul.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{HttpStore} object.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{HttpStore} object.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-get_item"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-get_item}{}}}
-\subsection{Method \code{get_item()}}{
-Get an item from the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$get_item(item)}\if{html}{\out{</div>}}
+\subsection{\code{HttpStore$get_item()}}{
+  Get an item from the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HttpStore$get_item(item)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The item data in a vector of type raw.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The item data in a vector of type raw.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-contains_item"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-contains_item}{}}}
-\subsection{Method \code{contains_item()}}{
-Determine whether the store contains an item.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$contains_item(item)}\if{html}{\out{</div>}}
+\subsection{\code{HttpStore$contains_item()}}{
+  Determine whether the store contains an item.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HttpStore$contains_item(item)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A boolean value.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A boolean value.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-listdir"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-listdir}{}}}
-\subsection{Method \code{listdir()}}{
-Fetches .zmetadata from the store evaluates its names
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$listdir(path = NA)}\if{html}{\out{</div>}}
+\subsection{\code{HttpStore$listdir()}}{
+  Fetches .zmetadata from the store evaluates its names
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HttpStore$listdir(path = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{character path to list within, or \code{NA} for the store root.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character vector of unique keys that do not start with a \code{.}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{character path to list within, or \code{NA} for the store root.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character vector of unique keys that do not start with a \code{.}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-get_cache_time_seconds"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-get_cache_time_seconds}{}}}
-\subsection{Method \code{get_cache_time_seconds()}}{
-Get cache time of http requests.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$get_cache_time_seconds()}\if{html}{\out{</div>}}
+\subsection{\code{HttpStore$get_cache_time_seconds()}}{
+  Get cache time of http requests.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HttpStore$get_cache_time_seconds()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{numeric(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{numeric(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-set_cache_time_seconds"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-set_cache_time_seconds}{}}}
-\subsection{Method \code{set_cache_time_seconds()}}{
-Set cache time of http requests.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$set_cache_time_seconds(seconds)}\if{html}{\out{</div>}}
+\subsection{\code{HttpStore$set_cache_time_seconds()}}{
+  Set cache time of http requests.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HttpStore$set_cache_time_seconds(seconds)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{seconds}}{Number of seconds until cache is invalid -- 0 for no cache.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{seconds}}{Number of seconds until cache is invalid -- 0 for no cache.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-get_store_identifier"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-get_store_identifier}{}}}
-\subsection{Method \code{get_store_identifier()}}{
-Print a human-readable summary of the store.
+\subsection{\code{HttpStore$get_store_identifier()}}{
+  Print a human-readable summary of the store.
 
 
-Return the store URL for zarrs dispatch.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$get_store_identifier()}\if{html}{\out{</div>}}
+  Return the store URL for zarrs dispatch.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HttpStore$get_store_identifier()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A character string.
+  }
 }
 
-\subsection{Returns}{
-A character string.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-print"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-print}{}}}
-\subsection{Method \code{print()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{HttpStore$print()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HttpStore$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{self} (invisibly).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{self} (invisibly).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HttpStore-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-HttpStore-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HttpStore$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{HttpStore$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HttpStore$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

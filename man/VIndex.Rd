@@ -12,54 +12,58 @@ The Zarr VIndex class.
 }
 \keyword{internal}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{array}}{The array instance.}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{array}}{The array instance.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-VIndex-new}{\code{VIndex$new()}}
-\item \href{#method-VIndex-clone}{\code{VIndex$clone()}}
-}
+  \itemize{
+    \item \href{#method-VIndex-initialize}{\code{VIndex$new()}}
+    \item \href{#method-VIndex-clone}{\code{VIndex$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-VIndex-new"></a>}}
-\if{latex}{\out{\hypertarget{method-VIndex-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new VIndex instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{VIndex$new(array)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-VIndex-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-VIndex-initialize}{}}}
+\subsection{\code{VIndex$new()}}{
+  Create a new VIndex instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{VIndex$new(array)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{array}}{The array instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{VIndex} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{array}}{The array instance.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{VIndex} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-VIndex-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-VIndex-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{VIndex$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{VIndex$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{VIndex$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

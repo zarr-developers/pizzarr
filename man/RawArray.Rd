@@ -13,39 +13,43 @@ The Zarr RawArray class.
 \keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-RawArray-new}{\code{RawArray$new()}}
-\item \href{#method-RawArray-clone}{\code{RawArray$clone()}}
-}
+  \itemize{
+    \item \href{#method-RawArray-initialize}{\code{RawArray$new()}}
+    \item \href{#method-RawArray-clone}{\code{RawArray$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-RawArray-new"></a>}}
-\if{latex}{\out{\hypertarget{method-RawArray-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new RawArray instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RawArray$new()}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-RawArray-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-RawArray-initialize}{}}}
+\subsection{\code{RawArray$new()}}{
+  Create a new RawArray instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{RawArray$new()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{RawArray} instance.
+  }
 }
 
-\subsection{Returns}{
-A \code{RawArray} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RawArray-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-RawArray-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RawArray$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{RawArray$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{RawArray$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

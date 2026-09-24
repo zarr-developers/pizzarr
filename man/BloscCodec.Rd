@@ -14,7 +14,7 @@ Class representing a Blosc compressor
 Blosc compressor for Zarr
 }
 \seealso{
-Other Codec classes: 
+Other Codec classes:
 \code{\link{Bz2Codec}},
 \code{\link{Codec}},
 \code{\link{GzipCodec}},
@@ -26,143 +26,147 @@ Other Codec classes:
 }
 \concept{Codec classes}
 \section{Super class}{
-\code{\link[pizzarr:Codec]{pizzarr::Codec}} -> \code{BloscCodec}
+\code{\link[pizzarr:Codec]{Codec}} -> \code{BloscCodec}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{cname}}{(\code{character(1)})\cr
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{cname}}{(\code{character(1)})\cr
 The compression algorithm to use.}
 
-\item{\code{clevel}}{(\code{integer(1)})\cr
+    \item{\code{clevel}}{(\code{integer(1)})\cr
 The compression level.}
 
-\item{\code{shuffle}}{(\code{logical(1)} | \code{integer(1)})\cr
+    \item{\code{shuffle}}{(\code{logical(1)} | \code{integer(1)})\cr
 The shuffle filter to use.}
 
-\item{\code{blocksize}}{(\code{integer(1)} | \code{NA})\cr
+    \item{\code{blocksize}}{(\code{integer(1)} | \code{NA})\cr
 The block size.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BloscCodec-new}{\code{BloscCodec$new()}}
-\item \href{#method-BloscCodec-encode}{\code{BloscCodec$encode()}}
-\item \href{#method-BloscCodec-decode}{\code{BloscCodec$decode()}}
-\item \href{#method-BloscCodec-get_config}{\code{BloscCodec$get_config()}}
-\item \href{#method-BloscCodec-clone}{\code{BloscCodec$clone()}}
-}
+  \itemize{
+    \item \href{#method-BloscCodec-initialize}{\code{BloscCodec$new()}}
+    \item \href{#method-BloscCodec-encode}{\code{BloscCodec$encode()}}
+    \item \href{#method-BloscCodec-decode}{\code{BloscCodec$decode()}}
+    \item \href{#method-BloscCodec-get_config}{\code{BloscCodec$get_config()}}
+    \item \href{#method-BloscCodec-clone}{\code{BloscCodec$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BloscCodec-new"></a>}}
-\if{latex}{\out{\hypertarget{method-BloscCodec-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Blosc compressor.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BloscCodec$new(cname = "lz4", clevel = 5, shuffle = TRUE, blocksize = NA, ...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{cname}}{(\code{character(1)})\cr
+\if{html}{\out{<a id="method-BloscCodec-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-BloscCodec-initialize}{}}}
+\subsection{\code{BloscCodec$new()}}{
+  Create a new Blosc compressor.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BloscCodec$new(cname = "lz4", clevel = 5, shuffle = TRUE, blocksize = NA, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{cname}}{(\code{character(1)})\cr
 The compression algorithm to use.}
-
-\item{\code{clevel}}{(\code{integer(1)})\cr
+      \item{\code{clevel}}{(\code{integer(1)})\cr
 The compression level.}
-
-\item{\code{shuffle}}{(\code{logical(1)} | \code{integer(1)})\cr
+      \item{\code{shuffle}}{(\code{logical(1)} | \code{integer(1)})\cr
 The shuffle filter to use.}
-
-\item{\code{blocksize}}{(\code{integer(1)} | \code{NA})\cr
+      \item{\code{blocksize}}{(\code{integer(1)} | \code{NA})\cr
 The block size.}
+      \item{\code{...}}{Not used.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{BloscCodec} object.
+  }
+}
 
-\item{\code{...}}{Not used.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{BloscCodec} object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BloscCodec-encode"></a>}}
 \if{latex}{\out{\hypertarget{method-BloscCodec-encode}{}}}
-\subsection{Method \code{encode()}}{
-Compress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BloscCodec$encode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{raw()})\cr
+\subsection{\code{BloscCodec$encode()}}{
+  Compress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BloscCodec$encode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{raw()})\cr
 The un-compressed data.}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BloscCodec-decode"></a>}}
 \if{latex}{\out{\hypertarget{method-BloscCodec-decode}{}}}
-\subsection{Method \code{decode()}}{
-Decompress data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BloscCodec$decode(buf, zarr_arr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{(\code{raw()})\cr
+\subsection{\code{BloscCodec$decode()}}{
+  Decompress data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BloscCodec$decode(buf, zarr_arr)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{(\code{raw()})\cr
 The compressed data.}
-
-\item{\code{zarr_arr}}{(\link{ZarrArray})\cr
+      \item{\code{zarr_arr}}{(\link{ZarrArray})\cr
 The ZarrArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Un-compressed data.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Un-compressed data.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BloscCodec-get_config"></a>}}
 \if{latex}{\out{\hypertarget{method-BloscCodec-get_config}{}}}
-\subsection{Method \code{get_config()}}{
-Get codec configuration as a list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BloscCodec$get_config()}\if{html}{\out{</div>}}
+\subsection{\code{BloscCodec$get_config()}}{
+  Get codec configuration as a list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BloscCodec$get_config()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list.
+  }
 }
 
-\subsection{Returns}{
-A named list.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BloscCodec-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BloscCodec-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BloscCodec$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BloscCodec$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BloscCodec$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

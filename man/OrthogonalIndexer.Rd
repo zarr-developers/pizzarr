@@ -13,73 +13,78 @@ The Zarr OrthogonalIndexer class.
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[pizzarr:Indexer]{pizzarr::Indexer}} -> \code{OrthogonalIndexer}
+\code{\link[pizzarr:Indexer]{Indexer}} -> \code{OrthogonalIndexer}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{dim_indexers}}{List of per-dimension indexers (IntDimIndexer, SliceDimIndexer, IntArrayDimIndexer, or BoolArrayDimIndexer).}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{dim_indexers}}{List of per-dimension indexers (IntDimIndexer, SliceDimIndexer, IntArrayDimIndexer, or BoolArrayDimIndexer).}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-OrthogonalIndexer-new}{\code{OrthogonalIndexer$new()}}
-\item \href{#method-OrthogonalIndexer-iter}{\code{OrthogonalIndexer$iter()}}
-\item \href{#method-OrthogonalIndexer-clone}{\code{OrthogonalIndexer$clone()}}
-}
+  \itemize{
+    \item \href{#method-OrthogonalIndexer-initialize}{\code{OrthogonalIndexer$new()}}
+    \item \href{#method-OrthogonalIndexer-iter}{\code{OrthogonalIndexer$iter()}}
+    \item \href{#method-OrthogonalIndexer-clone}{\code{OrthogonalIndexer$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-OrthogonalIndexer-new"></a>}}
-\if{latex}{\out{\hypertarget{method-OrthogonalIndexer-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new OrthogonalIndexer instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OrthogonalIndexer$new(selection, array)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-OrthogonalIndexer-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-OrthogonalIndexer-initialize}{}}}
+\subsection{\code{OrthogonalIndexer$new()}}{
+  Create a new OrthogonalIndexer instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OrthogonalIndexer$new(selection, array)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection as with ZarrArray: scalar, string, or Slice.}
+      \item{\code{array}}{\link{ZarrArray} object that will be indexed.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    An \code{OrthogonalIndexer} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection as with ZarrArray: scalar, string, or Slice.}
-
-\item{\code{array}}{\link{ZarrArray} object that will be indexed.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-An \code{OrthogonalIndexer} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-OrthogonalIndexer-iter"></a>}}
 \if{latex}{\out{\hypertarget{method-OrthogonalIndexer-iter}{}}}
-\subsection{Method \code{iter()}}{
-An iterator over the dimensions of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OrthogonalIndexer$iter()}\if{html}{\out{</div>}}
+\subsection{\code{OrthogonalIndexer$iter()}}{
+  An iterator over the dimensions of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OrthogonalIndexer$iter()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of ChunkProjection objects
+  }
 }
 
-\subsection{Returns}{
-A list of ChunkProjection objects
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-OrthogonalIndexer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-OrthogonalIndexer-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OrthogonalIndexer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{OrthogonalIndexer$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OrthogonalIndexer$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
