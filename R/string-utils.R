@@ -25,9 +25,13 @@ char_vec_to_raw <- function(char_vec, basic_type, num_chars, byte_order) {
   for(i in seq_len(length(list_of_raw))) {
     raw_vec_i <- list_of_raw[[i]]
 
-    if(length(raw_vec_i) > num_bytes * num_bytes_per_char) {
+    if(length(raw_vec_i) > num_bytes) {
       stop("Unexpected length of raw_vec_i in char_vec_to_raw(): string probably too long for specified dtype")
     }
+
+    # "" and NA encode to zero bytes; leave the slot null-filled, which
+    # raw_to_char_vec() reads back as "".
+    if(length(raw_vec_i) == 0) next
 
     offset_i_start <- (i-1) * num_bytes + 1
     offset_i_stop <- offset_i_start + length(raw_vec_i) - 1
