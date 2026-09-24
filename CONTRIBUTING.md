@@ -10,37 +10,40 @@ pizzarr uses three branch types tied to its two distribution tiers
   `0.2.0.9000`) and Cargo.toml uses a `-dev` pre-release tag
   (`0.2.0-dev`).
 - **`release/X.Y.Z`** — release candidate. Cut from `develop` when
-  ready to ship. The `.9000` / `-dev` suffixes are dropped, `NEWS.md`
-  is finalized, and the CRAN tarball is built with
+  ready to ship. The `.9000` / `-dev` suffixes are dropped and `NEWS.md`
+  is finalized. For a CRAN release, the CRAN tarball is built with
   `bash tools/cran-build.sh`. This branch is PR'd to `main`.
 - **`main`** — release-only and the GitHub default branch. Always
-  matches the latest version accepted by CRAN. r-universe auto-builds
-  from `main`, so the r-universe binary (which includes the compiled
-  zarrs Rust backend) tracks the same release version as CRAN. pkgdown
-  deploys from `main`.
+  matches the latest release, whether that release went to CRAN and
+  r-universe or to r-universe alone. r-universe auto-builds from `main`;
+  its binaries include the compiled zarrs Rust backend. pkgdown deploys
+  from `main`.
+
+A release goes to both tiers or to r-universe only. An r-universe-only
+release is a full release, not a preview: use it when the changes do
+not need to reach CRAN, such as Rust dependency updates, zarrs backend
+fixes, or fixes that can wait for the next CRAN release.
 
 The release sequence:
 
 1. Development proceeds on `develop` (version `X.Y.Z.9000`).
-2. **Pre-release (r-universe only):** merge `develop` to `main` and tag
-   `X.Y.Z-pre`. r-universe builds binaries from `main` for testing
-   before CRAN submission. The DESCRIPTION version is `X.Y.Z` (R does
-   not support pre-release suffixes). NEWS.md carries the `-pre` label.
-3. Cut a `release/X.Y.Z` branch from `develop`. Drop the `.9000` /
-   `-dev` suffixes, finalize `NEWS.md`, and submit to CRAN via
-   `bash tools/cran-build.sh`.
-4. Open a PR from `release/X.Y.Z` to `main`. Do not merge until CRAN
-   has accepted the package.
-5. After CRAN acceptance, merge the PR to `main`. r-universe picks up
-   the new commit and builds binaries with the zarrs backend. pkgdown
-   rebuilds.
-6. Merge `main` back into `develop` and bump the version to the next
+2. Cut a `release/X.Y.Z` branch from `develop`. Drop the `.9000` /
+   `-dev` suffixes and finalize `NEWS.md`. For an r-universe-only
+   release, say so at the top of the `NEWS.md` section.
+3. Open a PR from `release/X.Y.Z` to `main`.
+   - **CRAN and r-universe:** build the CRAN tarball with
+     `bash tools/cran-build.sh` and submit it. Do not merge until CRAN
+     has accepted the package.
+   - **r-universe only:** merge once CI passes. No CRAN submission.
+4. After merging, r-universe picks up the new commit on `main` and
+   builds binaries with the zarrs backend. pkgdown rebuilds.
+5. Merge `main` back into `develop` and bump the version to the next
    `X.Y.Z.9000`.
 
-Both CRAN and r-universe serve the same version number. The difference
-is the build: CRAN gets pure R (no Rust), r-universe gets the zarrs
-backend. Users can check which tier they have with
-`pizzarr_compiled_features()`.
+After an r-universe-only release, r-universe carries a newer version
+than CRAN until the next CRAN release. The builds also differ: CRAN gets
+pure R (no Rust), r-universe gets the zarrs backend. Users can check
+which tier they have with `pizzarr_compiled_features()`.
 
 ## Development Setup
 

@@ -106,6 +106,25 @@ normalize_shape <- function(shape) {
   return(shape)
 }
 
+# Rewrite the byte-order character the way numpy's dtype.str does:
+# "|" for types where byte order does not apply (S, O, and one-byte
+# b/i/u), "<" in place of "|" for multi-byte numeric and U types.
+# zarr-python 3 rejects the other spellings (e.g. "<S20", "<i1", "|i2").
+#' @keywords internal
+canonical_dtype_str <- function(dtype) {
+  parts <- get_dtype_parts(dtype)
+  if (is_na(parts)) return(dtype)
+  no_order <- parts$basic_type %in% c("S", "O") ||
+    (parts$basic_type %in% c("b", "i", "u") && isTRUE(parts$num_bytes == 1))
+  order <- parts$byte_order
+  if (no_order) {
+    order <- "|"
+  } else if (order == "|" && parts$basic_type %in% c("i", "u", "f", "c", "m", "M", "U")) {
+    order <- "<"
+  }
+  paste0(order, substring(dtype, 2))
+}
+
 #' @keywords internal
 normalize_dtype <- function(dtype, object_codec = NA) {
   # Reference: https://github.com/zarr-developers/zarr-python/blob/5dd4a0e6cdc04c6413e14f57f61d389972ea937c/zarr/util.py#L152
@@ -126,7 +145,7 @@ normalize_dtype <- function(dtype, object_codec = NA) {
   
   if(is.character(dtype)) {
     # Filter list was NA but there could be non-NA object_codec parameter.
-    return(Dtype$new(dtype, object_codec = object_codec))
+    return(Dtype$new(canonical_dtype_str(dtype), object_codec = object_codec))
   }
 
   stop("dtype must be NA, string/character vector, or Dtype instance")
@@ -311,6 +330,9 @@ normalize_fill_value <- function(fill_value, dtype) {
         fill_value <- 0L
       } else if(is.double(rtype)) {
         fill_value <- 0.0
+      } else if(dtype$basic_type %in% c("S", "U") && is.numeric(fill_value)) {
+        # zarr-python: np.zeros((), dtype)[()] is the empty string
+        fill_value <- ""
       }
     } else if(is.character(rtype)) {
       if(!is.character(fill_value)) {

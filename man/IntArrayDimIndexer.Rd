@@ -12,98 +12,101 @@ The Zarr IntArrayDimIndexer class.
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[pizzarr:DimIndexer]{pizzarr::DimIndexer}} -> \code{IntArrayDimIndexer}
+\code{\link[pizzarr:DimIndexer]{DimIndexer}} -> \code{IntArrayDimIndexer}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{dim_len}}{Dimension length.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{dim_len}}{Dimension length.}
 
-\item{\code{dim_chunk_len}}{Dimension chunk length.}
+    \item{\code{dim_chunk_len}}{Dimension chunk length.}
 
-\item{\code{num_chunks}}{Number of chunks.}
+    \item{\code{num_chunks}}{Number of chunks.}
 
-\item{\code{dim_sel}}{Selection on dimension.}
+    \item{\code{dim_sel}}{Selection on dimension.}
 
-\item{\code{dim_out_sel}}{Output array indices corresponding to each selected element, reordered when selection is not increasing.}
+    \item{\code{dim_out_sel}}{Output array indices corresponding to each selected element, reordered when selection is not increasing.}
 
-\item{\code{order}}{Memory order.}
+    \item{\code{order}}{Memory order.}
 
-\item{\code{chunk_nitems}}{Number of items per chunk.}
+    \item{\code{chunk_nitems}}{Number of items per chunk.}
 
-\item{\code{dim_chunk_ixs}}{Chunks that should be visited.}
+    \item{\code{dim_chunk_ixs}}{Chunks that should be visited.}
 
-\item{\code{chunk_nitems_cumsum}}{Offsets into the output array.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{chunk_nitems_cumsum}}{Offsets into the output array.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-IntArrayDimIndexer-new}{\code{IntArrayDimIndexer$new()}}
-\item \href{#method-IntArrayDimIndexer-iter}{\code{IntArrayDimIndexer$iter()}}
-\item \href{#method-IntArrayDimIndexer-clone}{\code{IntArrayDimIndexer$clone()}}
-}
+  \itemize{
+    \item \href{#method-IntArrayDimIndexer-initialize}{\code{IntArrayDimIndexer$new()}}
+    \item \href{#method-IntArrayDimIndexer-iter}{\code{IntArrayDimIndexer$iter()}}
+    \item \href{#method-IntArrayDimIndexer-clone}{\code{IntArrayDimIndexer$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-IntArrayDimIndexer-new"></a>}}
-\if{latex}{\out{\hypertarget{method-IntArrayDimIndexer-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new IntArrayDimIndexer instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IntArrayDimIndexer$new(
+\if{html}{\out{<a id="method-IntArrayDimIndexer-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-IntArrayDimIndexer-initialize}{}}}
+\subsection{\code{IntArrayDimIndexer$new()}}{
+  Create a new IntArrayDimIndexer instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IntArrayDimIndexer$new(
   dim_sel,
   dim_len,
   dim_chunk_len,
   sel_order = Order$public_fields$UNKNOWN
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dim_sel}}{Integer dimension selection.}
+      \item{\code{dim_len}}{Integer dimension length.}
+      \item{\code{dim_chunk_len}}{Integer dimension chunk length.}
+      \item{\code{sel_order}}{order}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{IntArrayDimIndexer} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dim_sel}}{Integer dimension selection.}
-
-\item{\code{dim_len}}{Integer dimension length.}
-
-\item{\code{dim_chunk_len}}{Integer dimension chunk length.}
-
-\item{\code{sel_order}}{order}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{IntArrayDimIndexer} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-IntArrayDimIndexer-iter"></a>}}
 \if{latex}{\out{\hypertarget{method-IntArrayDimIndexer-iter}{}}}
-\subsection{Method \code{iter()}}{
-An iterator over the dimensions of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IntArrayDimIndexer$iter()}\if{html}{\out{</div>}}
+\subsection{\code{IntArrayDimIndexer$iter()}}{
+  An iterator over the dimensions of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IntArrayDimIndexer$iter()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of ChunkProjection objects
+  }
 }
 
-\subsection{Returns}{
-A list of ChunkProjection objects
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-IntArrayDimIndexer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-IntArrayDimIndexer-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IntArrayDimIndexer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{IntArrayDimIndexer$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IntArrayDimIndexer$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

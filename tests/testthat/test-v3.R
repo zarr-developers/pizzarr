@@ -827,19 +827,58 @@ test_that("V3 group GroupNotFoundError on empty store", {
   expect_error(zarr_open_group(store, mode = "r"), "GroupNotFoundError")
 })
 
-test_that("V3 vlen-utf8 string array loads correctly via load_metadata_v3_nosync", {
-  v3_zip <- system.file("extdata/fixtures/v3/data.zarr.zip", package = "pizzarr")
-  tdir <- tempfile("v3vlen")
-  dir.create(tdir)
-  utils::unzip(v3_zip, exdir = tdir)
-  v3_root <- file.path(tdir, "data.zarr")
-  store <- DirectoryStore$new(v3_root)
-  if (contains_array(store, "1d.contiguous.raw.i2")) {
-    a <- ZarrArray$new(store, path = "1d.contiguous.raw.i2", read_only = TRUE)
-    expect_equal(a$get_shape(), 4)
-  } else {
-    skip("fixture not found")
-  }
+test_that("V3 vlen-utf8 string array written by zarr-python reads (#192)", {
+  # zarr.json as written by zarr-python 3.4.0 for
+  # g.create_array("names", shape=(3,), dtype=str, dimension_names=("x",))
+  meta_json <- '{
+    "shape": [3], "data_type": "string",
+    "chunk_grid": {"name": "regular", "configuration": {"chunk_shape": [3]}},
+    "chunk_key_encoding": {"name": "default", "configuration": {"separator": "/"}},
+    "fill_value": "",
+    "codecs": [{"name": "vlen-utf8", "configuration": {}},
+               {"name": "zstd", "configuration": {"level": 0, "checksum": false}}],
+    "attributes": {}, "dimension_names": ["x"],
+    "zarr_format": 3, "node_type": "array", "storage_transformers": []
+  }'
+  store <- MemoryStore$new()
+  store$set_item("names/zarr.json", charToRaw(meta_json))
+  chunk <- VLenUtf8Codec$new()$encode(c("alpha", "beta", "gamma"), NULL)
+  store$set_item("names/c/0", ZstdCodec$new()$encode(chunk, NULL))
+
+  a <- ZarrArray$new(store, path = "names", read_only = TRUE)
+  expect_true(a$get_dtype()$is_object)
+  expect_equal(as.vector(a$get_item("...")$data), c("alpha", "beta", "gamma"))
+})
+
+test_that("V3 vlen-utf8 string array writes and round-trips", {
+  store <- MemoryStore$new()
+  data <- array(c("a", "bb", "", "dddd", "e", "ff", "g"), dim = c(7L))
+  z <- zarr_create(shape = 7L, chunks = 3L, dtype = "|O",
+                   object_codec = VLenUtf8Codec$new(), zarr_format = 3L,
+                   store = store)
+  z$set_item("...", data)
+
+  meta <- jsonlite::fromJSON(rawToChar(store$get_item("zarr.json")),
+                             simplifyVector = FALSE)
+  expect_equal(meta$data_type, "string")
+  expect_equal(meta$codecs[[1]]$name, "vlen-utf8")
+  expect_equal(meta$codecs[[2]]$name, "zstd")
+  expect_equal(meta$fill_value, "")
+
+  z2 <- ZarrArray$new(store, read_only = TRUE)
+  expect_equal(as.vector(z2$get_item("...")$data), as.vector(data))
+})
+
+test_that("V3 vlen-utf8 2-D array with partial boundary chunks round-trips", {
+  store <- MemoryStore$new()
+  data <- array(paste0("s", seq_len(35)), dim = c(5L, 7L))
+  z <- zarr_create(shape = c(5L, 7L), chunks = c(2L, 3L), dtype = "|O",
+                   object_codec = VLenUtf8Codec$new(), zarr_format = 3L,
+                   store = store)
+  z$set_item("...", data)
+
+  z2 <- ZarrArray$new(store, read_only = TRUE)
+  expect_equal(z2$get_item("...")$data, data)
 })
 
 # --- dimension_names threading (PR 0B) ---

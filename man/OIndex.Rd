@@ -12,75 +12,81 @@ The Zarr OIndex class.
 }
 \keyword{internal}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{array}}{The array instance.}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{array}}{The array instance.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-OIndex-new}{\code{OIndex$new()}}
-\item \href{#method-OIndex-get_item}{\code{OIndex$get_item()}}
-\item \href{#method-OIndex-clone}{\code{OIndex$clone()}}
-}
+  \itemize{
+    \item \href{#method-OIndex-initialize}{\code{OIndex$new()}}
+    \item \href{#method-OIndex-get_item}{\code{OIndex$get_item()}}
+    \item \href{#method-OIndex-clone}{\code{OIndex$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-OIndex-new"></a>}}
-\if{latex}{\out{\hypertarget{method-OIndex-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new OIndex instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OIndex$new(array)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-OIndex-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-OIndex-initialize}{}}}
+\subsection{\code{OIndex$new()}}{
+  Create a new OIndex instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OIndex$new(array)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{array}}{The array instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    An \code{OIndex} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{array}}{The array instance.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-An \code{OIndex} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-OIndex-get_item"></a>}}
 \if{latex}{\out{\hypertarget{method-OIndex-get_item}{}}}
-\subsection{Method \code{get_item()}}{
-get method for the Oindex instance
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OIndex$get_item(selection)}\if{html}{\out{</div>}}
+\subsection{\code{OIndex$get_item()}}{
+  get method for the Oindex instance
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OIndex$get_item(selection)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection to apply.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    An \code{OIndex} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection to apply.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-An \code{OIndex} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-OIndex-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-OIndex-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OIndex$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{OIndex$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OIndex$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

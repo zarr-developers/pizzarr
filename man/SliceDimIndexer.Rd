@@ -12,85 +12,89 @@ The Zarr SliceDimIndexer class.
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[pizzarr:DimIndexer]{pizzarr::DimIndexer}} -> \code{SliceDimIndexer}
+\code{\link[pizzarr:DimIndexer]{DimIndexer}} -> \code{SliceDimIndexer}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{dim_len}}{Dimension length.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{dim_len}}{Dimension length.}
 
-\item{\code{dim_chunk_len}}{Dimension chunk length.}
+    \item{\code{dim_chunk_len}}{Dimension chunk length.}
 
-\item{\code{num_chunks}}{Number of chunks.}
+    \item{\code{num_chunks}}{Number of chunks.}
 
-\item{\code{start}}{Start index.}
+    \item{\code{start}}{Start index.}
 
-\item{\code{stop}}{Stop index.}
+    \item{\code{stop}}{Stop index.}
 
-\item{\code{step}}{Step size.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{step}}{Step size.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-SliceDimIndexer-new}{\code{SliceDimIndexer$new()}}
-\item \href{#method-SliceDimIndexer-iter}{\code{SliceDimIndexer$iter()}}
-\item \href{#method-SliceDimIndexer-clone}{\code{SliceDimIndexer$clone()}}
-}
+  \itemize{
+    \item \href{#method-SliceDimIndexer-initialize}{\code{SliceDimIndexer$new()}}
+    \item \href{#method-SliceDimIndexer-iter}{\code{SliceDimIndexer$iter()}}
+    \item \href{#method-SliceDimIndexer-clone}{\code{SliceDimIndexer$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SliceDimIndexer-new"></a>}}
-\if{latex}{\out{\hypertarget{method-SliceDimIndexer-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new SliceDimIndexer instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SliceDimIndexer$new(dim_sel, dim_len, dim_chunk_len)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-SliceDimIndexer-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-SliceDimIndexer-initialize}{}}}
+\subsection{\code{SliceDimIndexer$new()}}{
+  Create a new SliceDimIndexer instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SliceDimIndexer$new(dim_sel, dim_len, dim_chunk_len)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dim_sel}}{Integer dimension selection.}
+      \item{\code{dim_len}}{Integer dimension length.}
+      \item{\code{dim_chunk_len}}{Integer dimension chunk length.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{SliceDimIndexer} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dim_sel}}{Integer dimension selection.}
-
-\item{\code{dim_len}}{Integer dimension length.}
-
-\item{\code{dim_chunk_len}}{Integer dimension chunk length.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{SliceDimIndexer} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SliceDimIndexer-iter"></a>}}
 \if{latex}{\out{\hypertarget{method-SliceDimIndexer-iter}{}}}
-\subsection{Method \code{iter()}}{
-Iterate over chunks that overlap the slice, yielding a ChunkDimProjection for each.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SliceDimIndexer$iter()}\if{html}{\out{</div>}}
+\subsection{\code{SliceDimIndexer$iter()}}{
+  Iterate over chunks that overlap the slice, yielding a ChunkDimProjection for each.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SliceDimIndexer$iter()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of ChunkDimProjection objects.
+  }
 }
 
-\subsection{Returns}{
-A list of ChunkDimProjection objects.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SliceDimIndexer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-SliceDimIndexer-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SliceDimIndexer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{SliceDimIndexer$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SliceDimIndexer$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

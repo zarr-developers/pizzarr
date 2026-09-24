@@ -14,7 +14,7 @@ Class representing an abstract store
 Abstract store for Zarr
 }
 \seealso{
-Other Store classes: 
+Other Store classes:
 \code{\link{DirectoryStore}},
 \code{\link{GcsStore}},
 \code{\link{HttpStore}},
@@ -24,317 +24,349 @@ Other Store classes:
 \concept{Store classes}
 \keyword{internal}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{metadata_class}}{The metadata encoder/decoder for this store.}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{metadata_class}}{The metadata encoder/decoder for this store.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Store-new}{\code{Store$new()}}
-\item \href{#method-Store-is_readable}{\code{Store$is_readable()}}
-\item \href{#method-Store-is_writeable}{\code{Store$is_writeable()}}
-\item \href{#method-Store-is_erasable}{\code{Store$is_erasable()}}
-\item \href{#method-Store-is_listable}{\code{Store$is_listable()}}
-\item \href{#method-Store-close}{\code{Store$close()}}
-\item \href{#method-Store-listdir}{\code{Store$listdir()}}
-\item \href{#method-Store-rename}{\code{Store$rename()}}
-\item \href{#method-Store-rmdir}{\code{Store$rmdir()}}
-\item \href{#method-Store-get_item}{\code{Store$get_item()}}
-\item \href{#method-Store-set_item}{\code{Store$set_item()}}
-\item \href{#method-Store-contains_item}{\code{Store$contains_item()}}
-\item \href{#method-Store-delete_item}{\code{Store$delete_item()}}
-\item \href{#method-Store-get_consolidated_metadata}{\code{Store$get_consolidated_metadata()}}
-\item \href{#method-Store-get_store_identifier}{\code{Store$get_store_identifier()}}
-\item \href{#method-Store-print}{\code{Store$print()}}
-\item \href{#method-Store-clone}{\code{Store$clone()}}
-}
+  \itemize{
+    \item \href{#method-Store-initialize}{\code{Store$new()}}
+    \item \href{#method-Store-is_readable}{\code{Store$is_readable()}}
+    \item \href{#method-Store-is_writeable}{\code{Store$is_writeable()}}
+    \item \href{#method-Store-is_erasable}{\code{Store$is_erasable()}}
+    \item \href{#method-Store-is_listable}{\code{Store$is_listable()}}
+    \item \href{#method-Store-close}{\code{Store$close()}}
+    \item \href{#method-Store-listdir}{\code{Store$listdir()}}
+    \item \href{#method-Store-rename}{\code{Store$rename()}}
+    \item \href{#method-Store-rmdir}{\code{Store$rmdir()}}
+    \item \href{#method-Store-get_item}{\code{Store$get_item()}}
+    \item \href{#method-Store-set_item}{\code{Store$set_item()}}
+    \item \href{#method-Store-contains_item}{\code{Store$contains_item()}}
+    \item \href{#method-Store-delete_item}{\code{Store$delete_item()}}
+    \item \href{#method-Store-get_consolidated_metadata}{\code{Store$get_consolidated_metadata()}}
+    \item \href{#method-Store-get_store_identifier}{\code{Store$get_store_identifier()}}
+    \item \href{#method-Store-print}{\code{Store$print()}}
+    \item \href{#method-Store-clone}{\code{Store$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Store-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Store-new}{}}}
-\subsection{Method \code{new()}}{
-Create a \code{Store} object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$new()}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Store-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Store-initialize}{}}}
+\subsection{\code{Store$new()}}{
+  Create a \code{Store} object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$new()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-is_readable"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-is_readable}{}}}
-\subsection{Method \code{is_readable()}}{
-Test if Store is readable.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$is_readable()}\if{html}{\out{</div>}}
+\subsection{\code{Store$is_readable()}}{
+  Test if Store is readable.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$is_readable()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical.
+  }
 }
 
-\subsection{Returns}{
-Logical.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-is_writeable"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-is_writeable}{}}}
-\subsection{Method \code{is_writeable()}}{
-Test if Store is writeable.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$is_writeable()}\if{html}{\out{</div>}}
+\subsection{\code{Store$is_writeable()}}{
+  Test if Store is writeable.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$is_writeable()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical.
+  }
 }
 
-\subsection{Returns}{
-Logical.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-is_erasable"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-is_erasable}{}}}
-\subsection{Method \code{is_erasable()}}{
-Test if Store is eraseable.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$is_erasable()}\if{html}{\out{</div>}}
+\subsection{\code{Store$is_erasable()}}{
+  Test if Store is eraseable.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$is_erasable()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical.
+  }
 }
 
-\subsection{Returns}{
-Logical.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-is_listable"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-is_listable}{}}}
-\subsection{Method \code{is_listable()}}{
-Test if Store is listable.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$is_listable()}\if{html}{\out{</div>}}
+\subsection{\code{Store$is_listable()}}{
+  Test if Store is listable.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$is_listable()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical.
+  }
 }
 
-\subsection{Returns}{
-Logical.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-close"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-close}{}}}
-\subsection{Method \code{close()}}{
-Close the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$close()}\if{html}{\out{</div>}}
+\subsection{\code{Store$close()}}{
+  Close the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$close()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL}.
+  }
 }
 
-\subsection{Returns}{
-\code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-listdir"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-listdir}{}}}
-\subsection{Method \code{listdir()}}{
-List the store directory.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$listdir(path = NA)}\if{html}{\out{</div>}}
+\subsection{\code{Store$listdir()}}{
+  List the store directory.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$listdir(path = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{character path.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character vector of keys.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{character path.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character vector of keys.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-rename"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-rename}{}}}
-\subsection{Method \code{rename()}}{
-Rename a Store path.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$rename(src_path, dst_path)}\if{html}{\out{</div>}}
+\subsection{\code{Store$rename()}}{
+  Rename a Store path.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$rename(src_path, dst_path)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{src_path}}{character source path.}
+      \item{\code{dst_path}}{character destination path.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{src_path}}{character source path.}
-
-\item{\code{dst_path}}{character destination path.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-rmdir"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-rmdir}{}}}
-\subsection{Method \code{rmdir()}}{
-Remove a path within a Store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$rmdir(path)}\if{html}{\out{</div>}}
+\subsection{\code{Store$rmdir()}}{
+  Remove a path within a Store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$rmdir(path)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{character path.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{character path.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-get_item"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-get_item}{}}}
-\subsection{Method \code{get_item()}}{
-Get an item from the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$get_item(key)}\if{html}{\out{</div>}}
+\subsection{\code{Store$get_item()}}{
+  Get an item from the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$get_item(key)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The item data in a vector of type raw.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The item data in a vector of type raw.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-set_item"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-set_item}{}}}
-\subsection{Method \code{set_item()}}{
-Set an item in the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$set_item(key, value)}\if{html}{\out{</div>}}
+\subsection{\code{Store$set_item()}}{
+  Set an item in the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$set_item(key, value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+      \item{\code{value}}{The item value as a vector of type raw.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-
-\item{\code{value}}{The item value as a vector of type raw.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-contains_item"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-contains_item}{}}}
-\subsection{Method \code{contains_item()}}{
-Determine whether the store contains an item.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$contains_item(key)}\if{html}{\out{</div>}}
+\subsection{\code{Store$contains_item()}}{
+  Determine whether the store contains an item.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$contains_item(key)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A boolean value.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A boolean value.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-delete_item"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-delete_item}{}}}
-\subsection{Method \code{delete_item()}}{
-Delete an item from the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$delete_item(key)}\if{html}{\out{</div>}}
+\subsection{\code{Store$delete_item()}}{
+  Delete an item from the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$delete_item(key)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-get_consolidated_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-get_consolidated_metadata}{}}}
-\subsection{Method \code{get_consolidated_metadata()}}{
-Get consolidated metadata if it exists.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$get_consolidated_metadata()}\if{html}{\out{</div>}}
+\subsection{\code{Store$get_consolidated_metadata()}}{
+  Get consolidated metadata if it exists.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$get_consolidated_metadata()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list or \code{NULL}.
+  }
 }
 
-\subsection{Returns}{
-A list or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-get_store_identifier"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-get_store_identifier}{}}}
-\subsection{Method \code{get_store_identifier()}}{
-Return a store identifier for zarrs dispatch.
+\subsection{\code{Store$get_store_identifier()}}{
+  Return a store identifier for zarrs dispatch.
 
 Subclasses override this to return a filesystem path or URL.
 Returns \code{NULL} by default (signals: use R-native path).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$get_store_identifier()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$get_store_identifier()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A character string or \code{NULL}.
+  }
 }
 
-\subsection{Returns}{
-A character string or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-print}{}}}
-\subsection{Method \code{print()}}{
-Print a human-readable summary of the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{Store$print()}}{
+  Print a human-readable summary of the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{self} (invisibly).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{self} (invisibly).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Store-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Store-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Store$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Store$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Store$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

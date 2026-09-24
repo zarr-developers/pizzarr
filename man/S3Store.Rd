@@ -61,7 +61,7 @@ zarrs_close_store(url)
 HTTPS, which works on both distribution tiers.
 \code{vignette("remote-stores")} for worked examples.
 
-Other Store classes: 
+Other Store classes:
 \code{\link{DirectoryStore}},
 \code{\link{GcsStore}},
 \code{\link{HttpStore}},
@@ -71,183 +71,196 @@ Other Store classes:
 \concept{Store classes}
 \keyword{internal}
 \section{Super class}{
-\code{\link[pizzarr:Store]{pizzarr::Store}} -> \code{S3Store}
+\code{\link[pizzarr:Store]{Store}} -> \code{S3Store}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-S3Store-new}{\code{S3Store$new()}}
-\item \href{#method-S3Store-get_item}{\code{S3Store$get_item()}}
-\item \href{#method-S3Store-set_item}{\code{S3Store$set_item()}}
-\item \href{#method-S3Store-contains_item}{\code{S3Store$contains_item()}}
-\item \href{#method-S3Store-listdir}{\code{S3Store$listdir()}}
-\item \href{#method-S3Store-get_store_identifier}{\code{S3Store$get_store_identifier()}}
-\item \href{#method-S3Store-print}{\code{S3Store$print()}}
-\item \href{#method-S3Store-clone}{\code{S3Store$clone()}}
+  \itemize{
+    \item \href{#method-S3Store-initialize}{\code{S3Store$new()}}
+    \item \href{#method-S3Store-get_item}{\code{S3Store$get_item()}}
+    \item \href{#method-S3Store-set_item}{\code{S3Store$set_item()}}
+    \item \href{#method-S3Store-contains_item}{\code{S3Store$contains_item()}}
+    \item \href{#method-S3Store-listdir}{\code{S3Store$listdir()}}
+    \item \href{#method-S3Store-get_store_identifier}{\code{S3Store$get_store_identifier()}}
+    \item \href{#method-S3Store-print}{\code{S3Store$print()}}
+    \item \href{#method-S3Store-clone}{\code{S3Store$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>pizzarr::Store$close()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="delete_item"><a href='../../pizzarr/html/Store.html#method-Store-delete_item'><code>pizzarr::Store$delete_item()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>pizzarr::Store$get_consolidated_metadata()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>pizzarr::Store$is_erasable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>pizzarr::Store$is_listable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>pizzarr::Store$is_readable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>pizzarr::Store$is_writeable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>pizzarr::Store$rename()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rmdir"><a href='../../pizzarr/html/Store.html#method-Store-rmdir'><code>pizzarr::Store$rmdir()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>Store$close()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="delete_item"><a href='../../pizzarr/html/Store.html#method-Store-delete_item'><code>Store$delete_item()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>Store$get_consolidated_metadata()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>Store$is_erasable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>Store$is_listable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>Store$is_readable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>Store$is_writeable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>Store$rename()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rmdir"><a href='../../pizzarr/html/Store.html#method-Store-rmdir'><code>Store$rmdir()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-S3Store-new"></a>}}
-\if{latex}{\out{\hypertarget{method-S3Store-new}{}}}
-\subsection{Method \code{new()}}{
-Create an \code{S3Store}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{S3Store$new(url)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-S3Store-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-S3Store-initialize}{}}}
+\subsection{\code{S3Store$new()}}{
+  Create an \code{S3Store}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{S3Store$new(url)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{url}}{Character. S3 URL (e.g., \code{"s3://bucket/prefix"}).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{url}}{Character. S3 URL (e.g., \code{"s3://bucket/prefix"}).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-S3Store-get_item"></a>}}
 \if{latex}{\out{\hypertarget{method-S3Store-get_item}{}}}
-\subsection{Method \code{get_item()}}{
-Not implemented. Raises an error naming the supported read paths.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{S3Store$get_item(key)}\if{html}{\out{</div>}}
+\subsection{\code{S3Store$get_item()}}{
+  Not implemented. Raises an error naming the supported read paths.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{S3Store$get_item(key)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Never returns.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Never returns.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-S3Store-set_item"></a>}}
 \if{latex}{\out{\hypertarget{method-S3Store-set_item}{}}}
-\subsection{Method \code{set_item()}}{
-Not implemented. Writes to S3 are not supported.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{S3Store$set_item(key, value)}\if{html}{\out{</div>}}
+\subsection{\code{S3Store$set_item()}}{
+  Not implemented. Writes to S3 are not supported.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{S3Store$set_item(key, value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+      \item{\code{value}}{The item value as a vector of type raw.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Never returns.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-
-\item{\code{value}}{The item value as a vector of type raw.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Never returns.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-S3Store-contains_item"></a>}}
 \if{latex}{\out{\hypertarget{method-S3Store-contains_item}{}}}
-\subsection{Method \code{contains_item()}}{
-Not implemented. Raises an error naming the supported read paths.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{S3Store$contains_item(key)}\if{html}{\out{</div>}}
+\subsection{\code{S3Store$contains_item()}}{
+  Not implemented. Raises an error naming the supported read paths.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{S3Store$contains_item(key)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Never returns.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Never returns.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-S3Store-listdir"></a>}}
 \if{latex}{\out{\hypertarget{method-S3Store-listdir}{}}}
-\subsection{Method \code{listdir()}}{
-Not implemented. Raises an error naming the supported read paths.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{S3Store$listdir(path = NA)}\if{html}{\out{</div>}}
+\subsection{\code{S3Store$listdir()}}{
+  Not implemented. Raises an error naming the supported read paths.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{S3Store$listdir(path = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{character path.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Never returns.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{character path.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Never returns.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-S3Store-get_store_identifier"></a>}}
 \if{latex}{\out{\hypertarget{method-S3Store-get_store_identifier}{}}}
-\subsection{Method \code{get_store_identifier()}}{
-Return the S3 URL for zarrs dispatch.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{S3Store$get_store_identifier()}\if{html}{\out{</div>}}
+\subsection{\code{S3Store$get_store_identifier()}}{
+  Return the S3 URL for zarrs dispatch.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{S3Store$get_store_identifier()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A character string.
+  }
 }
 
-\subsection{Returns}{
-A character string.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-S3Store-print"></a>}}
 \if{latex}{\out{\hypertarget{method-S3Store-print}{}}}
-\subsection{Method \code{print()}}{
-Print a human-readable summary of the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{S3Store$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{S3Store$print()}}{
+  Print a human-readable summary of the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{S3Store$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{self} (invisibly).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{self} (invisibly).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-S3Store-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-S3Store-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{S3Store$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{S3Store$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{S3Store$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

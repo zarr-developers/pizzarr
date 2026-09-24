@@ -1,7 +1,7 @@
 Package: pizzarr
 Type: Package
 Title: Slice into 'Zarr' Arrays
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: c(
     person(given = "David",
            family = "Blodgett",
@@ -24,8 +24,9 @@ Authors@R: c(
     person(given = "zarr-developers", role = "cph")
   )
 Description: An implementation of chunked, compressed,
-  N-dimensional arrays for R. 'Zarr' spec V2 (2024)
-  <doi:10.5281/zenodo.11320255>.
+  N-dimensional arrays for R. Reads and writes 'Zarr' spec V2 (2024)
+  <doi:10.5281/zenodo.11320255> and V3
+  <https://zarr-specs.readthedocs.io/en/latest/v3/core/index.html>.
 Language: en-US
 License: MIT + file LICENSE
 BugReports: https://github.com/zarr-developers/pizzarr/issues
@@ -43,7 +44,6 @@ Imports:
     utils
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
-RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Suggests:
     testthat,
@@ -60,6 +60,7 @@ Suggests:
     withr
 Config/testthat/parallel: false
 Config/testthat/edition: 3
-Config/rextendr/version: 0.4.2
+Config/rextendr/version: 0.5.0
 SystemRequirements: Cargo (Rust's package manager), rustc >= 1.91,
     OpenSSL (libssl-dev on Debian/Ubuntu, openssl-devel on Fedora/RHEL)
+Config/roxygen2/version: 8.1.0

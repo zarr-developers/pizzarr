@@ -12,79 +12,83 @@ The Zarr IntDimIndexer class.
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[pizzarr:DimIndexer]{pizzarr::DimIndexer}} -> \code{IntDimIndexer}
+\code{\link[pizzarr:DimIndexer]{DimIndexer}} -> \code{IntDimIndexer}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{dim_sel}}{Normalized integer index for this dimension.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{dim_sel}}{Normalized integer index for this dimension.}
 
-\item{\code{dim_len}}{Length of the array along this dimension.}
+    \item{\code{dim_len}}{Length of the array along this dimension.}
 
-\item{\code{dim_chunk_len}}{Length of a chunk along this dimension.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{dim_chunk_len}}{Length of a chunk along this dimension.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-IntDimIndexer-new}{\code{IntDimIndexer$new()}}
-\item \href{#method-IntDimIndexer-iter}{\code{IntDimIndexer$iter()}}
-\item \href{#method-IntDimIndexer-clone}{\code{IntDimIndexer$clone()}}
-}
+  \itemize{
+    \item \href{#method-IntDimIndexer-initialize}{\code{IntDimIndexer$new()}}
+    \item \href{#method-IntDimIndexer-iter}{\code{IntDimIndexer$iter()}}
+    \item \href{#method-IntDimIndexer-clone}{\code{IntDimIndexer$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-IntDimIndexer-new"></a>}}
-\if{latex}{\out{\hypertarget{method-IntDimIndexer-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new IntDimIndexer instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IntDimIndexer$new(dim_sel, dim_len, dim_chunk_len)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-IntDimIndexer-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-IntDimIndexer-initialize}{}}}
+\subsection{\code{IntDimIndexer$new()}}{
+  Create a new IntDimIndexer instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IntDimIndexer$new(dim_sel, dim_len, dim_chunk_len)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dim_sel}}{Integer dimension selection.}
+      \item{\code{dim_len}}{Integer dimension length.}
+      \item{\code{dim_chunk_len}}{Integer dimension chunk length.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{IntDimIndexer} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dim_sel}}{Integer dimension selection.}
-
-\item{\code{dim_len}}{Integer dimension length.}
-
-\item{\code{dim_chunk_len}}{Integer dimension chunk length.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{IntDimIndexer} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-IntDimIndexer-iter"></a>}}
 \if{latex}{\out{\hypertarget{method-IntDimIndexer-iter}{}}}
-\subsection{Method \code{iter()}}{
-Compute the chunk dimension projection for the single selected index.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IntDimIndexer$iter()}\if{html}{\out{</div>}}
+\subsection{\code{IntDimIndexer$iter()}}{
+  Compute the chunk dimension projection for the single selected index.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IntDimIndexer$iter()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    a \code{ChunkDimProjection} instance
+  }
 }
 
-\subsection{Returns}{
-a \code{ChunkDimProjection} instance
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-IntDimIndexer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-IntDimIndexer-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IntDimIndexer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{IntDimIndexer$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IntDimIndexer$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

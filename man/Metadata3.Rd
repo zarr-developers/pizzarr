@@ -14,151 +14,162 @@ fill_value, attributes, etc.). This class is read-only; no encode
 methods are provided.
 }
 \seealso{
-Other Metadata classes: 
+Other Metadata classes:
 \code{\link{Metadata2}}
 }
 \concept{Metadata classes}
 \keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Metadata3-decode_metadata}{\code{Metadata3$decode_metadata()}}
-\item \href{#method-Metadata3-decode_array_metadata}{\code{Metadata3$decode_array_metadata()}}
-\item \href{#method-Metadata3-decode_group_metadata}{\code{Metadata3$decode_group_metadata()}}
-\item \href{#method-Metadata3-encode_array_metadata}{\code{Metadata3$encode_array_metadata()}}
-\item \href{#method-Metadata3-encode_group_metadata}{\code{Metadata3$encode_group_metadata()}}
-\item \href{#method-Metadata3-clone}{\code{Metadata3$clone()}}
-}
+  \itemize{
+    \item \href{#method-Metadata3-decode_metadata}{\code{Metadata3$decode_metadata()}}
+    \item \href{#method-Metadata3-decode_array_metadata}{\code{Metadata3$decode_array_metadata()}}
+    \item \href{#method-Metadata3-decode_group_metadata}{\code{Metadata3$decode_group_metadata()}}
+    \item \href{#method-Metadata3-encode_array_metadata}{\code{Metadata3$encode_array_metadata()}}
+    \item \href{#method-Metadata3-encode_group_metadata}{\code{Metadata3$encode_group_metadata()}}
+    \item \href{#method-Metadata3-clone}{\code{Metadata3$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata3-decode_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata3-decode_metadata}{}}}
-\subsection{Method \code{decode_metadata()}}{
-Parse metadata from raw bytes or return as-is if already a list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata3$decode_metadata(s)}\if{html}{\out{</div>}}
+\subsection{\code{Metadata3$decode_metadata()}}{
+  Parse metadata from raw bytes or return as-is if already a list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata3$decode_metadata(s)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
+Raw JSON bytes, a pre-parsed list, or \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} or \code{NULL}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
-Raw JSON bytes, a pre-parsed list, or \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{list()} or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata3-decode_array_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata3-decode_array_metadata}{}}}
-\subsection{Method \code{decode_array_metadata()}}{
-Decode and validate V3 array metadata from \code{zarr.json}.
+\subsection{\code{Metadata3$decode_array_metadata()}}{
+  Decode and validate V3 array metadata from \code{zarr.json}.
 V3 arrays have \code{node_type = "array"} and contain shape, data_type,
 chunk_grid, chunk_key_encoding, codecs, fill_value, and attributes.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata3$decode_array_metadata(s)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata3$decode_array_metadata(s)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
+Raw JSON bytes or pre-parsed list.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} or \code{NULL}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
-Raw JSON bytes or pre-parsed list.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{list()} or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata3-decode_group_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata3-decode_group_metadata}{}}}
-\subsection{Method \code{decode_group_metadata()}}{
-Decode and validate V3 group metadata from \code{zarr.json}.
+\subsection{\code{Metadata3$decode_group_metadata()}}{
+  Decode and validate V3 group metadata from \code{zarr.json}.
 V3 groups have \code{node_type = "group"} and may contain attributes.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata3$decode_group_metadata(s)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata3$decode_group_metadata(s)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
+Raw JSON bytes or pre-parsed list.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} or \code{NULL}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
-Raw JSON bytes or pre-parsed list.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{list()} or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata3-encode_array_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata3-encode_array_metadata}{}}}
-\subsection{Method \code{encode_array_metadata()}}{
-Encode V3 array metadata to raw JSON bytes.
+\subsection{\code{Metadata3$encode_array_metadata()}}{
+  Encode V3 array metadata to raw JSON bytes.
 Expects a list built by \code{create_v3_array_meta()} with all scalars
 already wrapped in \code{jsonlite::unbox()}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata3$encode_array_metadata(meta)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata3$encode_array_metadata(meta)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{meta}}{(\code{list()})\cr
+V3 array metadata list.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{raw()}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{meta}}{(\code{list()})\cr
-V3 array metadata list.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{raw()}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata3-encode_group_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata3-encode_group_metadata}{}}}
-\subsection{Method \code{encode_group_metadata()}}{
-Encode V3 group metadata to raw JSON bytes.
+\subsection{\code{Metadata3$encode_group_metadata()}}{
+  Encode V3 group metadata to raw JSON bytes.
 Produces \verb{\{"zarr_format":3,"node_type":"group","attributes":\{\}\}}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata3$encode_group_metadata(meta = NA, attributes = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{meta}}{(\code{list()} | \code{NA})\cr
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata3$encode_group_metadata(meta = NA, attributes = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{meta}}{(\code{list()} | \code{NA})\cr
 Ignored; a fresh group metadata list is created.}
-
-\item{\code{attributes}}{(\code{list()})\cr
+      \item{\code{attributes}}{(\code{list()})\cr
 Attributes to embed in zarr.json. Default empty.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{raw()}.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{raw()}.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata3-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata3-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata3$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Metadata3$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata3$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

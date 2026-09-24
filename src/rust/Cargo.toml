@@ -1,7 +1,7 @@
 [package]
 name = "pizzarr"
 publish = false
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 rust-version = "1.91"
 
@@ -24,7 +24,7 @@ s3 = ["full", "object_store/aws"]
 gcs = ["full", "object_store/gcp"]
 
 [dependencies]
-extendr-api = { git = "https://github.com/extendr/extendr", branch = "master" }
+extendr-api = "0.8.2"
 zarrs = { version = "0.23", default-features = false }
 zarrs_codec = "0.2"
 zarrs_storage = "0.4"

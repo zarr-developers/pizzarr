@@ -51,6 +51,29 @@ test_that("VLenUTF8 codec can encode - array to raw", {
   )))
 })
 
+test_that("VLenUTF8 codec round-trips empty strings", {
+  codec <- VLenUtf8Codec$new()
+  x <- c("", "a", "", "bc", "")
+  raw_vec <- codec$encode(x, NULL)
+  expect_equal(length(raw_vec), 4 + 5 * 4 + 3)
+  expect_equal(codec$decode(raw_vec, NULL), x)
+})
+
+test_that("VLenUTF8 codec marks decoded strings as UTF-8", {
+  codec <- VLenUtf8Codec$new()
+  x <- codec$decode(codec$encode(c("héllo", "水"), NULL), NULL)
+  expect_equal(Encoding(x), c("UTF-8", "UTF-8"))
+  expect_equal(x, c("héllo", "水"))
+})
+
+test_that("VLenUTF8 codec writes latin1-marked strings as UTF-8", {
+  codec <- VLenUtf8Codec$new()
+  x <- iconv("hé", from = "UTF-8", to = "latin1")
+  expect_equal(Encoding(x), "latin1")
+  raw_vec <- codec$encode(x, NULL)
+  expect_equal(raw_vec[9:11], as.raw(c(0x68, 0xc3, 0xa9)))
+})
+
 test_that("VLenUTF8 codec can encode with high level API", {
   store <- MemoryStore$new()
   object_codec <- VLenUtf8Codec$new()

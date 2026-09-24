@@ -12,57 +12,61 @@ The Order class.
 }
 \keyword{internal}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{UNKNOWN}}{UNKNOWN}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{UNKNOWN}}{UNKNOWN}
 
-\item{\code{INCREASING}}{INCREASING}
+    \item{\code{INCREASING}}{INCREASING}
 
-\item{\code{DECREASING}}{DECREASING}
+    \item{\code{DECREASING}}{DECREASING}
 
-\item{\code{UNORDERED}}{UNORDERED}
-}
-\if{html}{\out{</div>}}
+    \item{\code{UNORDERED}}{UNORDERED}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Order-check}{\code{Order$check()}}
-\item \href{#method-Order-clone}{\code{Order$clone()}}
-}
+  \itemize{
+    \item \href{#method-Order-check}{\code{Order$check()}}
+    \item \href{#method-Order-clone}{\code{Order$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Order-check"></a>}}
 \if{latex}{\out{\hypertarget{method-Order-check}{}}}
-\subsection{Method \code{check()}}{
-checking order of numbers
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Order$check(a)}\if{html}{\out{</div>}}
+\subsection{\code{Order$check()}}{
+  checking order of numbers
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Order$check(a)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{a}}{Vector of numbers.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{a}}{Vector of numbers.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Order-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Order-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Order$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Order$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Order$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

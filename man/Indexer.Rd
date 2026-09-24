@@ -13,7 +13,7 @@ describing which items to read or write within a single chunk.
 Concrete subclasses include \link{BasicIndexer} and \link{OrthogonalIndexer}.
 }
 \seealso{
-Other Indexing classes: 
+Other Indexing classes:
 \code{\link{ChunkDimProjection}},
 \code{\link{ChunkProjection}},
 \code{\link{DimIndexer}}
@@ -21,51 +21,55 @@ Other Indexing classes:
 \concept{Indexing classes}
 \keyword{internal}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{shape}}{(\code{integer()})\cr
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{shape}}{(\code{integer()})\cr
 Shape of the selection.}
 
-\item{\code{drop_axes}}{(\code{integer()} | \code{NULL})\cr
+    \item{\code{drop_axes}}{(\code{integer()} | \code{NULL})\cr
 Axes to drop from the result.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Indexer-iter}{\code{Indexer$iter()}}
-\item \href{#method-Indexer-clone}{\code{Indexer$clone()}}
-}
+  \itemize{
+    \item \href{#method-Indexer-iter}{\code{Indexer$iter()}}
+    \item \href{#method-Indexer-clone}{\code{Indexer$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Indexer-iter"></a>}}
 \if{latex}{\out{\hypertarget{method-Indexer-iter}{}}}
-\subsection{Method \code{iter()}}{
-Iterate over \link{ChunkProjection} objects for the selection.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Indexer$iter()}\if{html}{\out{</div>}}
+\subsection{\code{Indexer$iter()}}{
+  Iterate over \link{ChunkProjection} objects for the selection.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Indexer$iter()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} of \link{ChunkProjection} objects.
+  }
 }
 
-\subsection{Returns}{
-\code{list()} of \link{ChunkProjection} objects.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Indexer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Indexer-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Indexer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Indexer$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Indexer$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

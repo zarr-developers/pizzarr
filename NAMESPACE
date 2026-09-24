@@ -61,8 +61,12 @@ export(zarrs_set_subset)
 export(zb_int)
 export(zb_slice)
 importFrom(R6,R6Class)
-importFrom(memoise,memoise)
-importFrom(memoise,timeout)
-importFrom(qs2,zstd_compress_raw)
-importFrom(qs2,zstd_decompress_raw)
+importFrom(memoise,
+  memoise,
+  timeout
+)
+importFrom(qs2,
+  zstd_compress_raw,
+  zstd_decompress_raw
+)
 useDynLib(pizzarr, .registration = TRUE)

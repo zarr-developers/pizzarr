@@ -16,73 +16,74 @@ The Zarr Array class.
 \keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-ZarrArray-new}{\code{ZarrArray$new()}}
-\item \href{#method-ZarrArray-get_store}{\code{ZarrArray$get_store()}}
-\item \href{#method-ZarrArray-get_path}{\code{ZarrArray$get_path()}}
-\item \href{#method-ZarrArray-get_name}{\code{ZarrArray$get_name()}}
-\item \href{#method-ZarrArray-get_basename}{\code{ZarrArray$get_basename()}}
-\item \href{#method-ZarrArray-get_read_only}{\code{ZarrArray$get_read_only()}}
-\item \href{#method-ZarrArray-set_read_only}{\code{ZarrArray$set_read_only()}}
-\item \href{#method-ZarrArray-get_chunk_store}{\code{ZarrArray$get_chunk_store()}}
-\item \href{#method-ZarrArray-get_shape}{\code{ZarrArray$get_shape()}}
-\item \href{#method-ZarrArray-set_shape}{\code{ZarrArray$set_shape()}}
-\item \href{#method-ZarrArray-resize}{\code{ZarrArray$resize()}}
-\item \href{#method-ZarrArray-get_chunks}{\code{ZarrArray$get_chunks()}}
-\item \href{#method-ZarrArray-get_dtype}{\code{ZarrArray$get_dtype()}}
-\item \href{#method-ZarrArray-get_compressor}{\code{ZarrArray$get_compressor()}}
-\item \href{#method-ZarrArray-get_fill_value}{\code{ZarrArray$get_fill_value()}}
-\item \href{#method-ZarrArray-set_fill_value}{\code{ZarrArray$set_fill_value()}}
-\item \href{#method-ZarrArray-set_dimension_names}{\code{ZarrArray$set_dimension_names()}}
-\item \href{#method-ZarrArray-get_order}{\code{ZarrArray$get_order()}}
-\item \href{#method-ZarrArray-get_filters}{\code{ZarrArray$get_filters()}}
-\item \href{#method-ZarrArray-get_synchronizer}{\code{ZarrArray$get_synchronizer()}}
-\item \href{#method-ZarrArray-get_attrs}{\code{ZarrArray$get_attrs()}}
-\item \href{#method-ZarrArray-get_ndim}{\code{ZarrArray$get_ndim()}}
-\item \href{#method-ZarrArray-get_dimension_names}{\code{ZarrArray$get_dimension_names()}}
-\item \href{#method-ZarrArray-get_size}{\code{ZarrArray$get_size()}}
-\item \href{#method-ZarrArray-get_itemsize}{\code{ZarrArray$get_itemsize()}}
-\item \href{#method-ZarrArray-get_nbytes}{\code{ZarrArray$get_nbytes()}}
-\item \href{#method-ZarrArray-get_nbytes_stored}{\code{ZarrArray$get_nbytes_stored()}}
-\item \href{#method-ZarrArray-get_cdata_shape}{\code{ZarrArray$get_cdata_shape()}}
-\item \href{#method-ZarrArray-get_nchunks}{\code{ZarrArray$get_nchunks()}}
-\item \href{#method-ZarrArray-get_nchunks_initialized}{\code{ZarrArray$get_nchunks_initialized()}}
-\item \href{#method-ZarrArray-get_is_view}{\code{ZarrArray$get_is_view()}}
-\item \href{#method-ZarrArray-get_oindex}{\code{ZarrArray$get_oindex()}}
-\item \href{#method-ZarrArray-get_vindex}{\code{ZarrArray$get_vindex()}}
-\item \href{#method-ZarrArray-get_write_empty_chunks}{\code{ZarrArray$get_write_empty_chunks()}}
-\item \href{#method-ZarrArray-equals}{\code{ZarrArray$equals()}}
-\item \href{#method-ZarrArray-print}{\code{ZarrArray$print()}}
-\item \href{#method-ZarrArray-islice}{\code{ZarrArray$islice()}}
-\item \href{#method-ZarrArray-length}{\code{ZarrArray$length()}}
-\item \href{#method-ZarrArray-get_item}{\code{ZarrArray$get_item()}}
-\item \href{#method-ZarrArray-get_basic_selection}{\code{ZarrArray$get_basic_selection()}}
-\item \href{#method-ZarrArray-get_orthogonal_selection}{\code{ZarrArray$get_orthogonal_selection()}}
-\item \href{#method-ZarrArray-get_coordinate_selection}{\code{ZarrArray$get_coordinate_selection()}}
-\item \href{#method-ZarrArray-get_mask_selection}{\code{ZarrArray$get_mask_selection()}}
-\item \href{#method-ZarrArray-set_item}{\code{ZarrArray$set_item()}}
-\item \href{#method-ZarrArray-set_basic_selection}{\code{ZarrArray$set_basic_selection()}}
-\item \href{#method-ZarrArray-set_orthogonal_selection}{\code{ZarrArray$set_orthogonal_selection()}}
-\item \href{#method-ZarrArray-set_coordinate_selection}{\code{ZarrArray$set_coordinate_selection()}}
-\item \href{#method-ZarrArray-set_mask_selection}{\code{ZarrArray$set_mask_selection()}}
-\item \href{#method-ZarrArray-get_info}{\code{ZarrArray$get_info()}}
-\item \href{#method-ZarrArray-get_digest}{\code{ZarrArray$get_digest()}}
-\item \href{#method-ZarrArray-get_hexdigest}{\code{ZarrArray$get_hexdigest()}}
-\item \href{#method-ZarrArray-append}{\code{ZarrArray$append()}}
-\item \href{#method-ZarrArray-view}{\code{ZarrArray$view()}}
-\item \href{#method-ZarrArray-astype}{\code{ZarrArray$astype()}}
-\item \href{#method-ZarrArray-get_dimension_separator}{\code{ZarrArray$get_dimension_separator()}}
-\item \href{#method-ZarrArray-as.array}{\code{ZarrArray$as.array()}}
-\item \href{#method-ZarrArray-clone}{\code{ZarrArray$clone()}}
-}
+  \itemize{
+    \item \href{#method-ZarrArray-initialize}{\code{ZarrArray$new()}}
+    \item \href{#method-ZarrArray-get_store}{\code{ZarrArray$get_store()}}
+    \item \href{#method-ZarrArray-get_path}{\code{ZarrArray$get_path()}}
+    \item \href{#method-ZarrArray-get_name}{\code{ZarrArray$get_name()}}
+    \item \href{#method-ZarrArray-get_basename}{\code{ZarrArray$get_basename()}}
+    \item \href{#method-ZarrArray-get_read_only}{\code{ZarrArray$get_read_only()}}
+    \item \href{#method-ZarrArray-set_read_only}{\code{ZarrArray$set_read_only()}}
+    \item \href{#method-ZarrArray-get_chunk_store}{\code{ZarrArray$get_chunk_store()}}
+    \item \href{#method-ZarrArray-get_shape}{\code{ZarrArray$get_shape()}}
+    \item \href{#method-ZarrArray-set_shape}{\code{ZarrArray$set_shape()}}
+    \item \href{#method-ZarrArray-resize}{\code{ZarrArray$resize()}}
+    \item \href{#method-ZarrArray-get_chunks}{\code{ZarrArray$get_chunks()}}
+    \item \href{#method-ZarrArray-get_dtype}{\code{ZarrArray$get_dtype()}}
+    \item \href{#method-ZarrArray-get_compressor}{\code{ZarrArray$get_compressor()}}
+    \item \href{#method-ZarrArray-get_fill_value}{\code{ZarrArray$get_fill_value()}}
+    \item \href{#method-ZarrArray-set_fill_value}{\code{ZarrArray$set_fill_value()}}
+    \item \href{#method-ZarrArray-set_dimension_names}{\code{ZarrArray$set_dimension_names()}}
+    \item \href{#method-ZarrArray-get_order}{\code{ZarrArray$get_order()}}
+    \item \href{#method-ZarrArray-get_filters}{\code{ZarrArray$get_filters()}}
+    \item \href{#method-ZarrArray-get_synchronizer}{\code{ZarrArray$get_synchronizer()}}
+    \item \href{#method-ZarrArray-get_attrs}{\code{ZarrArray$get_attrs()}}
+    \item \href{#method-ZarrArray-get_ndim}{\code{ZarrArray$get_ndim()}}
+    \item \href{#method-ZarrArray-get_dimension_names}{\code{ZarrArray$get_dimension_names()}}
+    \item \href{#method-ZarrArray-get_size}{\code{ZarrArray$get_size()}}
+    \item \href{#method-ZarrArray-get_itemsize}{\code{ZarrArray$get_itemsize()}}
+    \item \href{#method-ZarrArray-get_nbytes}{\code{ZarrArray$get_nbytes()}}
+    \item \href{#method-ZarrArray-get_nbytes_stored}{\code{ZarrArray$get_nbytes_stored()}}
+    \item \href{#method-ZarrArray-get_cdata_shape}{\code{ZarrArray$get_cdata_shape()}}
+    \item \href{#method-ZarrArray-get_nchunks}{\code{ZarrArray$get_nchunks()}}
+    \item \href{#method-ZarrArray-get_nchunks_initialized}{\code{ZarrArray$get_nchunks_initialized()}}
+    \item \href{#method-ZarrArray-get_is_view}{\code{ZarrArray$get_is_view()}}
+    \item \href{#method-ZarrArray-get_oindex}{\code{ZarrArray$get_oindex()}}
+    \item \href{#method-ZarrArray-get_vindex}{\code{ZarrArray$get_vindex()}}
+    \item \href{#method-ZarrArray-get_write_empty_chunks}{\code{ZarrArray$get_write_empty_chunks()}}
+    \item \href{#method-ZarrArray-equals}{\code{ZarrArray$equals()}}
+    \item \href{#method-ZarrArray-print}{\code{ZarrArray$print()}}
+    \item \href{#method-ZarrArray-islice}{\code{ZarrArray$islice()}}
+    \item \href{#method-ZarrArray-length}{\code{ZarrArray$length()}}
+    \item \href{#method-ZarrArray-get_item}{\code{ZarrArray$get_item()}}
+    \item \href{#method-ZarrArray-get_basic_selection}{\code{ZarrArray$get_basic_selection()}}
+    \item \href{#method-ZarrArray-get_orthogonal_selection}{\code{ZarrArray$get_orthogonal_selection()}}
+    \item \href{#method-ZarrArray-get_coordinate_selection}{\code{ZarrArray$get_coordinate_selection()}}
+    \item \href{#method-ZarrArray-get_mask_selection}{\code{ZarrArray$get_mask_selection()}}
+    \item \href{#method-ZarrArray-set_item}{\code{ZarrArray$set_item()}}
+    \item \href{#method-ZarrArray-set_basic_selection}{\code{ZarrArray$set_basic_selection()}}
+    \item \href{#method-ZarrArray-set_orthogonal_selection}{\code{ZarrArray$set_orthogonal_selection()}}
+    \item \href{#method-ZarrArray-set_coordinate_selection}{\code{ZarrArray$set_coordinate_selection()}}
+    \item \href{#method-ZarrArray-set_mask_selection}{\code{ZarrArray$set_mask_selection()}}
+    \item \href{#method-ZarrArray-get_info}{\code{ZarrArray$get_info()}}
+    \item \href{#method-ZarrArray-get_digest}{\code{ZarrArray$get_digest()}}
+    \item \href{#method-ZarrArray-get_hexdigest}{\code{ZarrArray$get_hexdigest()}}
+    \item \href{#method-ZarrArray-append}{\code{ZarrArray$append()}}
+    \item \href{#method-ZarrArray-view}{\code{ZarrArray$view()}}
+    \item \href{#method-ZarrArray-astype}{\code{ZarrArray$astype()}}
+    \item \href{#method-ZarrArray-get_dimension_separator}{\code{ZarrArray$get_dimension_separator()}}
+    \item \href{#method-ZarrArray-as.array}{\code{ZarrArray$as.array()}}
+    \item \href{#method-ZarrArray-clone}{\code{ZarrArray$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ZarrArray-new"></a>}}
-\if{latex}{\out{\hypertarget{method-ZarrArray-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new ZarrArray instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$new(
+\if{html}{\out{<a id="method-ZarrArray-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrArray-initialize}{}}}
+\subsection{\code{ZarrArray$new()}}{
+  Create a new ZarrArray instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$new(
   store,
   path = NA,
   read_only = FALSE,
@@ -91,901 +92,979 @@ Create a new ZarrArray instance.
   cache_metadata = TRUE,
   cache_attrs = TRUE,
   write_empty_chunks = TRUE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{store}}{(\link{Store})\cr
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{store}}{(\link{Store})\cr
 Array store, already initialized.}
-
-\item{\code{path}}{(\code{character(1)})\cr
+      \item{\code{path}}{(\code{character(1)})\cr
 Storage path.}
-
-\item{\code{read_only}}{(\code{logical(1)})\cr
+      \item{\code{read_only}}{(\code{logical(1)})\cr
 Whether the array is read-only.}
-
-\item{\code{chunk_store}}{(\link{Store} or \code{NA})\cr
+      \item{\code{chunk_store}}{(\link{Store} or \code{NA})\cr
 Separate storage for chunks. If not provided, \code{store} will be used
 for both chunks and metadata.}
-
-\item{\code{synchronizer}}{(\code{ANY} or \code{NA})\cr
+      \item{\code{synchronizer}}{(\code{ANY} or \code{NA})\cr
 Object used to synchronize write access to the array.}
-
-\item{\code{cache_metadata}}{(\code{logical(1)})\cr
+      \item{\code{cache_metadata}}{(\code{logical(1)})\cr
 Whether to cache metadata.}
-
-\item{\code{cache_attrs}}{(\code{logical(1)})\cr
+      \item{\code{cache_attrs}}{(\code{logical(1)})\cr
 Whether to cache attributes.}
-
-\item{\code{write_empty_chunks}}{(\code{logical(1)})\cr
+      \item{\code{write_empty_chunks}}{(\code{logical(1)})\cr
 Whether to write empty chunks.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \link{ZarrArray} instance.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \link{ZarrArray} instance.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_store"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_store}{}}}
-\subsection{Method \code{get_store()}}{
-get store from array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_store()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_store()}}{
+  get store from array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_store()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{Store}.
+  }
 }
 
-\subsection{Returns}{
-\link{Store}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_path"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_path}{}}}
-\subsection{Method \code{get_path()}}{
-get array path
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_path()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_path()}}{
+  get array path
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_path()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)} or \code{NA}.
+  }
 }
 
-\subsection{Returns}{
-\code{character(1)} or \code{NA}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_name"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_name}{}}}
-\subsection{Method \code{get_name()}}{
-get full array name
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_name()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_name()}}{
+  get full array name
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_name()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)} or \code{NA}.
+  }
 }
 
-\subsection{Returns}{
-\code{character(1)} or \code{NA}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_basename"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_basename}{}}}
-\subsection{Method \code{get_basename()}}{
-get the basename of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_basename()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_basename()}}{
+  get the basename of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_basename()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)} or \code{NA}.
+  }
 }
 
-\subsection{Returns}{
-\code{character(1)} or \code{NA}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_read_only"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_read_only}{}}}
-\subsection{Method \code{get_read_only()}}{
-get the read only property of an array (TRUE/FALSE)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_read_only()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_read_only()}}{
+  get the read only property of an array (TRUE/FALSE)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_read_only()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{logical(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{logical(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-set_read_only"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-set_read_only}{}}}
-\subsection{Method \code{set_read_only()}}{
-set the read only property of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_read_only(val)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$set_read_only()}}{
+  set the read only property of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$set_read_only(val)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{val}}{(\code{logical(1)})\cr
+Value to set.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{val}}{(\code{logical(1)})\cr
-Value to set.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_chunk_store"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_chunk_store}{}}}
-\subsection{Method \code{get_chunk_store()}}{
-get the chunk store for an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_chunk_store()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_chunk_store()}}{
+  get the chunk store for an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_chunk_store()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{Store}.
+  }
 }
 
-\subsection{Returns}{
-\link{Store}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_shape"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_shape}{}}}
-\subsection{Method \code{get_shape()}}{
-get the shape of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_shape()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_shape()}}{
+  get the shape of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_shape()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{integer()}.
+  }
 }
 
-\subsection{Returns}{
-\code{integer()}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-set_shape"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-set_shape}{}}}
-\subsection{Method \code{set_shape()}}{
-set or reset the size of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_shape(value)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$set_shape()}}{
+  set or reset the size of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$set_shape(value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{value}}{(\code{integer()})\cr
+Numeric size to set.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{value}}{(\code{integer()})\cr
-Numeric size to set.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-resize"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-resize}{}}}
-\subsection{Method \code{resize()}}{
-Change the shape of the array by growing or shrinking one or more dimensions.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$resize(...)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$resize()}}{
+  Change the shape of the array by growing or shrinking one or more dimensions.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$resize(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Arguments for do.call.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Arguments for do.call.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_chunks"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_chunks}{}}}
-\subsection{Method \code{get_chunks()}}{
-get the chunk metadata of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_chunks()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_chunks()}}{
+  get the chunk metadata of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_chunks()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{integer()}.
+  }
 }
 
-\subsection{Returns}{
-\code{integer()}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_dtype"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_dtype}{}}}
-\subsection{Method \code{get_dtype()}}{
-get the Dtype of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_dtype()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_dtype()}}{
+  get the Dtype of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_dtype()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{Dtype}.
+  }
 }
 
-\subsection{Returns}{
-\link{Dtype}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_compressor"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_compressor}{}}}
-\subsection{Method \code{get_compressor()}}{
-get the compressor of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_compressor()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_compressor()}}{
+  get the compressor of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_compressor()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{Codec} or \code{NA}.
+  }
 }
 
-\subsection{Returns}{
-\link{Codec} or \code{NA}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_fill_value"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_fill_value}{}}}
-\subsection{Method \code{get_fill_value()}}{
-get the fill value of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_fill_value()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_fill_value()}}{
+  get the fill value of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_fill_value()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Scalar fill value.
+  }
 }
 
-\subsection{Returns}{
-Scalar fill value.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-set_fill_value"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-set_fill_value}{}}}
-\subsection{Method \code{set_fill_value()}}{
-set the fill value of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_fill_value(val)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$set_fill_value()}}{
+  set the fill value of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$set_fill_value(val)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{val}}{Fill value to use.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{val}}{Fill value to use.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-set_dimension_names"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-set_dimension_names}{}}}
-\subsection{Method \code{set_dimension_names()}}{
-Set dimension names of the array (V3 only).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_dimension_names(names)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$set_dimension_names()}}{
+  Set dimension names of the array (V3 only).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$set_dimension_names(names)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{names}}{Character vector of length equal to the number of array
+dimensions, or \code{NULL} to clear.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{names}}{Character vector of length equal to the number of array
-dimensions, or \code{NULL} to clear.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_order"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_order}{}}}
-\subsection{Method \code{get_order()}}{
-get the storage order metadata of an array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_order()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_order()}}{
+  get the storage order metadata of an array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_order()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)}, \code{"C"} or \code{"F"}.
+  }
 }
 
-\subsection{Returns}{
-\code{character(1)}, \code{"C"} or \code{"F"}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_filters"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_filters}{}}}
-\subsection{Method \code{get_filters()}}{
-get the filters metadata of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_filters()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_filters()}}{
+  get the filters metadata of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_filters()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} of \link{Codec} objects or \code{NA}.
+  }
 }
 
-\subsection{Returns}{
-\code{list()} of \link{Codec} objects or \code{NA}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_synchronizer"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_synchronizer}{}}}
-\subsection{Method \code{get_synchronizer()}}{
-Get the synchronizer used to coordinate write access to the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_synchronizer()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_synchronizer()}}{
+  Get the synchronizer used to coordinate write access to the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_synchronizer()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Synchronizer object or \code{NA}.
+  }
 }
 
-\subsection{Returns}{
-Synchronizer object or \code{NA}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_attrs"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_attrs}{}}}
-\subsection{Method \code{get_attrs()}}{
-get attributes of array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_attrs()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_attrs()}}{
+  get attributes of array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_attrs()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{Attributes}.
+  }
 }
 
-\subsection{Returns}{
-\link{Attributes}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_ndim"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_ndim}{}}}
-\subsection{Method \code{get_ndim()}}{
-get number of dimensions of array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_ndim()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_ndim()}}{
+  get number of dimensions of array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_ndim()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{integer(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{integer(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_dimension_names"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_dimension_names}{}}}
-\subsection{Method \code{get_dimension_names()}}{
-Get dimension names of the array (V3 only).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_dimension_names()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_dimension_names()}}{
+  Get dimension names of the array (V3 only).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_dimension_names()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character vector or \code{NULL}.
+  }
 }
 
-\subsection{Returns}{
-Character vector or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_size"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_size}{}}}
-\subsection{Method \code{get_size()}}{
-Get the total number of elements in the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_size()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_size()}}{
+  Get the total number of elements in the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_size()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{numeric(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{numeric(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_itemsize"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_itemsize}{}}}
-\subsection{Method \code{get_itemsize()}}{
-Get the size in bytes of each item in the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_itemsize()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_itemsize()}}{
+  Get the size in bytes of each item in the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_itemsize()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{integer(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{integer(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_nbytes"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_nbytes}{}}}
-\subsection{Method \code{get_nbytes()}}{
-get number of bytes of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_nbytes()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_nbytes()}}{
+  get number of bytes of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_nbytes()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{numeric(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{numeric(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_nbytes_stored"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_nbytes_stored}{}}}
-\subsection{Method \code{get_nbytes_stored()}}{
-Get the total number of stored bytes for the array, including metadata and compressed chunk data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_nbytes_stored()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_nbytes_stored()}}{
+  Get the total number of stored bytes for the array, including metadata and compressed chunk data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_nbytes_stored()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{numeric(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{numeric(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_cdata_shape"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_cdata_shape}{}}}
-\subsection{Method \code{get_cdata_shape()}}{
-Get the number of chunks along each dimension of the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_cdata_shape()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_cdata_shape()}}{
+  Get the number of chunks along each dimension of the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_cdata_shape()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{numeric()}.
+  }
 }
 
-\subsection{Returns}{
-\code{numeric()}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_nchunks"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_nchunks}{}}}
-\subsection{Method \code{get_nchunks()}}{
-Get the total number of chunks in the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_nchunks()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_nchunks()}}{
+  Get the total number of chunks in the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_nchunks()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{integer(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{integer(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_nchunks_initialized"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_nchunks_initialized}{}}}
-\subsection{Method \code{get_nchunks_initialized()}}{
-Get the number of chunks that have been initialized with data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_nchunks_initialized()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_nchunks_initialized()}}{
+  Get the number of chunks that have been initialized with data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_nchunks_initialized()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{integer(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{integer(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_is_view"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_is_view}{}}}
-\subsection{Method \code{get_is_view()}}{
-get is_view metadata of array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_is_view()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_is_view()}}{
+  get is_view metadata of array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_is_view()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{logical(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{logical(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_oindex"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_oindex}{}}}
-\subsection{Method \code{get_oindex()}}{
-get orthogonal index of array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_oindex()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_oindex()}}{
+  get orthogonal index of array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_oindex()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{OIndex}.
+  }
 }
 
-\subsection{Returns}{
-\link{OIndex}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_vindex"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_vindex}{}}}
-\subsection{Method \code{get_vindex()}}{
-get vectorized index of array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_vindex()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_vindex()}}{
+  get vectorized index of array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_vindex()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{VIndex}.
+  }
 }
 
-\subsection{Returns}{
-\link{VIndex}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_write_empty_chunks"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_write_empty_chunks}{}}}
-\subsection{Method \code{get_write_empty_chunks()}}{
-get write empty chunks setting of array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_write_empty_chunks()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_write_empty_chunks()}}{
+  get write empty chunks setting of array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_write_empty_chunks()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{logical(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{logical(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-equals"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-equals}{}}}
-\subsection{Method \code{equals()}}{
-check if another object refers to the same array. does not check array data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$equals(other)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$equals()}}{
+  check if another object refers to the same array. does not check array data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$equals(other)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{other}}{Other object to check.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{logical(1)}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{other}}{Other object to check.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{logical(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-print"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-print}{}}}
-\subsection{Method \code{print()}}{
-Print a human-readable summary of the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$print()}}{
+  Print a human-readable summary of the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{self} (invisibly).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{self} (invisibly).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-islice"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-islice}{}}}
-\subsection{Method \code{islice()}}{
-Iterate over the array or a range of it, yielding successive slices along the first dimension. Uses chunk caching for efficient sequential access.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$islice(start = NA, end = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$islice()}}{
+  Iterate over the array or a range of it, yielding successive slices along the first dimension. Uses chunk caching for efficient sequential access.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$islice(start = NA, end = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{start}}{Start index of the iteration range (1-based, inclusive).}
+      \item{\code{end}}{End index of the iteration range (1-based, inclusive).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} of \link{NestedArray} slices.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{start}}{Start index of the iteration range (1-based, inclusive).}
-
-\item{\code{end}}{End index of the iteration range (1-based, inclusive).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{list()} of \link{NestedArray} slices.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-length"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-length}{}}}
-\subsection{Method \code{length()}}{
-Return the length of the first dimension. Raises an error for zero-dimensional arrays.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$length()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$length()}}{
+  Return the length of the first dimension. Raises an error for zero-dimensional arrays.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$length()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{integer(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{integer(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_item"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_item}{}}}
-\subsection{Method \code{get_item()}}{
-Subset the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_item(selection)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_item()}}{
+  Subset the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_item(selection)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to retrieve.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{NestedArray}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to retrieve.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{NestedArray}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_basic_selection"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_basic_selection}{}}}
-\subsection{Method \code{get_basic_selection()}}{
-Get a selection of an array based on a "basic" list of slices.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_basic_selection(selection = NA, out = NA, fields = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_basic_selection()}}{
+  Get a selection of an array based on a "basic" list of slices.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_basic_selection(selection = NA, out = NA, fields = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to retrieve.}
+      \item{\code{out}}{Not yet implemented.}
+      \item{\code{fields}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{NestedArray}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to retrieve.}
-
-\item{\code{out}}{Not yet implemented.}
-
-\item{\code{fields}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{NestedArray}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_orthogonal_selection"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_orthogonal_selection}{}}}
-\subsection{Method \code{get_orthogonal_selection()}}{
-Retrieve data using orthogonal (outer) indexing.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_orthogonal_selection(selection = NA, out = NA, fields = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_orthogonal_selection()}}{
+  Retrieve data using orthogonal (outer) indexing.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_orthogonal_selection(selection = NA, out = NA, fields = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to retrieve.}
+      \item{\code{out}}{Not yet implemented.}
+      \item{\code{fields}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{NestedArray}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to retrieve.}
-
-\item{\code{out}}{Not yet implemented.}
-
-\item{\code{fields}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{NestedArray}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_coordinate_selection"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_coordinate_selection}{}}}
-\subsection{Method \code{get_coordinate_selection()}}{
-Retrieve data using coordinate (point) indexing. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_coordinate_selection(selection = NA, out = NA, fields = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_coordinate_selection()}}{
+  Retrieve data using coordinate (point) indexing. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_coordinate_selection(selection = NA, out = NA, fields = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to retrieve.}
+      \item{\code{out}}{Not yet implemented.}
+      \item{\code{fields}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{NestedArray}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to retrieve.}
-
-\item{\code{out}}{Not yet implemented.}
-
-\item{\code{fields}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{NestedArray}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_mask_selection"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_mask_selection}{}}}
-\subsection{Method \code{get_mask_selection()}}{
-Retrieve data using a boolean mask. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_mask_selection(selection = NA, out = NA, fields = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_mask_selection()}}{
+  Retrieve data using a boolean mask. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_mask_selection(selection = NA, out = NA, fields = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to retrieve.}
+      \item{\code{out}}{Not yet implemented.}
+      \item{\code{fields}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{NestedArray}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to retrieve.}
-
-\item{\code{out}}{Not yet implemented.}
-
-\item{\code{fields}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{NestedArray}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-set_item"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-set_item}{}}}
-\subsection{Method \code{set_item()}}{
-Set a subset of the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_item(selection, value)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$set_item()}}{
+  Set a subset of the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$set_item(selection, value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to set.}
+      \item{\code{value}}{The value to set, as an R array() or a Zarr NestedArray instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to set.}
-
-\item{\code{value}}{The value to set, as an R array() or a Zarr NestedArray instance.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-set_basic_selection"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-set_basic_selection}{}}}
-\subsection{Method \code{set_basic_selection()}}{
-Set a selection of the array using basic (integer/slice) indexing.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_basic_selection(selection, value, fields = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$set_basic_selection()}}{
+  Set a selection of the array using basic (integer/slice) indexing.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$set_basic_selection(selection, value, fields = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to set.}
+      \item{\code{value}}{The value to set.}
+      \item{\code{fields}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to set.}
-
-\item{\code{value}}{The value to set.}
-
-\item{\code{fields}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-set_orthogonal_selection"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-set_orthogonal_selection}{}}}
-\subsection{Method \code{set_orthogonal_selection()}}{
-Set data using orthogonal (outer) indexing. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_orthogonal_selection(selection, value, fields = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$set_orthogonal_selection()}}{
+  Set data using orthogonal (outer) indexing. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$set_orthogonal_selection(selection, value, fields = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to set.}
+      \item{\code{value}}{Not yet implemented.}
+      \item{\code{fields}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to set.}
-
-\item{\code{value}}{Not yet implemented.}
-
-\item{\code{fields}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-set_coordinate_selection"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-set_coordinate_selection}{}}}
-\subsection{Method \code{set_coordinate_selection()}}{
-Set data using coordinate (point) indexing. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_coordinate_selection(selection, value, fields = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$set_coordinate_selection()}}{
+  Set data using coordinate (point) indexing. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$set_coordinate_selection(selection, value, fields = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to set.}
+      \item{\code{value}}{Not yet implemented.}
+      \item{\code{fields}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to set.}
-
-\item{\code{value}}{Not yet implemented.}
-
-\item{\code{fields}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-set_mask_selection"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-set_mask_selection}{}}}
-\subsection{Method \code{set_mask_selection()}}{
-Set data using a boolean mask. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$set_mask_selection(selection, value, fields = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$set_mask_selection()}}{
+  Set data using a boolean mask. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$set_mask_selection(selection, value, fields = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection specifying the subset to set.}
+      \item{\code{value}}{Not yet implemented.}
+      \item{\code{fields}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection specifying the subset to set.}
-
-\item{\code{value}}{Not yet implemented.}
-
-\item{\code{fields}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_info"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_info}{}}}
-\subsection{Method \code{get_info()}}{
-Get array diagnostic info. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_info()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_info()}}{
+  Get array diagnostic info. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_info()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{character(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_digest"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_digest}{}}}
-\subsection{Method \code{get_digest()}}{
-Compute a checksum digest of the array data. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_digest(hashname = "sha1")}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_digest()}}{
+  Compute a checksum digest of the array data. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_digest(hashname = "sha1")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{hashname}}{Name of hash.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{hashname}}{Name of hash.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{character(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_hexdigest"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_hexdigest}{}}}
-\subsection{Method \code{get_hexdigest()}}{
-Compute a hex-string checksum digest. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_hexdigest(hashname = "sha1")}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_hexdigest()}}{
+  Compute a hex-string checksum digest. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_hexdigest(hashname = "sha1")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{hashname}}{Name of hash.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{hashname}}{Name of hash.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{character(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-append"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-append}{}}}
-\subsection{Method \code{append()}}{
-Append data to the array along the specified axis.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$append(data, axis = 1)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$append()}}{
+  Append data to the array along the specified axis.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$append(data, axis = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{Data to append. Will be coerced to array if needed.}
+      \item{\code{axis}}{Axis to append along (1-indexed, R convention). Default 1.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{Data to append. Will be coerced to array if needed.}
-
-\item{\code{axis}}{Axis to append along (1-indexed, R convention). Default 1.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-view"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-view}{}}}
-\subsection{Method \code{view()}}{
-Return a view on the array with modified interpretation. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$view(
+\subsection{\code{ZarrArray$view()}}{
+  Return a view on the array with modified interpretation. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$view(
   shape = NA,
   chunks = NA,
   dtype = NA,
@@ -993,93 +1072,96 @@ Return a view on the array with modified interpretation. Not yet implemented.
   filters = NA,
   read_only = NA,
   synchronizer = NA
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{shape}}{Not yet implemented.}
+      \item{\code{chunks}}{Not yet implemented.}
+      \item{\code{dtype}}{Not yet implemented.}
+      \item{\code{fill_value}}{Not yet implemented.}
+      \item{\code{filters}}{Not yet implemented.}
+      \item{\code{read_only}}{Not yet implemented.}
+      \item{\code{synchronizer}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{ZarrArray}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{shape}}{Not yet implemented.}
-
-\item{\code{chunks}}{Not yet implemented.}
-
-\item{\code{dtype}}{Not yet implemented.}
-
-\item{\code{fill_value}}{Not yet implemented.}
-
-\item{\code{filters}}{Not yet implemented.}
-
-\item{\code{read_only}}{Not yet implemented.}
-
-\item{\code{synchronizer}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{ZarrArray}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-astype"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-astype}{}}}
-\subsection{Method \code{astype()}}{
-Return a view with a different dtype. Not yet implemented.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$astype(dtype)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$astype()}}{
+  Return a view with a different dtype. Not yet implemented.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$astype(dtype)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dtype}}{Not yet implemented.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{ZarrArray}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dtype}}{Not yet implemented.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{ZarrArray}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-get_dimension_separator"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-get_dimension_separator}{}}}
-\subsection{Method \code{get_dimension_separator()}}{
-Get the dimension separator used in chunk keys.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$get_dimension_separator()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$get_dimension_separator()}}{
+  Get the dimension separator used in chunk keys.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$get_dimension_separator()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{character(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-as.array"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-as.array}{}}}
-\subsection{Method \code{as.array()}}{
-Convert Zarr object to R array (for S3 method). Note that this loads all data into memory.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$as.array()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$as.array()}}{
+  Convert Zarr object to R array (for S3 method). Note that this loads all data into memory.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$as.array()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    An R \code{array}.
+  }
 }
 
-\subsection{Returns}{
-An R \code{array}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrArray-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrArray-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrArray$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrArray$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrArray$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

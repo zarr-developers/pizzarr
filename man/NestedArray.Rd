@@ -15,169 +15,179 @@ accessed and subsetted via list of Slice instances.
 The Zarr NestedArray class.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{shape}}{The shape of the array.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{shape}}{The shape of the array.}
 
-\item{\code{dtype}}{The Zarr dtype of the array, as a string like ">f8".}
+    \item{\code{dtype}}{The Zarr dtype of the array, as a string like ">f8".}
 
-\item{\code{dtype_obj}}{The Zarr dtype of the array, as a Dtype instance.}
+    \item{\code{dtype_obj}}{The Zarr dtype of the array, as a Dtype instance.}
 
-\item{\code{data}}{The array contents as a base R array.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{data}}{The array contents as a base R array.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-NestedArray-new}{\code{NestedArray$new()}}
-\item \href{#method-NestedArray-get}{\code{NestedArray$get()}}
-\item \href{#method-NestedArray-set}{\code{NestedArray$set()}}
-\item \href{#method-NestedArray-flatten}{\code{NestedArray$flatten()}}
-\item \href{#method-NestedArray-flatten_to_raw}{\code{NestedArray$flatten_to_raw()}}
-\item \href{#method-NestedArray-as.array}{\code{NestedArray$as.array()}}
-\item \href{#method-NestedArray-clone}{\code{NestedArray$clone()}}
-}
+  \itemize{
+    \item \href{#method-NestedArray-initialize}{\code{NestedArray$new()}}
+    \item \href{#method-NestedArray-get}{\code{NestedArray$get()}}
+    \item \href{#method-NestedArray-set}{\code{NestedArray$set()}}
+    \item \href{#method-NestedArray-flatten}{\code{NestedArray$flatten()}}
+    \item \href{#method-NestedArray-flatten_to_raw}{\code{NestedArray$flatten_to_raw()}}
+    \item \href{#method-NestedArray-as.array}{\code{NestedArray$as.array()}}
+    \item \href{#method-NestedArray-clone}{\code{NestedArray$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-NestedArray-new"></a>}}
-\if{latex}{\out{\hypertarget{method-NestedArray-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new NestedArray instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{NestedArray$new(data, shape = NA, dtype = NA, order = NA)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{The data to initialize the array with.
+\if{html}{\out{<a id="method-NestedArray-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-NestedArray-initialize}{}}}
+\subsection{\code{NestedArray$new()}}{
+  Create a new NestedArray instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{NestedArray$new(data, shape = NA, dtype = NA, order = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{The data to initialize the array with.
 Either NULL, base R array, base R vector (numeric/logical),
 scalar, or raw vector.}
-
-\item{\code{shape}}{The shape of the array.}
-
-\item{\code{dtype}}{The Zarr dtype of the array, as a string like ">f8".}
-
-\item{\code{order}}{The order of the array, either "C" or "F". Only used
+      \item{\code{shape}}{The shape of the array.}
+      \item{\code{dtype}}{The Zarr dtype of the array, as a string like ">f8".}
+      \item{\code{order}}{The order of the array, either "C" or "F". Only used
 when \code{data} is a raw vector. Optional.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{NestedArray} instance.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{NestedArray} instance.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NestedArray-get"></a>}}
 \if{latex}{\out{\hypertarget{method-NestedArray-get}{}}}
-\subsection{Method \code{get()}}{
-Subset the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{NestedArray$get(selection)}\if{html}{\out{</div>}}
+\subsection{\code{NestedArray$get()}}{
+  Subset the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{NestedArray$get(selection)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{A list of slices.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new NestedArray (potentially a subset) representing the selection.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{A list of slices.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new NestedArray (potentially a subset) representing the selection.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NestedArray-set"></a>}}
 \if{latex}{\out{\hypertarget{method-NestedArray-set}{}}}
-\subsection{Method \code{set()}}{
-Set a subset of the array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{NestedArray$set(selection, value)}\if{html}{\out{</div>}}
+\subsection{\code{NestedArray$set()}}{
+  Set a subset of the array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{NestedArray$set(selection, value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{A list of slices.}
+      \item{\code{value}}{A NestedArray or a base R array.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects, modifies \code{self$data} in place).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{A list of slices.}
-
-\item{\code{value}}{A NestedArray or a base R array.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects, modifies \code{self$data} in place).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NestedArray-flatten"></a>}}
 \if{latex}{\out{\hypertarget{method-NestedArray-flatten}{}}}
-\subsection{Method \code{flatten()}}{
-Flatten the array contents.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{NestedArray$flatten(order = NA)}\if{html}{\out{</div>}}
+\subsection{\code{NestedArray$flatten()}}{
+  Flatten the array contents.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{NestedArray$flatten(order = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{order}}{Either "C", "F", or NA.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The data as a flat vector.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{order}}{Either "C", "F", or NA.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The data as a flat vector.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NestedArray-flatten_to_raw"></a>}}
 \if{latex}{\out{\hypertarget{method-NestedArray-flatten_to_raw}{}}}
-\subsection{Method \code{flatten_to_raw()}}{
-Flatten the array contents and convert to a raw vector.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{NestedArray$flatten_to_raw(order = NA)}\if{html}{\out{</div>}}
+\subsection{\code{NestedArray$flatten_to_raw()}}{
+  Flatten the array contents and convert to a raw vector.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{NestedArray$flatten_to_raw(order = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{order}}{Either "C", "F", or NA.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The data as a flat \code{raw()} vector (or plain vector for object dtypes).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{order}}{Either "C", "F", or NA.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The data as a flat \code{raw()} vector (or plain vector for object dtypes).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NestedArray-as.array"></a>}}
 \if{latex}{\out{\hypertarget{method-NestedArray-as.array}{}}}
-\subsection{Method \code{as.array()}}{
-Convert NestedArray to a base R array.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{NestedArray$as.array()}\if{html}{\out{</div>}}
+\subsection{\code{NestedArray$as.array()}}{
+  Convert NestedArray to a base R array.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{NestedArray$as.array()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{array()}.
+  }
 }
 
-\subsection{Returns}{
-\code{array()}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NestedArray-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-NestedArray-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{NestedArray$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{NestedArray$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{NestedArray$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

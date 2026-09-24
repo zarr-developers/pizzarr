@@ -13,73 +13,78 @@ The Zarr BasicIndexer class.
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[pizzarr:Indexer]{pizzarr::Indexer}} -> \code{BasicIndexer}
+\code{\link[pizzarr:Indexer]{Indexer}} -> \code{BasicIndexer}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{dim_indexers}}{List of per-dimension indexers (IntDimIndexer or SliceDimIndexer).}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{dim_indexers}}{List of per-dimension indexers (IntDimIndexer or SliceDimIndexer).}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BasicIndexer-new}{\code{BasicIndexer$new()}}
-\item \href{#method-BasicIndexer-iter}{\code{BasicIndexer$iter()}}
-\item \href{#method-BasicIndexer-clone}{\code{BasicIndexer$clone()}}
-}
+  \itemize{
+    \item \href{#method-BasicIndexer-initialize}{\code{BasicIndexer$new()}}
+    \item \href{#method-BasicIndexer-iter}{\code{BasicIndexer$iter()}}
+    \item \href{#method-BasicIndexer-clone}{\code{BasicIndexer$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BasicIndexer-new"></a>}}
-\if{latex}{\out{\hypertarget{method-BasicIndexer-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new BasicIndexer instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BasicIndexer$new(selection, array)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-BasicIndexer-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-BasicIndexer-initialize}{}}}
+\subsection{\code{BasicIndexer$new()}}{
+  Create a new BasicIndexer instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BasicIndexer$new(selection, array)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{selection}}{Selection as with ZarrArray: scalar, string, or Slice.}
+      \item{\code{array}}{\link{ZarrArray} object that will be indexed.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{BasicIndexer} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{selection}}{Selection as with ZarrArray: scalar, string, or Slice.}
-
-\item{\code{array}}{\link{ZarrArray} object that will be indexed.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{BasicIndexer} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BasicIndexer-iter"></a>}}
 \if{latex}{\out{\hypertarget{method-BasicIndexer-iter}{}}}
-\subsection{Method \code{iter()}}{
-An iterator over the dimensions of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BasicIndexer$iter()}\if{html}{\out{</div>}}
+\subsection{\code{BasicIndexer$iter()}}{
+  An iterator over the dimensions of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BasicIndexer$iter()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of ChunkProjection objects
+  }
 }
 
-\subsection{Returns}{
-A list of ChunkProjection objects
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BasicIndexer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BasicIndexer-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BasicIndexer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BasicIndexer$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BasicIndexer$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

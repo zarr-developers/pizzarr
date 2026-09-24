@@ -145,3 +145,36 @@ test_that("NestedArray of strings can be converted to a raw array, S dtype", {
         0x64
     )))
 })
+test_that("char_vec_to_raw leaves empty and NA strings null-filled (#112)", {
+  buf <- char_vec_to_raw(c("ab", "", NA, "c"), "S", 3, "little")
+  expect_equal(buf, as.raw(c(0x61, 0x62, 0, 0, 0, 0, 0, 0, 0, 0x63, 0, 0)))
+  expect_equal(raw_to_char_vec(buf, "S", 3, "little"), c("ab", "", "", "c"))
+})
+
+test_that("char_vec_to_raw errors on U strings longer than the dtype", {
+  expect_error(char_vec_to_raw("abc", "U", 2, "little"), "too long")
+})
+
+test_that("fixed-length string arrays with partial boundary chunks round-trip (#112)", {
+  for (dtype in c("<S20", "<U20")) {
+    mat <- array(rep("text", 545 * 689), dim = c(545, 689))
+    g <- zarr_open(store = MemoryStore$new(), mode = "w")
+    g$create_dataset(name = "assay", data = mat, shape = dim(mat), dtype = dtype)
+    a <- g$get_item("assay")
+    expect_false(all(dim(mat) %% a$get_chunks() == 0))
+    expect_equal(a$get_item("...")$data, mat)
+  }
+})
+
+test_that("dtype byte order is written the way numpy spells it", {
+  cases <- c("<S20" = "|S20", ">S20" = "|S20", "|S20" = "|S20",
+             "|U20" = "<U20", ">U20" = ">U20",
+             "<b1" = "|b1", "<i1" = "|i1", ">u1" = "|u1",
+             "|i2" = "<i2", ">f8" = ">f8", "<O" = "|O")
+  for (d in names(cases)) expect_equal(canonical_dtype_str(d), cases[[d]], info = d)
+
+  store <- MemoryStore$new()
+  z <- zarr_create(shape = 3L, dtype = "<S5", store = store)
+  meta <- jsonlite::fromJSON(rawToChar(store$get_item(".zarray")))
+  expect_equal(meta$dtype, "|S5")
+})

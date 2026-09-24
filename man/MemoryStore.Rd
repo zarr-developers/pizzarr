@@ -15,7 +15,7 @@ thus all data will be held in main memory.
 MemoryStore for Zarr
 }
 \seealso{
-Other Store classes: 
+Other Store classes:
 \code{\link{DirectoryStore}},
 \code{\link{GcsStore}},
 \code{\link{HttpStore}},
@@ -25,234 +25,251 @@ Other Store classes:
 \concept{Store classes}
 \keyword{internal}
 \section{Super class}{
-\code{\link[pizzarr:Store]{pizzarr::Store}} -> \code{MemoryStore}
+\code{\link[pizzarr:Store]{Store}} -> \code{MemoryStore}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{root}}{The root list for the store.}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{root}}{The root list for the store.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-MemoryStore-new}{\code{MemoryStore$new()}}
-\item \href{#method-MemoryStore-get_parent}{\code{MemoryStore$get_parent()}}
-\item \href{#method-MemoryStore-get_item}{\code{MemoryStore$get_item()}}
-\item \href{#method-MemoryStore-set_item}{\code{MemoryStore$set_item()}}
-\item \href{#method-MemoryStore-contains_item}{\code{MemoryStore$contains_item()}}
-\item \href{#method-MemoryStore-listdir}{\code{MemoryStore$listdir()}}
-\item \href{#method-MemoryStore-delete_item}{\code{MemoryStore$delete_item()}}
-\item \href{#method-MemoryStore-rmdir}{\code{MemoryStore$rmdir()}}
-\item \href{#method-MemoryStore-print}{\code{MemoryStore$print()}}
-\item \href{#method-MemoryStore-clone}{\code{MemoryStore$clone()}}
+  \itemize{
+    \item \href{#method-MemoryStore-initialize}{\code{MemoryStore$new()}}
+    \item \href{#method-MemoryStore-get_parent}{\code{MemoryStore$get_parent()}}
+    \item \href{#method-MemoryStore-get_item}{\code{MemoryStore$get_item()}}
+    \item \href{#method-MemoryStore-set_item}{\code{MemoryStore$set_item()}}
+    \item \href{#method-MemoryStore-contains_item}{\code{MemoryStore$contains_item()}}
+    \item \href{#method-MemoryStore-listdir}{\code{MemoryStore$listdir()}}
+    \item \href{#method-MemoryStore-delete_item}{\code{MemoryStore$delete_item()}}
+    \item \href{#method-MemoryStore-rmdir}{\code{MemoryStore$rmdir()}}
+    \item \href{#method-MemoryStore-print}{\code{MemoryStore$print()}}
+    \item \href{#method-MemoryStore-clone}{\code{MemoryStore$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>pizzarr::Store$close()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>pizzarr::Store$get_consolidated_metadata()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_store_identifier"><a href='../../pizzarr/html/Store.html#method-Store-get_store_identifier'><code>pizzarr::Store$get_store_identifier()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>pizzarr::Store$is_erasable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>pizzarr::Store$is_listable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>pizzarr::Store$is_readable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>pizzarr::Store$is_writeable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>pizzarr::Store$rename()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="close"><a href='../../pizzarr/html/Store.html#method-Store-close'><code>Store$close()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_consolidated_metadata"><a href='../../pizzarr/html/Store.html#method-Store-get_consolidated_metadata'><code>Store$get_consolidated_metadata()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="get_store_identifier"><a href='../../pizzarr/html/Store.html#method-Store-get_store_identifier'><code>Store$get_store_identifier()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_erasable"><a href='../../pizzarr/html/Store.html#method-Store-is_erasable'><code>Store$is_erasable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_listable"><a href='../../pizzarr/html/Store.html#method-Store-is_listable'><code>Store$is_listable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_readable"><a href='../../pizzarr/html/Store.html#method-Store-is_readable'><code>Store$is_readable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="is_writeable"><a href='../../pizzarr/html/Store.html#method-Store-is_writeable'><code>Store$is_writeable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="pizzarr" data-topic="Store" data-id="rename"><a href='../../pizzarr/html/Store.html#method-Store-rename'><code>Store$rename()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MemoryStore-new"></a>}}
-\if{latex}{\out{\hypertarget{method-MemoryStore-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new memory store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$new()}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-MemoryStore-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-MemoryStore-initialize}{}}}
+\subsection{\code{MemoryStore$new()}}{
+  Create a new memory store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$new()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{MemoryStore} object.
+  }
 }
 
-\subsection{Returns}{
-A new \code{MemoryStore} object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MemoryStore-get_parent"></a>}}
 \if{latex}{\out{\hypertarget{method-MemoryStore-get_parent}{}}}
-\subsection{Method \code{get_parent()}}{
-Get the parent of an item.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$get_parent(item)}\if{html}{\out{</div>}}
+\subsection{\code{MemoryStore$get_parent()}}{
+  Get the parent of an item.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$get_parent(item)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list with the keys \code{parent} and \code{key}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A list with the keys \code{parent} and \code{key}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MemoryStore-get_item"></a>}}
 \if{latex}{\out{\hypertarget{method-MemoryStore-get_item}{}}}
-\subsection{Method \code{get_item()}}{
-Get an item from the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$get_item(item = NA)}\if{html}{\out{</div>}}
+\subsection{\code{MemoryStore$get_item()}}{
+  Get an item from the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$get_item(item = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The item data in a vector of type raw.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The item data in a vector of type raw.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MemoryStore-set_item"></a>}}
 \if{latex}{\out{\hypertarget{method-MemoryStore-set_item}{}}}
-\subsection{Method \code{set_item()}}{
-Set an item in the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$set_item(item, value)}\if{html}{\out{</div>}}
+\subsection{\code{MemoryStore$set_item()}}{
+  Set an item in the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$set_item(item, value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{The item key.}
+      \item{\code{value}}{The item value as a vector of type raw.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{The item key.}
-
-\item{\code{value}}{The item value as a vector of type raw.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MemoryStore-contains_item"></a>}}
 \if{latex}{\out{\hypertarget{method-MemoryStore-contains_item}{}}}
-\subsection{Method \code{contains_item()}}{
-Determine whether the store contains an item.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$contains_item(item)}\if{html}{\out{</div>}}
+\subsection{\code{MemoryStore$contains_item()}}{
+  Determine whether the store contains an item.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$contains_item(item)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A boolean value.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A boolean value.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MemoryStore-listdir"></a>}}
 \if{latex}{\out{\hypertarget{method-MemoryStore-listdir}{}}}
-\subsection{Method \code{listdir()}}{
-List the store directory.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$listdir(path = NA)}\if{html}{\out{</div>}}
+\subsection{\code{MemoryStore$listdir()}}{
+  List the store directory.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$listdir(path = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Character path.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character()} vector of entries.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character path.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{character()} vector of entries.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MemoryStore-delete_item"></a>}}
 \if{latex}{\out{\hypertarget{method-MemoryStore-delete_item}{}}}
-\subsection{Method \code{delete_item()}}{
-Delete an item from the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$delete_item(key)}\if{html}{\out{</div>}}
+\subsection{\code{MemoryStore$delete_item()}}{
+  Delete an item from the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$delete_item(key)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{The item key.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{The item key.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MemoryStore-rmdir"></a>}}
 \if{latex}{\out{\hypertarget{method-MemoryStore-rmdir}{}}}
-\subsection{Method \code{rmdir()}}{
-Remove a path within a Store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$rmdir(item)}\if{html}{\out{</div>}}
+\subsection{\code{MemoryStore$rmdir()}}{
+  Remove a path within a Store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$rmdir(item)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{Character item.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL} (called for side effects).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{Character item.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{NULL} (called for side effects).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MemoryStore-print"></a>}}
 \if{latex}{\out{\hypertarget{method-MemoryStore-print}{}}}
-\subsection{Method \code{print()}}{
-Print a human-readable summary of the store.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{MemoryStore$print()}}{
+  Print a human-readable summary of the store.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{self} (invisibly).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{self} (invisibly).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MemoryStore-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-MemoryStore-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MemoryStore$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{MemoryStore$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MemoryStore$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -14,170 +14,182 @@ shape, chunks, dtype, compressor, fill_value, order, and filters.
 Group metadata contains only the zarr_format field.
 }
 \seealso{
-Other Metadata classes: 
+Other Metadata classes:
 \code{\link{Metadata3}}
 }
 \concept{Metadata classes}
 \keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Metadata2-decode_metadata}{\code{Metadata2$decode_metadata()}}
-\item \href{#method-Metadata2-encode_metadata}{\code{Metadata2$encode_metadata()}}
-\item \href{#method-Metadata2-decode_array_metadata}{\code{Metadata2$decode_array_metadata()}}
-\item \href{#method-Metadata2-decode_group_metadata}{\code{Metadata2$decode_group_metadata()}}
-\item \href{#method-Metadata2-encode_array_metadata}{\code{Metadata2$encode_array_metadata()}}
-\item \href{#method-Metadata2-encode_group_metadata}{\code{Metadata2$encode_group_metadata()}}
-\item \href{#method-Metadata2-clone}{\code{Metadata2$clone()}}
-}
+  \itemize{
+    \item \href{#method-Metadata2-decode_metadata}{\code{Metadata2$decode_metadata()}}
+    \item \href{#method-Metadata2-encode_metadata}{\code{Metadata2$encode_metadata()}}
+    \item \href{#method-Metadata2-decode_array_metadata}{\code{Metadata2$decode_array_metadata()}}
+    \item \href{#method-Metadata2-decode_group_metadata}{\code{Metadata2$decode_group_metadata()}}
+    \item \href{#method-Metadata2-encode_array_metadata}{\code{Metadata2$encode_array_metadata()}}
+    \item \href{#method-Metadata2-encode_group_metadata}{\code{Metadata2$encode_group_metadata()}}
+    \item \href{#method-Metadata2-clone}{\code{Metadata2$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata2-decode_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata2-decode_metadata}{}}}
-\subsection{Method \code{decode_metadata()}}{
-Parse metadata from raw bytes or return as-is if already a list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata2$decode_metadata(s, auto_unbox = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
+\subsection{\code{Metadata2$decode_metadata()}}{
+  Parse metadata from raw bytes or return as-is if already a list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata2$decode_metadata(s, auto_unbox = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
 Raw JSON bytes, a pre-parsed list, or \code{NULL}.}
+      \item{\code{auto_unbox}}{(\code{logical(1)})\cr
+Passed to \code{\link[jsonlite:toJSON]{jsonlite::toJSON()}}. Default \code{FALSE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} or \code{NULL}.
+  }
+}
 
-\item{\code{auto_unbox}}{(\code{logical(1)})\cr
-Passed to \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}. Default \code{FALSE}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{list()} or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata2-encode_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata2-encode_metadata}{}}}
-\subsection{Method \code{encode_metadata()}}{
-Encode metadata list to raw JSON bytes.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata2$encode_metadata(meta, auto_unbox = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{meta}}{(\code{list()})\cr
+\subsection{\code{Metadata2$encode_metadata()}}{
+  Encode metadata list to raw JSON bytes.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata2$encode_metadata(meta, auto_unbox = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{meta}}{(\code{list()})\cr
 Metadata to encode.}
+      \item{\code{auto_unbox}}{(\code{logical(1)})\cr
+Passed to \code{\link[jsonlite:toJSON]{jsonlite::toJSON()}}. Default \code{FALSE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{raw()}.
+  }
+}
 
-\item{\code{auto_unbox}}{(\code{logical(1)})\cr
-Passed to \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}. Default \code{FALSE}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{raw()}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata2-decode_array_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata2-decode_array_metadata}{}}}
-\subsection{Method \code{decode_array_metadata()}}{
-Decode and validate V2 array metadata.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata2$decode_array_metadata(s)}\if{html}{\out{</div>}}
+\subsection{\code{Metadata2$decode_array_metadata()}}{
+  Decode and validate V2 array metadata.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata2$decode_array_metadata(s)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
+Raw JSON bytes or pre-parsed list.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} or \code{NULL}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
-Raw JSON bytes or pre-parsed list.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{list()} or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata2-decode_group_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata2-decode_group_metadata}{}}}
-\subsection{Method \code{decode_group_metadata()}}{
-Decode and validate V2 group metadata.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata2$decode_group_metadata(s)}\if{html}{\out{</div>}}
+\subsection{\code{Metadata2$decode_group_metadata()}}{
+  Decode and validate V2 group metadata.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata2$decode_group_metadata(s)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
+Raw JSON bytes or pre-parsed list.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} or \code{NULL}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{s}}{(\code{raw()} | \code{list()} | \code{NULL})\cr
-Raw JSON bytes or pre-parsed list.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{list()} or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata2-encode_array_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata2-encode_array_metadata}{}}}
-\subsection{Method \code{encode_array_metadata()}}{
-Encode array metadata to raw JSON bytes, setting zarr_format to 2.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata2$encode_array_metadata(meta)}\if{html}{\out{</div>}}
+\subsection{\code{Metadata2$encode_array_metadata()}}{
+  Encode array metadata to raw JSON bytes, setting zarr_format to 2.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata2$encode_array_metadata(meta)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{meta}}{(\code{list()})\cr
+Array metadata list.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{raw()}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{meta}}{(\code{list()})\cr
-Array metadata list.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{raw()}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata2-encode_group_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata2-encode_group_metadata}{}}}
-\subsection{Method \code{encode_group_metadata()}}{
-Encode group metadata to raw JSON bytes, setting zarr_format to 2.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata2$encode_group_metadata(meta = NA)}\if{html}{\out{</div>}}
+\subsection{\code{Metadata2$encode_group_metadata()}}{
+  Encode group metadata to raw JSON bytes, setting zarr_format to 2.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata2$encode_group_metadata(meta = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{meta}}{(\code{list()} | \code{NA})\cr
+Ignored; a fresh group metadata list is created.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{raw()}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{meta}}{(\code{list()} | \code{NA})\cr
-Ignored; a fresh group metadata list is created.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{raw()}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Metadata2-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Metadata2-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Metadata2$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Metadata2$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Metadata2$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

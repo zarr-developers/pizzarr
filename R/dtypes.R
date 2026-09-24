@@ -162,6 +162,9 @@ get_dtype_asrtype <- function(dtype) {
 # @return Character. V2-style dtype string (e.g., "<f8", "|b1").
 # @keywords internal
 v3_dtype_to_v2_dtype <- function(v3_dtype, endian = "little") {
+  # Variable-length strings: V2 object dtype, decoded by the vlen-utf8 codec.
+  if (identical(v3_dtype, "string")) return("|O")
+
   # Mapping: V3 name -> list(v2 = base string, fixed_order = byte order or NULL)
   # Single-byte types have fixed byte order "|" (not relevant).
   # Multi-byte types get byte order prefix from the endian codec.
@@ -207,6 +210,11 @@ v3_dtype_to_v2_dtype <- function(v3_dtype, endian = "little") {
 # @keywords internal
 v2_dtype_to_v3_dtype <- function(dtype) {
   dtype_parts <- get_dtype_parts(dtype)
+
+  # Object dtype is only writable with a vlen-utf8 object codec.
+  if (!is_na(dtype_parts) && dtype_parts$basic_type == "O") {
+    return(list(data_type = "string", endian = NA_character_))
+  }
 
   V2_TO_V3_MAP <- list(
     "b1" = "bool",

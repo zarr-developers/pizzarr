@@ -16,313 +16,337 @@ The Zarr Group class.
 \keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-ZarrGroup-new}{\code{ZarrGroup$new()}}
-\item \href{#method-ZarrGroup-get_store}{\code{ZarrGroup$get_store()}}
-\item \href{#method-ZarrGroup-get_path}{\code{ZarrGroup$get_path()}}
-\item \href{#method-ZarrGroup-get_meta}{\code{ZarrGroup$get_meta()}}
-\item \href{#method-ZarrGroup-get_name}{\code{ZarrGroup$get_name()}}
-\item \href{#method-ZarrGroup-get_read_only}{\code{ZarrGroup$get_read_only()}}
-\item \href{#method-ZarrGroup-get_chunk_store}{\code{ZarrGroup$get_chunk_store()}}
-\item \href{#method-ZarrGroup-get_synchronizer}{\code{ZarrGroup$get_synchronizer()}}
-\item \href{#method-ZarrGroup-get_attrs}{\code{ZarrGroup$get_attrs()}}
-\item \href{#method-ZarrGroup-contains_item}{\code{ZarrGroup$contains_item()}}
-\item \href{#method-ZarrGroup-get_item}{\code{ZarrGroup$get_item()}}
-\item \href{#method-ZarrGroup-create_group}{\code{ZarrGroup$create_group()}}
-\item \href{#method-ZarrGroup-create_dataset}{\code{ZarrGroup$create_dataset()}}
-\item \href{#method-ZarrGroup-print}{\code{ZarrGroup$print()}}
-\item \href{#method-ZarrGroup-tree}{\code{ZarrGroup$tree()}}
-\item \href{#method-ZarrGroup-clone}{\code{ZarrGroup$clone()}}
-}
+  \itemize{
+    \item \href{#method-ZarrGroup-initialize}{\code{ZarrGroup$new()}}
+    \item \href{#method-ZarrGroup-get_store}{\code{ZarrGroup$get_store()}}
+    \item \href{#method-ZarrGroup-get_path}{\code{ZarrGroup$get_path()}}
+    \item \href{#method-ZarrGroup-get_meta}{\code{ZarrGroup$get_meta()}}
+    \item \href{#method-ZarrGroup-get_name}{\code{ZarrGroup$get_name()}}
+    \item \href{#method-ZarrGroup-get_read_only}{\code{ZarrGroup$get_read_only()}}
+    \item \href{#method-ZarrGroup-get_chunk_store}{\code{ZarrGroup$get_chunk_store()}}
+    \item \href{#method-ZarrGroup-get_synchronizer}{\code{ZarrGroup$get_synchronizer()}}
+    \item \href{#method-ZarrGroup-get_attrs}{\code{ZarrGroup$get_attrs()}}
+    \item \href{#method-ZarrGroup-contains_item}{\code{ZarrGroup$contains_item()}}
+    \item \href{#method-ZarrGroup-get_item}{\code{ZarrGroup$get_item()}}
+    \item \href{#method-ZarrGroup-create_group}{\code{ZarrGroup$create_group()}}
+    \item \href{#method-ZarrGroup-create_dataset}{\code{ZarrGroup$create_dataset()}}
+    \item \href{#method-ZarrGroup-print}{\code{ZarrGroup$print()}}
+    \item \href{#method-ZarrGroup-tree}{\code{ZarrGroup$tree()}}
+    \item \href{#method-ZarrGroup-clone}{\code{ZarrGroup$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ZarrGroup-new"></a>}}
-\if{latex}{\out{\hypertarget{method-ZarrGroup-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new ZarrGroup instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$new(
+\if{html}{\out{<a id="method-ZarrGroup-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrGroup-initialize}{}}}
+\subsection{\code{ZarrGroup$new()}}{
+  Create a new ZarrGroup instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$new(
   store,
   path = NA,
   read_only = FALSE,
   chunk_store = NA,
   cache_attrs = TRUE,
   synchronizer = NA
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{store}}{(\link{Store})\cr
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{store}}{(\link{Store})\cr
 Group store, already initialized.}
-
-\item{\code{path}}{(\code{character(1)})\cr
+      \item{\code{path}}{(\code{character(1)})\cr
 Storage path.}
-
-\item{\code{read_only}}{(\code{logical(1)})\cr
+      \item{\code{read_only}}{(\code{logical(1)})\cr
 Whether the group is read-only.}
-
-\item{\code{chunk_store}}{(\link{Store} or \code{NA})\cr
+      \item{\code{chunk_store}}{(\link{Store} or \code{NA})\cr
 Separate storage for chunks.}
-
-\item{\code{cache_attrs}}{(\code{logical(1)})\cr
+      \item{\code{cache_attrs}}{(\code{logical(1)})\cr
 Whether to cache attributes.}
-
-\item{\code{synchronizer}}{(\code{ANY} or \code{NA})\cr
+      \item{\code{synchronizer}}{(\code{ANY} or \code{NA})\cr
 Object used to synchronize write access.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{ZarrGroup} instance.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{ZarrGroup} instance.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-get_store"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-get_store}{}}}
-\subsection{Method \code{get_store()}}{
-Get group store
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$get_store()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$get_store()}}{
+  Get group store
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$get_store()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{Store}.
+  }
 }
 
-\subsection{Returns}{
-\link{Store}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-get_path"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-get_path}{}}}
-\subsection{Method \code{get_path()}}{
-Get group path
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$get_path()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$get_path()}}{
+  Get group path
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$get_path()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{character(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-get_meta"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-get_meta}{}}}
-\subsection{Method \code{get_meta()}}{
-Get group metadata
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$get_meta()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$get_meta()}}{
+  Get group metadata
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$get_meta()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{list()} or \code{NULL}.
+  }
 }
 
-\subsection{Returns}{
-\code{list()} or \code{NULL}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-get_name"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-get_name}{}}}
-\subsection{Method \code{get_name()}}{
-Get group name
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$get_name()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$get_name()}}{
+  Get group name
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$get_name()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{character(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-get_read_only"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-get_read_only}{}}}
-\subsection{Method \code{get_read_only()}}{
-Is store read only?
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$get_read_only()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$get_read_only()}}{
+  Is store read only?
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$get_read_only()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{logical(1)}.
+  }
 }
 
-\subsection{Returns}{
-\code{logical(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-get_chunk_store"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-get_chunk_store}{}}}
-\subsection{Method \code{get_chunk_store()}}{
-Get group chunk store
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$get_chunk_store()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$get_chunk_store()}}{
+  Get group chunk store
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$get_chunk_store()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{Store}.
+  }
 }
 
-\subsection{Returns}{
-\link{Store}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-get_synchronizer"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-get_synchronizer}{}}}
-\subsection{Method \code{get_synchronizer()}}{
-Get group synchronizer
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$get_synchronizer()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$get_synchronizer()}}{
+  Get group synchronizer
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$get_synchronizer()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Synchronizer object or \code{NA}.
+  }
 }
 
-\subsection{Returns}{
-Synchronizer object or \code{NA}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-get_attrs"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-get_attrs}{}}}
-\subsection{Method \code{get_attrs()}}{
-Get group attributes
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$get_attrs()}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$get_attrs()}}{
+  Get group attributes
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$get_attrs()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{Attributes}.
+  }
 }
 
-\subsection{Returns}{
-\link{Attributes}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-contains_item"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-contains_item}{}}}
-\subsection{Method \code{contains_item()}}{
-Test for group membership.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$contains_item(item)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$contains_item()}}{
+  Test for group membership.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$contains_item(item)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{Character item to test for.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{logical(1)}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{Character item to test for.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{logical(1)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-get_item"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-get_item}{}}}
-\subsection{Method \code{get_item()}}{
-Obtain a group member.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$get_item(item)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$get_item()}}{
+  Obtain a group member.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$get_item(item)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{item}}{Character item to retrieve.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{ZarrArray} or \link{ZarrGroup}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{item}}{Character item to retrieve.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{ZarrArray} or \link{ZarrGroup}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-create_group"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-create_group}{}}}
-\subsection{Method \code{create_group()}}{
-create a group
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$create_group(name, overwrite = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$create_group()}}{
+  create a group
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$create_group(name, overwrite = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{Character group name.}
+      \item{\code{overwrite}}{Logical overwrite.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{ZarrGroup}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{Character group name.}
-
-\item{\code{overwrite}}{Logical overwrite.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{ZarrGroup}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-create_dataset"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-create_dataset}{}}}
-\subsection{Method \code{create_dataset()}}{
-Create a dataset (array) within this group.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$create_dataset(name, data = NA, ...)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$create_dataset()}}{
+  Create a dataset (array) within this group.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$create_dataset(name, data = NA, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{Character dataset name.}
+      \item{\code{data}}{Data to add to group.}
+      \item{\code{...}}{Extra arguments to pass to \code{zarr_create()} or \code{array()}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \link{ZarrArray}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{Character dataset name.}
-
-\item{\code{data}}{Data to add to group.}
-
-\item{\code{...}}{Extra arguments to pass to \code{zarr_create()} or \code{array()}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\link{ZarrArray}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-print"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-print}{}}}
-\subsection{Method \code{print()}}{
-Print a human-readable summary of the group.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$print()}}{
+  Print a human-readable summary of the group.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{self} (invisibly).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{self} (invisibly).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-tree"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-tree}{}}}
-\subsection{Method \code{tree()}}{
-Print an ASCII tree showing the group hierarchy.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$tree(level = NA)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$tree()}}{
+  Print an ASCII tree showing the group hierarchy.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$tree(level = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{level}}{Maximum depth to display. \code{NA} (default) shows all levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{self} (invisibly).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{level}}{Maximum depth to display. \code{NA} (default) shows all levels.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{self} (invisibly).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZarrGroup-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-ZarrGroup-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ZarrGroup$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{ZarrGroup$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrGroup$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

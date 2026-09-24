@@ -19,114 +19,123 @@ The Zarr Dtype class.
 https://numpy.org/doc/stable/reference/arrays.dtypes.html
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{dtype}}{The original dtype string, like "<f4".}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{dtype}}{The original dtype string, like "<f4".}
 
-\item{\code{byte_order}}{The byte order of the dtype, either "little", "big", or "nr".}
+    \item{\code{byte_order}}{The byte order of the dtype, either "little", "big", or "nr".}
 
-\item{\code{basic_type}}{The basic type of the dtype, like "f".}
+    \item{\code{basic_type}}{The basic type of the dtype, like "f".}
 
-\item{\code{num_bytes}}{The number of bytes of the dtype.}
+    \item{\code{num_bytes}}{The number of bytes of the dtype.}
 
-\item{\code{num_items}}{The number of items of the dtype.}
+    \item{\code{num_items}}{The number of items of the dtype.}
 
-\item{\code{is_signed}}{Whether the dtype is signed. Logical/boolean.}
+    \item{\code{is_signed}}{Whether the dtype is signed. Logical/boolean.}
 
-\item{\code{is_structured}}{Whether the dtype is structured. Logical/boolean.}
+    \item{\code{is_structured}}{Whether the dtype is structured. Logical/boolean.}
 
-\item{\code{is_object}}{Whether the dtype is an object. Logical/boolean.}
+    \item{\code{is_object}}{Whether the dtype is an object. Logical/boolean.}
 
-\item{\code{object_codec}}{The object codec instance.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{object_codec}}{The object codec instance.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Dtype-new}{\code{Dtype$new()}}
-\item \href{#method-Dtype-get_asrtype}{\code{Dtype$get_asrtype()}}
-\item \href{#method-Dtype-get_rtype}{\code{Dtype$get_rtype()}}
-\item \href{#method-Dtype-get_typed_array_ctr}{\code{Dtype$get_typed_array_ctr()}}
-\item \href{#method-Dtype-clone}{\code{Dtype$clone()}}
-}
+  \itemize{
+    \item \href{#method-Dtype-initialize}{\code{Dtype$new()}}
+    \item \href{#method-Dtype-get_asrtype}{\code{Dtype$get_asrtype()}}
+    \item \href{#method-Dtype-get_rtype}{\code{Dtype$get_rtype()}}
+    \item \href{#method-Dtype-get_typed_array_ctr}{\code{Dtype$get_typed_array_ctr()}}
+    \item \href{#method-Dtype-clone}{\code{Dtype$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Dtype-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Dtype-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Dtype instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dtype$new(dtype, object_codec = NA)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Dtype-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Dtype-initialize}{}}}
+\subsection{\code{Dtype$new()}}{
+  Create a new Dtype instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Dtype$new(dtype, object_codec = NA)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dtype}}{The original dtype string, like "<f4".}
+      \item{\code{object_codec}}{The object codec instance.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{Dtype} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dtype}}{The original dtype string, like "<f4".}
-
-\item{\code{object_codec}}{The object codec instance.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{Dtype} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Dtype-get_asrtype"></a>}}
 \if{latex}{\out{\hypertarget{method-Dtype-get_asrtype}{}}}
-\subsection{Method \code{get_asrtype()}}{
-Get the R coercion function name for this dtype.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dtype$get_asrtype()}\if{html}{\out{</div>}}
+\subsection{\code{Dtype$get_asrtype()}}{
+  Get the R coercion function name for this dtype.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Dtype$get_asrtype()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string (e.g., \code{"as.double"}).
+  }
 }
 
-\subsection{Returns}{
-Character string (e.g., \code{"as.double"}).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Dtype-get_rtype"></a>}}
 \if{latex}{\out{\hypertarget{method-Dtype-get_rtype}{}}}
-\subsection{Method \code{get_rtype()}}{
-Get the R base type for this dtype.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dtype$get_rtype()}\if{html}{\out{</div>}}
+\subsection{\code{Dtype$get_rtype()}}{
+  Get the R base type for this dtype.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Dtype$get_rtype()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    An R prototype value (e.g., \code{integer()}, \code{double()}, or \code{bit64::integer64()}).
+  }
 }
 
-\subsection{Returns}{
-An R prototype value (e.g., \code{integer()}, \code{double()}, or \code{bit64::integer64()}).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Dtype-get_typed_array_ctr"></a>}}
 \if{latex}{\out{\hypertarget{method-Dtype-get_typed_array_ctr}{}}}
-\subsection{Method \code{get_typed_array_ctr()}}{
-Get a constructor function for typed arrays of this dtype.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dtype$get_typed_array_ctr()}\if{html}{\out{</div>}}
+\subsection{\code{Dtype$get_typed_array_ctr()}}{
+  Get a constructor function for typed arrays of this dtype.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Dtype$get_typed_array_ctr()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A function that takes \code{dim} and returns an array.
+  }
 }
 
-\subsection{Returns}{
-A function that takes \code{dim} and returns an array.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Dtype-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Dtype-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dtype$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Dtype$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Dtype$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

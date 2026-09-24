@@ -12,89 +12,93 @@ The Zarr BoolArrayDimIndexer class.
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[pizzarr:DimIndexer]{pizzarr::DimIndexer}} -> \code{BoolArrayDimIndexer}
+\code{\link[pizzarr:DimIndexer]{DimIndexer}} -> \code{BoolArrayDimIndexer}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{dim_sel}}{Selection on dimension.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{dim_sel}}{Selection on dimension.}
 
-\item{\code{dim_len}}{Dimension length.}
+    \item{\code{dim_len}}{Dimension length.}
 
-\item{\code{dim_chunk_len}}{Dimension chunk length.}
+    \item{\code{dim_chunk_len}}{Dimension chunk length.}
 
-\item{\code{num_chunks}}{Number of chunks.}
+    \item{\code{num_chunks}}{Number of chunks.}
 
-\item{\code{chunk_nitems}}{Number of items per chunk.}
+    \item{\code{chunk_nitems}}{Number of items per chunk.}
 
-\item{\code{chunk_nitems_cumsum}}{Offsets into the output array.}
+    \item{\code{chunk_nitems_cumsum}}{Offsets into the output array.}
 
-\item{\code{dim_chunk_ixs}}{Chunks that should be visited.}
+    \item{\code{dim_chunk_ixs}}{Chunks that should be visited.}
 
-\item{\code{dim_out_sel}}{Output array indices for the selected elements.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{dim_out_sel}}{Output array indices for the selected elements.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BoolArrayDimIndexer-new}{\code{BoolArrayDimIndexer$new()}}
-\item \href{#method-BoolArrayDimIndexer-iter}{\code{BoolArrayDimIndexer$iter()}}
-\item \href{#method-BoolArrayDimIndexer-clone}{\code{BoolArrayDimIndexer$clone()}}
-}
+  \itemize{
+    \item \href{#method-BoolArrayDimIndexer-initialize}{\code{BoolArrayDimIndexer$new()}}
+    \item \href{#method-BoolArrayDimIndexer-iter}{\code{BoolArrayDimIndexer$iter()}}
+    \item \href{#method-BoolArrayDimIndexer-clone}{\code{BoolArrayDimIndexer$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BoolArrayDimIndexer-new"></a>}}
-\if{latex}{\out{\hypertarget{method-BoolArrayDimIndexer-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new BoolArrayDimIndexer instance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BoolArrayDimIndexer$new(dim_sel, dim_len, dim_chunk_len)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-BoolArrayDimIndexer-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-BoolArrayDimIndexer-initialize}{}}}
+\subsection{\code{BoolArrayDimIndexer$new()}}{
+  Create a new BoolArrayDimIndexer instance.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BoolArrayDimIndexer$new(dim_sel, dim_len, dim_chunk_len)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dim_sel}}{Integer dimension selection.}
+      \item{\code{dim_len}}{Integer dimension length.}
+      \item{\code{dim_chunk_len}}{Integer dimension chunk length.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{BoolArrayDimIndexer} instance.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dim_sel}}{Integer dimension selection.}
-
-\item{\code{dim_len}}{Integer dimension length.}
-
-\item{\code{dim_chunk_len}}{Integer dimension chunk length.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{BoolArrayDimIndexer} instance.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BoolArrayDimIndexer-iter"></a>}}
 \if{latex}{\out{\hypertarget{method-BoolArrayDimIndexer-iter}{}}}
-\subsection{Method \code{iter()}}{
-An iterator over the dimensions of an array
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BoolArrayDimIndexer$iter()}\if{html}{\out{</div>}}
+\subsection{\code{BoolArrayDimIndexer$iter()}}{
+  An iterator over the dimensions of an array
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BoolArrayDimIndexer$iter()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of ChunkProjection objects
+  }
 }
 
-\subsection{Returns}{
-A list of ChunkProjection objects
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BoolArrayDimIndexer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BoolArrayDimIndexer-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BoolArrayDimIndexer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BoolArrayDimIndexer$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BoolArrayDimIndexer$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

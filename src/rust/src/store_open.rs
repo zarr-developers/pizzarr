@@ -164,7 +164,6 @@ fn split_bucket_prefix(url: &str) -> (String, String) {
 fn wrap_object_store(
     store: impl object_store::ObjectStore,
     prefix: &str,
-    url: &str,
 ) -> Result<StorageEntry, PizzarrError> {
     use object_store::prefix::PrefixStore;
     use zarrs::storage::storage_adapter::async_to_sync::AsyncToSyncStorageAdapter;
@@ -232,7 +231,7 @@ fn open_s3_store(url: &str) -> Result<StorageEntry, PizzarrError> {
                 url: url.to_string(),
                 reason: e.to_string(),
             })?;
-        wrap_object_store(store, &prefix, url)
+        wrap_object_store(store, &prefix)
     }
 
     #[cfg(not(feature = "s3"))]
@@ -258,7 +257,7 @@ fn open_gcs_store(url: &str) -> Result<StorageEntry, PizzarrError> {
                 url: url.to_string(),
                 reason: e.to_string(),
             })?;
-        wrap_object_store(store, &prefix, url)
+        wrap_object_store(store, &prefix)
     }
 
     #[cfg(not(feature = "gcs"))]
