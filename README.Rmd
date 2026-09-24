@@ -26,7 +26,7 @@ A Zarr implementation for R.
 
 ## Installation
 
-pizzarr ships in two tiers — same version, different builds. The CRAN build
+pizzarr ships in two tiers with different builds. The CRAN build
 is pure R and needs nothing beyond base R dependencies. The
 [r-universe](https://zarr-developers.r-universe.dev/pizzarr) build links in
 the [zarrs](https://github.com/zarrs/zarrs) Rust crate via

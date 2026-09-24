@@ -1,3 +1,55 @@
+# pizzarr 0.2.2
+
+(developed with the assistance of Claude Opus 5.5)
+
+Released on r-universe only. CRAN stays at 0.2.1; the pure-R fixes below
+reach CRAN with the next CRAN release.
+
+## String data
+
+* Zarr V3 arrays with `data_type: "string"` and the `vlen-utf8` codec, as
+  written by zarr-python 3, could not be read: the codec pipeline stopped with
+  `Unsupported V3 codec: 'vlen-utf8'` (#192). They now read as character
+  arrays, and `zarr_create(dtype = "|O", object_codec = VLenUtf8Codec$new(),
+  zarr_format = 3L)` writes the same layout, with `fill_value: ""`.
+* `VLenUtf8Codec` failed to encode an empty string (`replacement has length
+  zero`), which also hit any partially filled boundary chunk, and decoded an
+  empty string as two stray bytes. This affected V2 as well as V3. Decoded
+  strings are now marked UTF-8, and strings in another encoding are converted
+  to UTF-8 before writing.
+* Writing fixed-length `S` or `U` arrays whose shape is not a multiple of the
+  chunk shape failed with `replacement has length zero`, because the padded
+  boundary chunks hold empty strings (#112). Empty and `NA` strings now write
+  as null-filled slots and read back as `""`.
+* The default `fill_value` of 0 is now `""` for `S` and `U` dtypes, as in
+  zarr-python. Creating such an array without a `fill_value` previously
+  stopped with `fill_value must be a character string for string dtype`.
+* A `U` string longer than its dtype now raises an error. Strings up to four
+  times too long previously overwrote the neighbouring element.
+* dtype strings are written the way numpy spells them: `|` for `S`, `O`, and
+  one-byte `b`, `i`, `u` (`<S20` becomes `|S20`, `<i1` becomes `|i1`), and `<`
+  in place of `|` for multi-byte types. zarr-python 3 refused to open arrays
+  with the other spellings. Existing stores still read; their metadata takes
+  the numpy spelling if pizzarr rewrites it.
+
+## Rust backend
+
+* `extendr-api` now comes from crates.io (0.8.2) rather than a pin to extendr's
+  git master branch. 0.8.2 carries the R >= 4.5 `OBJSXP` fix that the pin was
+  for, and a crates.io dependency can be vendored.
+* `Cargo.lock` refreshed within semver: zarrs 0.23.10 -> 0.23.14, tokio 1.53.
+  This clears RustSec advisories in `h2` (unbounded empty DATA frames),
+  `rustls` (TLS 1.3 handshake messages across encryption levels),
+  `crossbeam-epoch`, `event-listener`, and `anyhow`. Advisories remain in
+  `lru` (fixed upstream in 0.18; zarrs still requires 0.16) and `quick-xml`
+  (needs `object_store` 0.14, planned separately).
+
+## Documentation
+
+* `zarrs_get_key()`, exported in 0.2.1, now has a help page.
+* The package description names Zarr V3 alongside V2.
+* Help pages regenerated with roxygen2 8.1.0.
+
 # pizzarr 0.2.1
 
 ## Cloud storage
