@@ -633,7 +633,7 @@ VLenUtf8Codec <- R6::R6Class("VLenUtf8Codec",
           # treat these as missing value, normalize
           orig_str <- ""
         }
-        encoded_str <- charToRaw(orig_str)
+        encoded_str <- charToRaw(enc2utf8(orig_str))
         encoded_str_len <- length(encoded_str)
         encoded_values[[i]] <- encoded_str
         encoded_lengths[i] <- encoded_str_len
@@ -663,7 +663,7 @@ VLenUtf8Codec <- R6::R6Class("VLenUtf8Codec",
           endian = "little"
         )
         pos <- pos + 4
-        out[(pos+1):(pos+l)] <- encoded_values[[i]]
+        if (l > 0) out[(pos+1):(pos+l)] <- encoded_values[[i]]
         pos <- pos + l
       }
 
@@ -704,10 +704,12 @@ VLenUtf8Codec <- R6::R6Class("VLenUtf8Codec",
           endian = "little"
         )
         pos <- pos + 4
-        vec_of_strings[i] <- rawToChar(buf[(pos+1):(pos+num_chars)])
+        vec_of_strings[i] <- if (num_chars > 0) rawToChar(buf[(pos+1):(pos+num_chars)]) else ""
         pos <- pos + num_chars
       }
 
+      # vlen-utf8 bytes are UTF-8; mark them so non-UTF-8 locales display correctly.
+      Encoding(vec_of_strings) <- "UTF-8"
       return(vec_of_strings)
     },
     #' @description
@@ -780,13 +782,18 @@ resolve_v3_codecs <- function(codecs_list) {
   endian <- "little"  # V3 default
   order <- "C"        # V3 default (C-contiguous)
   bytes_to_bytes <- list()
+  array_to_bytes <- NULL
 
   for (codec_entry in codecs_list) {
     codec_name <- codec_entry$name
     config <- codec_entry$configuration
     if (is.null(config)) config <- list()
 
-    if (codec_name %in% c("endian", "bytes")) {
+    if (codec_name == "vlen-utf8") {
+      # array-to-bytes codec for data_type "string"; the V2 equivalent is
+      # dtype "|O" with a VLenUtf8 object codec in filters.
+      array_to_bytes <- VLenUtf8Codec$new()
+    } else if (codec_name %in% c("endian", "bytes")) {
       # array-to-bytes codec: specifies byte order.
       # "endian" is the zarrita name; "bytes" is the modern zarr-python name.
       if (!is.null(config$endian)) {
@@ -831,6 +838,12 @@ resolve_v3_codecs <- function(codecs_list) {
   } else {
     compressor <- bytes_to_bytes[[length(bytes_to_bytes)]]
     filters <- bytes_to_bytes[1:(length(bytes_to_bytes) - 1)]
+  }
+
+  # The object codec goes first in filters: decode_chunk() applies filters
+  # in reverse, so it runs last on read, after decompression.
+  if (!is.null(array_to_bytes)) {
+    filters <- if (is_na(filters)) list(array_to_bytes) else c(list(array_to_bytes), filters)
   }
 
   list(

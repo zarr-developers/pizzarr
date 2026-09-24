@@ -133,6 +133,10 @@ init_array_metadata <- function(
 
     # initialize metadata
     if (zarr_format == 3L) {
+        # build_v3_codec_pipeline() finds the vlen-utf8 object codec in filters.
+        if (dtype$is_object && !is_na(object_codec)) {
+            filters <- if (is_na(filters)) list(object_codec) else c(filters, list(object_codec))
+        }
         v3_meta <- create_v3_array_meta(
             shape = shape,
             chunks = chunks,

@@ -346,6 +346,13 @@ create_v3_array_meta <- function(shape, chunks, dtype, compressor, fill_value,
   codecs <- build_v3_codec_pipeline(compressor, filters, dtype)
   dtype_info <- v2_dtype_to_v3_dtype(dtype)
 
+  # String arrays need a string fill_value; zarr_create's default of 0
+  # (or NA) becomes "", which is what zarr-python writes.
+  if (dtype_info$data_type == "string" &&
+      !(is.character(fill_value) && length(fill_value) == 1 && !is.na(fill_value))) {
+    fill_value <- ""
+  }
+
   if (is.null(chunk_key_encoding)) {
     chunk_key_encoding <- list(
       name = jsonlite::unbox("default"),
