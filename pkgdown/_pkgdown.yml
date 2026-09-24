@@ -105,6 +105,7 @@ reference:
   - zarrs_close_store
   - zarrs_compiled_features
   - zarrs_create_array
+  - zarrs_get_key
   - zarrs_get_subset
   - zarrs_node_exists
   - zarrs_open_array_metadata
